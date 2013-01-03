@@ -6,18 +6,15 @@ Some portions of the code has been inherited from the open source [leveldb](http
  
 
 **# Assumptions and Goals**
-  -- good for fast storage (flash)
-  -- good for random reads
-  -- tradeoff between read ampl, write ampl
-  -- range scans and point lookups
-  -- production settting needs configurable param
-     num levels, size of files, size of dats in a level, etc
 
-**# Disk Format**
-  .sst files for data
-  .log files for trasactions
-  manifest_file for database versions
-  LOG* for server information logs
+**## Performance:** The primary design point for rocksdb is that it should be performant for fast storage. It should be able to exploit the full potential of high read/write rates offered by flash or RAM-memory subsystems.  It should support efficient point lookups as well as range scans. It should be configurable to support high random-read workloads, high update workloads or a combination of both.
+
+**## Production support:** Rocksdb should be designed in such a way that it has built-in support for tools and utilities that help deployment and debugging in production environments. Most major parameters should be fully tunable so that it can be used by different applications on different hardware.
+
+**## Backward Compatibility:** Newer versions of this software should be backward compatible, so that existing applications do not need to change when upgrading to newer releases of rocksdb. 
+
+
+
 
 **# Read write apis**
   * Puts
@@ -32,6 +29,12 @@ Some portions of the code has been inherited from the open source [leveldb](http
   bloom filters
   shared block cache
   ReadOnly mode
+
+**# Disk Format**
+  .sst files for data
+  .log files for trasactions
+  manifest_file for database versions
+  LOG* for server information logs
 
 **# Compactions**
   -- multi-threaded
@@ -56,3 +59,5 @@ Some portions of the code has been inherited from the open source [leveldb](http
   stress test
 
 **# java api**
+
+### Author: Dhruba Borthakur
