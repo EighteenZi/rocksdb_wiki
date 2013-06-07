@@ -43,3 +43,8 @@ Largest Level | 300 GB L5 | 300 GB L5 | 300 GB L5
 
 
 Raw files and pmp files available at /home/abhishekk/perf_rocks/readwhilewriting 
+
+## Observations
+From PMP.
+* Most time is spent waiting for Mutex in Get.
+* leveldb::MemTable::KeyComparator>::KeyIsAfterNode looks like a costly method (~3%) in all tests.
