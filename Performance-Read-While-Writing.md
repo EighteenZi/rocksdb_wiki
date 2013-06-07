@@ -42,4 +42,4 @@ Ln stall (s) | 0 | 0 | 0
 Largest Level | 300 GB L5 | 300 GB L5 | 300 GB L5
 
 
-Raw files and pmp files available at perf_rocks/readwhilewriting 
+Raw files and pmp files available at /home/abhishekk/perf_rocks/readwhilewriting 
