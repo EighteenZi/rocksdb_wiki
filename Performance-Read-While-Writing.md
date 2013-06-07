@@ -39,5 +39,5 @@ DB_GET p99 (µs) | 7.28 | 75.32 | 328.51
 DB_WRITE p99 (µs) | 17.36 | 98.15 | 533.74
 L0 Stalls (s) | 10.381 | 0 | 0
 Ln stall (s) | 0 | 0 | 0
-Largest Level | 307337 GB L5 | 300 GB L5 | 307337 GB L5
+Largest Level | 300 GB L5 | 300 GB L5 | 300 GB L5
 
