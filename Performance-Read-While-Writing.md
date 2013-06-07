@@ -44,9 +44,20 @@ micros/op | 4.574 | 17.198 | 38.882 | 74.306
 DB_GET p99 (µs) | 7.28 | 31.65 | 75.32 | 328.51
 DB_WRITE p99 (µs) | 17.36 | 47.24 | 98.15 | 533.74
 L0 Stalls (s) | 10.381 | 0 | 0 | 0
-Ln stall (s) | 0 | 0 | 0 | 0
+Ln Stalls (s) | 0 | 0 | 0 | 0
 Largest Level | 300 GB L5 | 300 GB L5 | 300 GB L5 | 300 GB L5
 
+num = 1billion
+
+Metric | #reader_thread=1 | #reader_thread=8 | #reader_thread=16 | #reader_thread=32
+--- | --- | --- | --- | ---
+readwhilewriting (ops/s) | 14338 | 36234 | 48749 | 56384
+micros/op | 139.460 | 248.375 | 348.658 | 585.189
+DB_GET p99 (µs) | 314.69 | 448.56 | 591.98 | 2524.82
+DB_WRITE p99 (µs) | 15.81 | 22.51 | 29.19 | 40.45
+L0 Stalls (s) | 0 | 0 | 0 | 0
+Ln Stalls (s) | 0 | 0 | 0 | 0
+Largest Level | 300 GB L5 | 300 GB L5 | 300 GB L5 | 300 GB L5
 
 Raw files and pmp files available at /home/abhishekk/perf_rocks/readwhilewriting 
 
