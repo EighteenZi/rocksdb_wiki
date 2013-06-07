@@ -62,6 +62,14 @@ Largest Level | 300 GB L5 | 300 GB L5 | 300 GB L5 | 300 GB L5
 Raw files and pmp files available at /home/abhishekk/perf_rocks/readwhilewriting 
 
 ## Observations
-From PMP.
+Observations from PMP stack
+
+num = 10k
 * Most time is spent waiting for Mutex in Get.
 * Key Compare in SkipList could be a costly place 3% time spent according to pmp. method to look at => KeyIsAfterNode
+
+num = 1b
+
+* most time is spent in ReadBlockContents (reading blocks of disk)
+* key compare time spent is around .69%
+* ~2% time is spent in looking up table cache (FindTable)
