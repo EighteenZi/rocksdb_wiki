@@ -47,4 +47,4 @@ Raw files and pmp files available at /home/abhishekk/perf_rocks/readwhilewriting
 ## Observations
 From PMP.
 * Most time is spent waiting for Mutex in Get.
-* leveldb::MemTable::KeyComparator>::KeyIsAfterNode looks like a costly method (~3%) in all tests.
+* Key Compare in SkipList could be a costly place 3% time spent according to pmp. method to look at => KeyIsAfterNode
