@@ -24,3 +24,20 @@ The db_bench command is
     --max_bytes_for_level_base=536870912 --max_bytes_for_level_multiplier=8 \
     --writes_per_second=10000 --duration=1800
 ```
+
+## Results
+l1 = 512 MB
+f = 64 MB
+No Compression
+Writes limited to 10,000 /s.
+
+Metric | #reader_thread=1 | #reader_thread=16 | #reader_thread=32
+--- | --- | --- | ---
+readwhilewriting (ops/s) | 437230 | 437207 | 444108
+micros/op | 4.574 | 38.882 | 74.306
+DB_GET p99 (µs) | 7.28 | 75.32 | 328.51
+DB_WRITE p99 (µs) | 17.36 | 98.15 | 533.74
+L0 Stalls (s) | 10.381 | 0 | 0
+Ln stall (s) | 0 | 0 | 0
+Largest Level | 307337 GB L5 | 300 GB L5 | 307337 GB L5
+
