@@ -35,6 +35,8 @@ f = 64 MB
 No Compression
 Writes limited to 10,000 /s.
 
+num = 10000
+
 Metric | #reader_thread=1 | #reader_thread=8 | #reader_thread=16 | #reader_thread=32
 --- | --- | --- | --- | ---
 readwhilewriting (ops/s) | 437230 | 523286 | 437207 | 444108
