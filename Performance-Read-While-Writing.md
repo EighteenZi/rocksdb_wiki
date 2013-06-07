@@ -1,6 +1,8 @@
 #About
 Find RocksDB performance with readwhilewriting. 
+
 One thread is writing and other threads are reading from the DB.
+
 Vary reader thread count as 1,16,32.
 
 Used a L1 Size of 512 MB and file size of 64mb.
