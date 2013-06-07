@@ -4,7 +4,7 @@ Find RocksDB performance with readwhilewriting. One thread is writing and other 
 Used a L1 Size of 512 MB and file size of 64mb.
 
 ## Method
-Create a 800G database by using fill random. Value size is 800 bytes. The experiments run on machine with 144G ram and a 24 core Intel(R) Xeon(R) CPU 2.67GHz, and on Flash hard disk drives.
+Create a 800G database by using fill random. Value size is 800 bytes. The experiments run on machine with 144G ram and a 24 core Intel(R) Xeon(R) CPU 2.67GHz, and on Flash hard disk drives, XFS file system.
 
 ##Command
 The db_bench command is
