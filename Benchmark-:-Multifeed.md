@@ -26,3 +26,8 @@ Metric | L1 = 256mb | L1 = 512mb | L2 = 1024mb
 --- | --- | --- | ---
 DB Raw Size (GB) | 61.2 | 61.2 | 61..2
 Largest Level | L3 ~16GB | L3 31.98 (L4 has ~16GB) | L3 41.5 GB
+Overwrite Ops/s | 43403 | 63567 | 55320
+Readrandom Ops/s | 255203 | 394726 | 362958
+Readwhilewriting Ops/s | 272234 | 439943 | 423196 
+
+Files and PMP samples at /home/abhishekk/perf_rocks/coeffecient_tests
