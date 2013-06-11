@@ -3,6 +3,8 @@ Multifeed is a system which serves the news feed at Facebook. This page contains
 ##Workload
 Each database is around 60GB in size. The benchmark assumes a value size of 800.
 
+##Method
+Ran fillrandom, overwrite, updaterandom, readrandom by varying the L1 Sizes 256MB, 512MB, 1024MB
 ##Command
 ```bash
 ./db_bench --benchmarks=fillrandom --disable_seek_compaction=1 --mmap_read=0 --statistics=1 --histogram=1 
@@ -20,3 +22,7 @@ Each database is around 60GB in size. The benchmark assumes a value size of 800.
 
 ##Results
 
+Metric | L1 = 256mb | L1 = 512mb | L2 = 1024mb
+--- | --- | --- | ---
+DB Raw Size (GB) | 61.2 | 61.2 | 61..2
+Largest Level | L3 ~16GB | L3 31.98 (L4 has ~16GB) | L3 41.5 GB
