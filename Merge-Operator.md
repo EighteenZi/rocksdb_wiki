@@ -11,6 +11,11 @@ Often times, it's a common pattern to update an existing value in some ways. To 
 Imagine we are maintaining a set of uint64 counters. Each counter has a distinct name. We would like to support four high level operations: Set, Add, Get and Remove.
 
 First, we define the interface and get the semantics right. Error handling is brushed aside for clarity.
+
+`int main{
+  what?
+}`
+
 `
 class Counters {
  public:
