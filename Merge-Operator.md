@@ -1,9 +1,7 @@
 This page describes the Atomic Read-Modify-Write operation in RocksDB, known as the "Merge" operation. It is an interface overview, aimed at the client or RocksDB user who has the questions: when and why should I use Merge; and how do I use Merge?
 
-For a more detailed analysis of the internal implementation of Merge, see the Merge Internal Implementation.
-
 # Why
-RocksDB is a high-performance embedded persistent key-value store. It traditionally provides three simple operations Get, Put and Delete to allow an elegant Lookup-table-like interface. [See db.h](https://github.com/facebook/rocksdb/blob/master/include/leveldb/db.h)
+RocksDB is a high-performance embedded persistent key-value store. It traditionally provides three simple operations Get, Put and Delete to allow an elegant Lookup-table-like interface. [https://github.com/facebook/rocksdb/blob/master/include/leveldb/db.h](https://github.com/facebook/rocksdb/blob/master/include/leveldb/db.h)
 
 Often times, it's a common pattern to update an existing value in some ways. To do this in rocksdb, the client would have to read (Get) the existing value, modify it and then write (Put) it back to the db. Let's look at a concrete example.
 
@@ -480,7 +478,5 @@ If there are some times where it is okay to combine multiple operands into one (
     **Is my use-case Associative?:** If you are unsure of whether the "associativity" constraints apply to your use-case, you can ALWAYS use the generic MergeOperator. The AssociativeMergeOperator is a direct subclass of MergeOperator, so any use-case that can be solved with the AssociativeMergeOperator can be solved with the more generic MergeOperator. The AssociativeMergeOperator is mostly provided for convenience.
 
 ## Useful Links
-
-    Merge+Compaction Implementation Details: For RocksDB engineers who want to know how MergeOperator affects their code.
-
-    Merge Benchmarks and Performance: To understand the performance benefits of using Merge under different use-cases.
+* [Merge+Compaction Implementation Details](Merge-Operator/Implementation): For RocksDB engineers who want to know how MergeOperator affects their code.
+* [Merge Benchmarks and Performance](Merge-Operator/Benchmarks): To understand the performance benefits of using Merge under different use-cases.
