@@ -151,6 +151,7 @@ Here is the public interface:
 * We pass in the key so that client could multiplex the merge operator based on it, if the key space is partitioned and different subspaces refer to different types of data which have different merge operation semantics. For example, The client might choose to store the current balance (a number) of a user account under the key "BAL:<uid>" and the history of the account activities (a list) under the key "HIS:uid", in the same DB. (Whether or not this is a good practice is debatable). For current balance, numeric addition is a perfect merge operator; for activity history, we would need a list append though. Thus, by passing the key back to the Merge callback, we allow the client to differentiate between the two types.
 
 Example:
+
      void Merge(...) {
        if (key start with "BAL:") {
          NumericAddition(...)
