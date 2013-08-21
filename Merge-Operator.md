@@ -149,11 +149,15 @@ Here is the public interface:
 * AssociativeMergeOperator is a sub-class of a class called MergeOperator. We will see later that the more generic MergeOperator class can be more powerful in certain cases. The AssociativeMergeOperator we use here is, on the other hand, a simpler interface.
 * existing_value could be nullptr. This is useful in case the Merge operation is the first operation of a key. nullptr indicates that the 'existing' value does not exist. This basically defers to the client to interpret the semantics of a merge operation without a pre-value. Client could do whatever reasonable. For example, Counters::Add assumes a zero value, if none exists.
 * We pass in the key so that client could multiplex the merge operator based on it, if the key space is partitioned and different subspaces refer to different types of data which have different merge operation semantics. For example, The client might choose to store the current balance (a number) of a user account under the key "BAL:<uid>" and the history of the account activities (a list) under the key "HIS:uid", in the same DB. (Whether or not this is a good practice is debatable). For current balance, numeric addition is a perfect merge operator; for activity history, we would need a list append though. Thus, by passing the key back to the Merge callback, we allow the client to differentiate between the two types.
-
-    class {
-      hello world
-    }
-
+class { hello world }
+`yo yo ma`
+     void Merge(...) {
+       if (key start with "BAL:") {
+         NumericAddition(...)
+       } else if (key start with "HIS:") {
+         ListAppend(...);
+       }
+     }
 
 ## Other Changes to the client-visible interface
 
