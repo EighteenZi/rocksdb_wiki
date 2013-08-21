@@ -12,9 +12,11 @@ Imagine we are maintaining a set of uint64 counters. Each counter has a distinct
 
 First, we define the interface and get the semantics right. Error handling is brushed aside for clarity.
 
-`int main{
+`
+int main{
   what?
-}`
+}
+`
 
 `
 class Counters {
