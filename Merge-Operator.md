@@ -100,7 +100,7 @@ It is assumed that the reader already knows how to use classic RocksDB (or Level
 
 We have defined a new interface/abstract-base-class: MergeOperator.
 It exposes some functions telling RocksDB how to combine incremental update operations (called "merge operands") with base-values (Put/Delete).
-These functions can also be used to tell RocksDB how to combine merge operands with each other to form new merge operands (called "Partial" or "Associative" merging).
+These functions can also be used to tell RocksDB how to combine merge operands with _each other_ to form new merge operands (called "Partial" or "Associative" merging).
 
 For simplicity, we will temporarily ignore this concept of Partial vs. non-Partial merging.
 So we have provided a separate interface called AssociativeMergeOperator which encapsulates and hides all of the details around partial merging.
@@ -344,7 +344,7 @@ The MergeOperator interface is designed to support generality and also to exploi
 
 ### How do these methods work?
 
-On a high level, it should be noted that any call to DB::Put() or DB::Merge() does not necessarily force the value to be computed or the merge to occur immediately. RocksDB will more-or-less lazily decide when to actually apply the operations (e.g.: the next time the user calls Get(), or when the system decides to do its clean-up process called "Compaction"). This means that, when the MergeOperator is actually invoked, it may have several "stacked" operands that need to be applied. Hence, the MergeOperator::FullMerge() function is given an *existing_value and a list of operands that have been stacked. The MergeOperator should then apply the operands one-by-one (or in whatever optimized way the client decides so that the final *new_value is computed as if the operands were applied one-by-one).
+On a high level, it should be noted that any call to DB::Put() or DB::Merge() does not necessarily force the value to be computed or the merge to occur immediately. RocksDB will more-or-less lazily decide when to actually apply the operations (e.g.: the next time the user calls Get(), or when the system decides to do its clean-up process called "Compaction"). This means that, when the MergeOperator is actually invoked, it may have several "stacked" operands that need to be applied. Hence, the MergeOperator::FullMerge() function is given an *existing_value and a list of operands that have been stacked. The MergeOperator should then apply the operands one-by-one (or in whatever optimized way the client decides so that the final *new_value is computed _as if_ the operands were applied one-by-one).
 
 ### Partial Merge vs. Stacking
 
