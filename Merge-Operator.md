@@ -450,7 +450,7 @@ For AssociativeMergeOperator, the Merge() method follows the same "error" rules 
 # Review and Best Practices
 Altogether, we have described the Merge Operator, and how to use it. Here are a couple tips on when/how to use the MergeOperator and AssociativeMergeOperator depending on use-cases.
 
-# When to use merge
+## When to use merge
 
 If the following are true:
 * You have data that needs to be incrementally updated.
@@ -458,7 +458,7 @@ If the following are true:
 
 Then use one of the two Merge operators as specified in this wiki.
 
-# Associative Data
+## Associative Data
 
 If the following are true:
 * Your merge operands are formatted the same as your Put values, AND
@@ -466,20 +466,20 @@ If the following are true:
 
 Then use **AssociativeMergeOperator**.
 
-# Generic Merge
+## Generic Merge
 If either of the two associativity constraints do not hold, then use **MergeOperator**.
 
 If there are some times where it is okay to combine multiple operands into one (but not always):
 * Use **MergeOperator**
 * Have the PartialMerge() function return true in cases where the operands can be combined.
 
-# Tips
+## Tips
 
     **Multiplexing:** While a RocksDB DB object can only be passed 1 merge-operator at the time of construction, your user-defined merge operator class can behave differently depending on the data passed to it. The key, as well as the values themselves, will be passed to the merge operator; so one can encode different "operations" in the operands themselves, and get the MergeOperator to perform different functions accordingly.
 
     **Is my use-case Associative?:** If you are unsure of whether the "associativity" constraints apply to your use-case, you can ALWAYS use the generic MergeOperator. The AssociativeMergeOperator is a direct subclass of MergeOperator, so any use-case that can be solved with the AssociativeMergeOperator can be solved with the more generic MergeOperator. The AssociativeMergeOperator is mostly provided for convenience.
 
-# Useful Links
+## Useful Links
 
     Merge+Compaction Implementation Details: For RocksDB engineers who want to know how MergeOperator affects their code.
 
