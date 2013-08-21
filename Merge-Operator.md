@@ -1,4 +1,3 @@
-# Support Atomic Read-Modify-Write Operation for RocksDB
 This page describes the Atomic Read-Modify-Write operation in RocksDB, known as the "Merge" operation. It is an interface overview, aimed at the client or RocksDB user who has the questions: when and why should I use Merge; and how do I use Merge?
 
 For a more detailed analysis of the internal implementation of Merge, see the Merge Internal Implementation.
