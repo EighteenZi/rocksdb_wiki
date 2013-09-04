@@ -39,34 +39,28 @@ Fault Tolerance
 Rocksdb uses a checksum to detect corruptions in the storage. These checksums are for each block; a block is typically anywhere between 4K to 128K in size. A block, once written to storage, is never modified. Rocksdb will dynamically detect hardware support for checksum computations and avail that support wherever available. 
 
 Multithreaded Compactions
-Compactions are needed to remove multiple copies of the same key that can occur if an application overwrtes an existing key. Compactions also processes deletions of keys. Compactions can occur in multiple threads if configured appropriately. The overall throughput of a LSM database is directly related to the speed at which compaction can occur, especially when the data is stored in fast storage like SSD or RAM; otherwise it is an unstable system. For this reason, rocksdb can be configured to issue compaction requests from multiple threads concurrently. It is observed that sustained write rates increase by a factor of 10 with multi-threaded compaction when the database is on SSDs compared to single-threaded compactions.
+Compactions are needed to remove multiple copies of the same key that can occur if an application overwrites an existing key. Compactions also processes deletions of keys. Compactions can occur in multiple threads if configured appropriately. The overall throughput of a LSM database is directly related to the speed at which compaction can occur, especially when the data is stored in fast storage like SSD or RAM; otherwise it is an unstable system. Rocksdb can be configured to issue compaction requests from multiple threads concurrently. It is observed that sustained write rates can increase upto a factor of 10 with multi-threaded compaction when the database is on SSDs compared to single-threaded compactions.
 
-The 
-  * Puts
-  -- batch puts
-  -- disable wal
-  -- async puts, fsync and fdatasync
-  -- Iterators and snapshots
-  -- batch commit to transaction log and manifest updates
-  -- binary search for overlapping files for every level
-  checksums for reads (default false)
-  hardware assists
-  bloom filters
-  shared block cache
-  ReadOnly mode
+Level Style Compaction and Universal Style Compaction
+The entire database is stored in a bunch of files. When a memtable is full, its contents is written out to a file in Level-0. Rocksdb removes duplicates and overwritten keys in the memtable when it is flushed to a file in L0. Periodically, some files are read in and merged to form larger files. This is called Compaction. 
 
-**# Disk Format**
-  .sst files for data
-  .log files for trasactions
-  manifest_file for database versions
-  LOG* for server information logs
+In the Universal Style Compaction, a few files in L0 and merged and is written back into L0. In the Level Style Compactions, a few files in L0 are merged with the corresponding files in L1 and the output is written to new files in L1.
 
-**# Compactions**
-  -- multi-threaded
-  -- thread pool per environment
-  -- priority queues for merge sort
-  -- user defined hook for implementing ttl, sanity checks, etc
-  -- avoid compression for two levels, snappy, bzip, zlib
+There is a MANIFEST file in the database that records all the files that make up the database. The Compaction process adds new files and deletes existing files from the database, and it makes these operations persistent by recording them in the MANIFEST file. Transactions to be recorded in the MANIFEST file uses a batch-commit algorithm to amortize the cost of repeated syncs to the MANIFEST file.
+
+Compaction Filter
+There are times when an application would like to process keys at compaction time. For example, a database that has inherent support for Time-To-Live (ttl) can optionally remove keys that are expired. This can be done via a application defined Compaction Filter. The rocksdb Compaction Filter gives control to the application to modify the value of a key or to entirely drop a key as part of the compaction process.
+
+ReadOnly Mode
+There are times when an application wants to open a database for reading only. It can open the database in ReadOnly mode, the database guarantees that the application won't be able to modify anything in the database.
+
+Database Logs
+The rocksdb database software writes detailed logs to a file named LOG*. These are mostly used for debugging and analyzing a running system. There is a configuration to allow rolling this LOG at a specified periodicity.
+
+Data Compression
+Rocksdb supports snappy, zlib and bzip2 compression. rocksdb can be configured to support different compression algorithms at data in different levels. Typically, 90% of data in in the L-max level. A typical installation might configure no-compression for levels L0-L2, snappy compression for the mid levels and zlip compression for Lmax.
+
+
 
 **# Incremental Backups**
   GetLiveFiles
