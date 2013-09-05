@@ -60,12 +60,17 @@ The rocksdb database software writes detailed logs to a file named LOG*. These a
 Data Compression
 Rocksdb supports snappy, zlib and bzip2 compression. rocksdb can be configured to support different compression algorithms at data in different levels. Typically, 90% of data in in the L-max level. A typical installation might configure no-compression for levels L0-L2, snappy compression for the mid levels and zlip compression for Lmax.
 
+Backups, Incremental Backups and Replication
+Rocksdb has support for full backups and incremental backups. Rocksdb is an LSM database engine, so datafiles once created are never overwritten and this makes it easy to extract a list of file-names that correspond to a point-in-time snapshot of the database contents. The api DisableFileDeletions instructs rocksdb to not delete data files. Compactions will continue to occur, but files that are not needed by the database will not be deleted. An backup application can then invoke the api GetLiveFiles to retrieve the list of files and copy them to a backup location. Once the backup is complete, the application should invoke EnableFileDeletions; the database is now free to reclaim all the files that are not needed any more. 
 
+Incremental Backups and Replication needs to be able to find and tail all the recent changes to the database. The api GetUpdatesSince allows an application to tail the rocksdb transaction log. It can continuously fetch transactions from the rocksdb transaction log and apply them to a remote replica or a remote backup. 
 
-**# Incremental Backups**
-  GetLiveFiles
-  GetUpdatesSince
-    -- wals are archived
+A replication system typically wants to annotate each Put with some arbitrary metadata. This metadata maybe used to detect loops in the replication pipeline. It can also be used to timestamp and sequence transactions. For this purpose, rocksdb supports a api called PutLogData that an application can use to annotate each Put with metadata. This metadata is stored only in the transaction log and is not stored in the data (sst) files. The metadata inserted via PutLogData can be retrieved via the GetUpdatesSince api.
+
+rocksdb transaction logs are created in the database directory. When a log file is no longer needed, it is moved to the archive directory. The reason for the existence of the archive directory is because a replication stream that is falling behind might need to retrieve transactions from a log file that is way in the past. The api GetSortedWalFiles returns a list of all transaction log files.
+
+Support for multiple databases
+
 
 **# Environments**
   posix (production)
