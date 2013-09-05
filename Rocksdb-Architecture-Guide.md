@@ -83,4 +83,18 @@ There are a number of interesting tools that are used to support a database in p
 Tests
 There are a bunch of unit tests that test specific features of the database. The db_stress test is used to validate data correctness at scale.
 
+Support for External Compactions
+The performance of an LSM database has a significant dependency on the compaction algorithm and implementation. rocksdb has two supported compaction algorithms: LevelStyle and UniversalStyle. But we would like to enable the large community of developers to develop and experiment with other compaction policies. For this reason, rocksdb has appropriate hooks to switch off the inbuilt compaction algorithm and has other apis to allow an application to operate their own compaction algorithms. Options.disable_auto_compaction, if set, disables the inbuilt compaction algorithm. The GetLiveFilesMetaData api allows an external component to look at every data file in the database, decide on which data files to merge and compact, and the DeleteFile api allows it to delete data files that are deemed obsolete.
+
+Non-blocking IO
+Stackable DB
+Merge multiple memtables in ram
+pluggable memtables (three default ones)
+Merge Operator
+Compaction Filter
+
+ttl
+redis list
+
+
 ### Author: Dhruba Borthakur
