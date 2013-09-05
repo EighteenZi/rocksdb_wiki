@@ -52,9 +52,9 @@ Compaction Filter
 There are times when an application would like to process keys at compaction time. For example, a database that has inherent support for Time-To-Live (ttl) can optionally remove keys that are expired. This can be done via a application defined Compaction Filter. The rocksdb Compaction Filter gives control to the application to modify the value of a key or to entirely drop a key as part of the compaction process.
 
 ReadOnly Mode
-There are times when an application wants to open a database for reading only. It can open the database in ReadOnly mode, the database guarantees that the application won't be able to modify anything in the database.
+There are times when an application wants to open a database for reading only. It can open the database in ReadOnly mode, the database guarantees that the application won't be able to modify anything in the database.  
 
-Database Logs
+Database Debug Logs
 The rocksdb database software writes detailed logs to a file named LOG*. These are mostly used for debugging and analyzing a running system. There is a configuration to allow rolling this LOG at a specified periodicity.
 
 Data Compression
@@ -69,19 +69,18 @@ A replication system typically wants to annotate each Put with some arbitrary me
 
 rocksdb transaction logs are created in the database directory. When a log file is no longer needed, it is moved to the archive directory. The reason for the existence of the archive directory is because a replication stream that is falling behind might need to retrieve transactions from a log file that is way in the past. The api GetSortedWalFiles returns a list of all transaction log files.
 
-Support for multiple databases
+Support for multiple embedded databases in the same process
+A common use-case for applications that use rocksdb is that they inherently partition their data set into multiple logical partitions or shards. This technique is helpful for application load balancing and fast recovery from faults. This means that a single server process should be able to operate multiple rocksdb databases simultaneously. This is done via an environment object named Env. Among other things, a thread pool is associated with an Env. If applications want to share a common thread pool (for background compactions) among multiple database instances, then it should use the same Env object for opening those databases.
 
+Similarly, there is support for multiple database instances to share the same block cache.
 
-**# Environments**
-  posix (production)
-  hdfs environment (prototype)
+Block Cache -- Compressed and Uncompressed Data
+Rocksdb uses a LRU cache for blocks to serve reads. The block cache is partitions into two individual caches: the first one caches uncompressed blocks and the second one caches compressed blocks in RAM. If a compressed block cache is configured, then the database intelligently avoids caching data in the OS buffers.
 
-**# Tools and Tests**
-  sst_dump
-  manifest_dump
-  compact database, change number of levels
-  stress test
+Tools
+There are a number of interesting tools that are used to support a database in production. The sst_dump utility dumps all the keys-values in a sst file.  The ldb tool can put, get, scan the contents of a database. ldb can also dump contents of the MANIFEST, it can also be used to change the number of configured levels of the database. It can be used to manually compact a database.
 
-**# java api**
+Tests
+There are a bunch of unit tests that test specific features of the database. The db_stress test is used to validate data correctness at scale.
 
 ### Author: Dhruba Borthakur
