@@ -96,7 +96,9 @@ Memtable Pipelining. Rocksdb supports configuring an arbitrary number of memtabl
 
 Memtable Compaction. When a memtable is being flushed to storage, an inline-compaction process removes duplicate records from the output steam. Similarly, if an earlier put is hidden by a later delete, then the put is not written to the output file at all. This feature reduces the size of data on storage and write amplification greatly. This is an essential feature when rocksdb is used as a producer-consumer-queue, especially when the lifetime of an element in the queue is very short-lived.
 
-Merge Operator
+Merge Operator. Rockdb natively supports three types of records, a Put record, a Delete record and a Merge record. When a compaction process encounters a Merge record, it invokes a application-specified method called the Merge Operator. The Merge can combine multiple Put and Merge records into a single one. This is a powerful feature and allows applications that typically do read-modify-writes to completely avoid the reads. It allows an application to record the intent-of-the-operation as a Merge Record and the rocksdb compaction process lazily applies that intent to the original value. This feature is described in detail 
+
+
 Compaction Filter
 
 ttl
