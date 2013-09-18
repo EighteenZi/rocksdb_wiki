@@ -88,11 +88,14 @@ The performance of an LSM database has a significant dependency on the compactio
 
 Non-blocking database access: There are certain applications that are architected in such a way that they would like to retrieve data from the database only if that data retrieval call is non-blocking, i.e. the data retrieval call does not have to read in data from storage. Rocksdb caches a portion of the database in the block cache and these applications would like to retrieve the data only if it is found in this block cache. If this call does not find the data in the block cache then rocksdb returns an appropriate error code to the application. The application can then schedule a normal Get/Next operation understanding that fact that this data retrieval call could potentially block for IO from the storage (maybe in a different thread context).
 
-Stackable DB
+Stackable DB. Rocks come with a built-in wrapper-mechanism to layer additional functionality. This functionality is encapsulated by an api called StackableDB. For example, the time-to-live functionality is implemented by a StackableDB and is not part of the core rocksdb api. This approach keep the code modularized and clean.
 
+Pluggable Memtables. The default implementation of the memtable for rocksdb is a skiplist. The skiplist is an sorted set. The sorted set is a necessary construct when the workload interleaves writes with range-scans. But there are some applications that do not interleave their writes and scans and there are other applications that do not do range-scans altogether. For these applications, a sorted set might not provide the optimal performance. For this reason, rocksdb supports a pluggable api that allows an application to provide their own implementation of a memtable. There are three memtables that are part of the library: a skiplist memtable, a vector memtable and a prefix-hash memtable. A vector memtable is appropriate for bulk-loading data into the database. Every write inserts a new element at the end of the vector; when it is time to flush the memtable to storage the elements in the vector are sorted and written out to a file in L0. A prefix-hash memtable allows efficient processing of gets, puts and scans-within-a-key-prefix.
 
-Merge multiple memtables in ram
-pluggable memtables (three default ones)
+Memtable Pipelining. Rocksdb supports configuring an arbitrary number of memtables for a database. When a memtable is full it becomes a immutable memtable and a background thread starts flushing its contents to storage. Meanwhile, new writes continue to accumulate to a newly allocated memtable. If the newly allocated memtable is filled up to its limit, it too is converted to a immutable memtable and inserted into the flush pipeline. The background thread continues to flush all the pipelined immutable memtables to storage. This pipelining increases write throughput of rocksdb especially when it is operating on slow storage devices.
+
+Memtable Compaction. When a memtable is being flushed to storage, an inline-compaction process removes duplicate records from the output steam. Similarly, if an earlier put is hidden by a later delete, then the put is not written to the output file at all. This feature reduces the size of data on storage and write amplification greatly. This is an essential feature when rocksdb is used as a producer-consumer-queue, especially when the lifetime of an element in the queue is very short-lived.
+
 Merge Operator
 Compaction Filter
 
