@@ -1,1 +1,1 @@
-Welcome to the rocksdb wiki!
+[Architecture Guide](https://github.com/facebook/rocksdb/wiki/Rocksdb-Architecture-Guide)
