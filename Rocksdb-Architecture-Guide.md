@@ -80,12 +80,6 @@ Similarly, there is support for multiple database instances to share the same bl
 ### Block Cache -- Compressed and Uncompressed Data
 Rocksdb uses a LRU cache for blocks to serve reads. The block cache is partitions into two individual caches: the first one caches uncompressed blocks and the second one caches compressed blocks in RAM. If a compressed block cache is configured, then the database intelligently avoids caching data in the OS buffers.
 
-### Tools
-There are a number of interesting tools that are used to support a database in production. The sst_dump utility dumps all the keys-values in a sst file.  The ldb tool can put, get, scan the contents of a database. ldb can also dump contents of the MANIFEST, it can also be used to change the number of configured levels of the database. It can be used to manually compact a database.
-
-### Tests
-There are a bunch of unit tests that test specific features of the database. The db_stress test is used to validate data correctness at scale.
-
 ### Support for External Compaction Algorithms
 The performance of an LSM database has a significant dependency on the compaction algorithm and implementation. rocksdb has two supported compaction algorithms: LevelStyle and UniversalStyle. But we would like to enable the large community of developers to develop and experiment with other compaction policies. For this reason, rocksdb has appropriate hooks to switch off the inbuilt compaction algorithm and has other apis to allow an application to operate their own compaction algorithms. Options.disable_auto_compaction, if set, disables the inbuilt compaction algorithm. The GetLiveFilesMetaData api allows an external component to look at every data file in the database, decide on which data files to merge and compact, and the DeleteFile api allows it to delete data files that are deemed obsolete.
 
@@ -107,6 +101,12 @@ When a memtable is being flushed to storage, an inline-compaction process remove
 
 ### Merge Operator
 Rocksdb natively supports three types of records, a Put record, a Delete record and a Merge record. When a compaction process encounters a Merge record, it invokes a application-specified method called the Merge Operator. The Merge can combine multiple Put and Merge records into a single one. This is a powerful feature and allows applications that typically do read-modify-writes to completely avoid the reads. It allows an application to record the intent-of-the-operation as a Merge Record and the rocksdb compaction process lazily applies that intent to the original value. This feature is described in detail in [Merge Operator](https://github.com/facebook/rocksdb/wiki/Merge-Operator)
+
+## 4. Tools
+There are a number of interesting tools that are used to support a database in production. The sst_dump utility dumps all the keys-values in a sst file.  The ldb tool can put, get, scan the contents of a database. ldb can also dump contents of the MANIFEST, it can also be used to change the number of configured levels of the database. It can be used to manually compact a database.
+
+## 5. Tests
+There are a bunch of unit tests that test specific features of the database. The db_stress test is used to validate data correctness at scale.
 
 
 ##### Author: Dhruba Borthakur
