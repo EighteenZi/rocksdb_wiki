@@ -8,16 +8,17 @@ File format
     [data block 2]
     ...
     [data block N]
-    [meta block 1]
+    [meta block 1: filter block]           (see section: ["filter" Meta Block](#filter-meta-block))
+    [meta block 1: stats block]            (see section: ["Stats" Meta Block](#stats-meta-block))
     ...
-    [meta block K]
+    [meta block K: future extended block]  (we may add more meta blocks in the future)
     [metaindex block]
     [index block]
-    [Footer]        (fixed size; starts at file_size - sizeof(Footer))
+    [Footer]            (fixed size; starts at file_size - sizeof(Footer))
     <end_of_file>
 
 The file contains internal pointers.  Each such pointer is called
-a BlockHandle and contains the following information:
+a **BlockHandle** and contains the following information:
 
     offset:         varint64
     size:           varint64
@@ -28,25 +29,25 @@ for an explanation of varint64 format.
 (1) The sequence of key/value pairs in the file are stored in sorted
 order and partitioned into a sequence of data blocks.  These blocks
 come one after another at the beginning of the file.  Each data block
-is formatted according to the code in block_builder.cc, and then
+is formatted according to the code in `block_builder.cc`, and then
 optionally compressed.
 
 (2) After the data blocks we store a bunch of meta blocks.  The
 supported meta block types are described below.  More meta block types
 may be added in the future.  Each meta block is again formatted using
-block_builder.cc and then optionally compressed.
+`block_builder.cc` and then optionally compressed.
 
-(3) A "metaindex" block.  It contains one entry for every other meta
+(3) A `metaindex` block.  It contains one entry for every other meta
 block where the key is the name of the meta block and the value is a
-BlockHandle pointing to that meta block.
+`BlockHandle` pointing to that meta block.
 
-(4) An "index" block.  This block contains one entry per data block,
+(4) An `index` block.  This block contains one entry per data block,
 where the key is a string >= last key in that data block and before
 the first key in the successive data block.  The value is the
-BlockHandle for the data block.
+`BlockHandle` for the data block.
 
 (6) At the very end of the file is a fixed length footer that contains
-the BlockHandle of the metaindex and index blocks as well as a magic number.
+the `BlockHandle of the `metaindex` and index blocks as well as a magic number.
 
        metaindex_handle: char[p];      // Block handle for metaindex
        index_handle:     char[q];      // Block handle for index
@@ -54,7 +55,7 @@ the BlockHandle of the metaindex and index blocks as well as a magic number.
                                        // (40==2*BlockHandle::kMaxEncodedLength)
        magic:            fixed64;      // == 0xdb4775248b80fb57 (little-endian)
 
-"filter" Meta Block
+
 -------------------
 
 If a "FilterPolicy" was specified when the database was opened, a
