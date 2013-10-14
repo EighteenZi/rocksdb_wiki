@@ -8,8 +8,8 @@ File format
     [data block 2]
     ...
     [data block N]
-    [meta block 1: filter block]           (see section: ["filter" Meta Block](#filter-meta-block))
-    [meta block 1: stats block]            (see section: ["Stats" Meta Block](#stats-meta-block))
+    [meta block 1: filter block]           (see section: "filter" Meta Block)
+    [meta block 1: stats block]            (see section: "Stats" Meta Block)
     ...
     [meta block K: future extended block]  (we may add more meta blocks in the future)
     [metaindex block]
