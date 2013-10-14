@@ -14,11 +14,11 @@ File format
     [meta block K: future extended block]  (we may add more meta blocks in the future)
     [metaindex block]
     [index block]
-    [Footer]            (fixed size; starts at file_size - sizeof(Footer))
+    [Footer]                               (fixed size; starts at file_size - sizeof(Footer))
     <end_of_file>
 
 The file contains internal pointers.  Each such pointer is called
-a **BlockHandle** and contains the following information:
+a `BlockHandle` and contains the following information:
 
     offset:         varint64
     size:           varint64
