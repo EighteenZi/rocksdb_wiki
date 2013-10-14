@@ -3,23 +3,25 @@ This page is forked from leveldb's table format documentation: http://leveldb.go
 File format
 ===========
 
-  <beginning_of_file>
-  [data block 1]
-  [data block 2]
-  ...
-  [data block N]
-  [meta block 1]
-  ...
-  [meta block K]
-  [metaindex block]
-  [index block]
-  [Footer]        (fixed size; starts at file_size - sizeof(Footer))
-  <end_of_file>
+    <beginning_of_file>
+    [data block 1]
+    [data block 2]
+    ...
+    [data block N]
+    [meta block 1]
+    ...
+    [meta block K]
+    [metaindex block]
+    [index block]
+    [Footer]        (fixed size; starts at file_size - sizeof(Footer))
+    <end_of_file>
 
 The file contains internal pointers.  Each such pointer is called
 a BlockHandle and contains the following information:
-  offset:	    varint64
-  size:		    varint64
+
+    offset:         varint64
+    size:           varint64
+
 See https://developers.google.com/protocol-buffers/docs/encoding#varints
 for an explanation of varint64 format.
 
@@ -45,11 +47,12 @@ BlockHandle for the data block.
 
 (6) At the very end of the file is a fixed length footer that contains
 the BlockHandle of the metaindex and index blocks as well as a magic number.
-       metaindex_handle: char[p];    // Block handle for metaindex
-       index_handle:     char[q];    // Block handle for index
+
+       metaindex_handle: char[p];      // Block handle for metaindex
+       index_handle:     char[q];      // Block handle for index
        padding:          char[40-p-q]; // zeroed bytes to make fixed length
                                        // (40==2*BlockHandle::kMaxEncodedLength)
-       magic:            fixed64;    // == 0xdb4775248b80fb57 (little-endian)
+       magic:            fixed64;      // == 0xdb4775248b80fb57 (little-endian)
 
 "filter" Meta Block
 -------------------
