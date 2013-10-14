@@ -17,6 +17,8 @@ Newer versions of this software should be backward compatible, so that existing 
 
 ## 3. High Level Architecture
 
+rocksdb is a key-value store where keys and values are arbitrary byte streams. rocksdb organizes all data in sorted order and the common operations are Get(key), Put(key), Delete(key) and Scan(key).
+
 The two basic constructs of rocksdb are _memtable_, _sstfile_ and _logfile_. The _memtable_ is an in-memory data structure, new writes are inserted into the _memtable_ and are optionally written to the _logfile_. The _logfile_ is a sequentially written file on storage. When the _memtable_ fills up, it is flushed to a _sstfile_ on storage and the corresponding _logfile_ can be safely deleted.  The data in an _sstfile_ is kept sorted to facilitate easy lookup of keys. 
 
 ## 4. Features
