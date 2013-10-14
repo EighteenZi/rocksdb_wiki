@@ -12,10 +12,10 @@ All of the benchmarks are run on the same machine. Here are the details of the t
 
 # 2. Bulk Load
 
-Compare the time taken to load 1B keys into the database.
+Measure performance to load 1B keys into the database. The keys are inserted in random order.
 
-    rocksdb took 2:20 hours
-    leveldb took greater than 2 days (did not finish)
+    rocksdb:   2:20 hours
+    leveldb:   greater than 2 days (did not finish)
 
 Here are the command that were run to load the database into rocksdb
 
@@ -29,3 +29,14 @@ Here are the command(s) for loading the data into leveldb:
 
     echo "Bulk load database ...."
     wbs=268435456; r=1000000000; t=1; vs=800; cs=1048576; of=500000; ./db_bench --benchmarks=fillrandom --num=$r --threads=$t --value_size=$vs --cache_size=$cs --bloom_bits=10 --open_files=$of --db=/data/mysql/leveldb/test --compression_ratio=50 --write_buffer_size=$wbs --use_existing_db=0
+
+# 3. Write Performance
+
+Measure performance to overwrite 1B keys into the database. (The database was created first by inserting all the 1 B keys).
+
+    rocksdb xxx minutes  xxx ops/sec xxx MB/sec
+    leveldb yyy minutes  yyy ops/sec yyy MB/sec
+    
+Here are the commend that we ran on rocksdb to generate the above numbers.
+
+  
