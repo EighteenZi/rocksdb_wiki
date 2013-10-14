@@ -2,55 +2,54 @@ The ldb command line tool offers multiple data access and database admin command
 
 Example data access sequence:
 
-`
-$./ldb --db=/tmp/test_db --create_if_missing put a1 b1
-OK 
-`
+    $./ldb --db=/tmp/test_db --create_if_missing put a1 b1
+    OK 
 
-$ ./ldb --db=/tmp/test_db get a1
-b1
- 
-$ ./ldb --db=/tmp/test_db get a2
-Failed: NotFound:
 
-$ ./ldb --db=/tmp/test_db scan
-a1 : b1
+    $ ./ldb --db=/tmp/test_db get a1
+    b1
  
-$ ./ldb --db=/tmp/test_db scan --hex
-0x6131 : 0x6231
+    $ ./ldb --db=/tmp/test_db get a2
+    Failed: NotFound:
+
+    $ ./ldb --db=/tmp/test_db scan
+    a1 : b1
  
-$ ./ldb --db=/tmp/test_db put --key_hex 0x6132 b2
-OK
+    $ ./ldb --db=/tmp/test_db scan --hex
+    0x6131 : 0x6231
  
-$ ./ldb --db=/tmp/test_db scan
-a1 : b1
-a2 : b2
+    $ ./ldb --db=/tmp/test_db put --key_hex 0x6132 b2
+    OK
  
-$ ./ldb --db=/tmp/test_db get --value_hex a2
-0x6232
+    $ ./ldb --db=/tmp/test_db scan
+    a1 : b1
+    a2 : b2
  
-$ ./ldb --db=/tmp/test_db get --hex 0x6131
-0x6231
+    $ ./ldb --db=/tmp/test_db get --value_hex a2
+    0x6232
  
-$ ./ldb --db=/tmp/test_db batchput a3 b3 a4 b4
-OK
+    $ ./ldb --db=/tmp/test_db get --hex 0x6131
+    0x6231
  
-$ ./ldb --db=/tmp/test_db scan
-a1 : b1
-a2 : b2
-a3 : b3
-a4 : b4
+    $ ./ldb --db=/tmp/test_db batchput a3 b3 a4 b4
+    OK
  
-$ ./ldb --db=/tmp/test_db batchput "multiple words key" "multiple words value"
-OK
+    $ ./ldb --db=/tmp/test_db scan
+    a1 : b1
+    a2 : b2
+    a3 : b3
+    a4 : b4
  
-$ ./ldb --db=/tmp/test_db scan
-Created bg thread 0x7f4a1dbff700
-a1 : b1
-a2 : b2
-a3 : b3
-a4 : b4
-multiple words key : multiple words value
+    $ ./ldb --db=/tmp/test_db batchput "multiple words key" "multiple words value"
+    OK
+ 
+    $ ./ldb --db=/tmp/test_db scan
+    Created bg thread 0x7f4a1dbff700
+    a1 : b1
+    a2 : b2
+    a3 : b3
+    a4 : b4
+    multiple words key : multiple words value
 
 
 To dump an existing leveldb database in HEX:
