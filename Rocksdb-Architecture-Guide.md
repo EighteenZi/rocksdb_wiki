@@ -124,5 +124,7 @@ There are a number of interesting tools that are used to support a database in p
 ## 6. Tests
 There are a bunch of unit tests that test specific features of the database. The db_stress test is used to validate data correctness at scale.
 
+## 7. Performance
+Rocksdb performance is benchmarked via a utility called db_bench. db_bench is part of the rocksdb source code. Performance results of a few typical workloads are described [here](https://github.com/facebook/rocksdb/wiki/Performance-Benchmarks).
 
 ##### Author: Dhruba Borthakur
