@@ -1,13 +1,13 @@
 ## 1. Introduction
   
-The rocksdb project started at [Facebook](https://www.facebook.com/Engineering) as an experiment to  develop an efficient database software that can realize the full potential of storing data on fast storage, especially flash storage. It is a C++ library and can be used to store keys-and-values where keys and values are arbitrary size byte streams. It has support for atomic reads and atomic writes. It has highly flexible configurable settings that can be tuned to run on a variety of production environments: it can be configured to run on data on pure memory, flash, hard disks or on HDFS. It has support for various compression algorithms and good tools for production support and debugging. 
+The rocksdb project started at [Facebook](https://www.facebook.com/Engineering) as an experiment to  develop an efficient database software that can realize the full potential of storing data on fast storage ( especially flash storage) for server workloads. It is a C++ library and can be used to store keys-and-values where keys and values are arbitrary size byte streams. It has support for atomic reads and atomic writes. It has highly flexible configurable settings that can be tuned to run on a variety of production environments: it can be configured to run on data on pure memory, flash, hard disks or on HDFS. It has support for various compression algorithms and good tools for production support and debugging. 
   
 Rocksdb borrows significant code from the open source [leveldb](https://code.google.com/p/leveldb/) project as well as significant ideas from [Apache HBase](http://hbase.apache.org/). It also builds upon code and ideas that were built at Facebook before the birth of rocksdb.
 
 ## 2. Assumptions and Goals
 
 ### Performance:
-The primary design point for rocksdb is that it should be performant for fast storage. It should be able to exploit the full potential of high read/write rates offered by flash or RAM-memory subsystems.  It should support efficient point lookups as well as range scans. It should be configurable to support high random-read workloads, high update workloads or a combination of both.
+The primary design point for rocksdb is that it should be performant for fast storage and for server workloads. It should be able to exploit the full potential of high read/write rates offered by flash or RAM-memory subsystems.  It should support efficient point lookups as well as range scans. It should be configurable to support high random-read workloads, high update workloads or a combination of both.
 
 ### Production support:
 Rocksdb should be designed in such a way that it has built-in support for tools and utilities that help deployment and debugging in production environments. Most major parameters should be fully tunable so that it can be used by different applications on different hardware.
