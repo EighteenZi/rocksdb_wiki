@@ -1,4 +1,4 @@
-This page is forked from leveldb's table format documentation: http://leveldb.googlecode.com/svn/trunk/doc/table_format.txt. This article reflects the changes we have made during the development of rocksdb.
+This page is forked from leveldb's document on [table format](http://leveldb.googlecode.com/svn/trunk/doc/table_format.txt). This article reflects the changes we have made during the development of rocksdb.
 
 ### File format
 
@@ -22,7 +22,7 @@ a `BlockHandle` and contains the following information:
     offset:         varint64
     size:           varint64
 
-See https://developers.google.com/protocol-buffers/docs/encoding#varints
+See [this document](https://developers.google.com/protocol-buffers/docs/encoding#varints)
 for an explanation of varint64 format.
 
 (1) The sequence of key/value pairs in the file are stored in sorted
@@ -41,12 +41,12 @@ block where the key is the name of the meta block and the value is a
 `BlockHandle` pointing to that meta block.
 
 (4) An `index` block.  This block contains one entry per data block,
-where the key is a string >= last key in that data block and before
+where the key is a string `>=` last key in that data block and before
 the first key in the successive data block.  The value is the
 `BlockHandle` for the data block.
 
 (6) At the very end of the file is a fixed length footer that contains
-the `BlockHandle of the `metaindex` and index blocks as well as a magic number.
+the `BlockHandle` of the `metaindex` and index blocks as well as a magic number.
 
        metaindex_handle: char[p];      // Block handle for metaindex
        index_handle:     char[q];      // Block handle for index
@@ -54,7 +54,7 @@ the `BlockHandle of the `metaindex` and index blocks as well as a magic number.
                                        // (40==2*BlockHandle::kMaxEncodedLength)
        magic:            fixed64;      // == 0xdb4775248b80fb57 (little-endian)
 
-#### "filter" Meta Block
+#### `Filter` Meta Block
 
 If a "FilterPolicy" was specified when the database was opened, a
 filter block is stored in each table.  The "metaindex" block contains
@@ -94,7 +94,7 @@ The filter block is formatted as follows:
 The offset array at the end of the filter block allows efficient
 mapping from a data block offset to the corresponding filter.
 
-#### "stats" Meta Block
+#### `Stats` Meta Block
 
 This meta block contains a bunch of stats.  The key is the name
 of the statistic.  The value contains the statistic.
@@ -117,4 +117,4 @@ By default, each table provides the following statistics.
      number of entries
      number of data blocks
 
-TODO(kailiu) Rocksdb also providers users the "callback" to collect their interested statistics about this table.
+TODO(kailiu): Rocksdb also providers users the "callback" to collect their interested statistics about this table.
