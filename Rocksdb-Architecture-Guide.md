@@ -36,13 +36,13 @@ A Snapshot api allows an application to create a point-in-time view of a databas
 Snapshots are not persisted across database restarts: a reload of the rocksdb library (via a server restart) would release all pre-existing snapshots.
 
 ### Prefix Iterators
-Most LSM engines cannot support an efficient RangeScan api because it needs to look into every data file. But most applications do not do pure-random scans of key ranges in the database; instead applications typically scan within a key-prefix. Rocksdb uses this to its advantage. There is a PrefixTransform api that allows an application to specify a key-prefix. Rocksdb uses this to store blooms for this prefix and can avoid looking into data files when a RangeScan is performed within that prefix. 
+Most LSM engines cannot support an efficient RangeScan api because it needs to look into every data file. But most applications do not do pure-random scans of key ranges in the database; instead applications typically scan within a key-prefix. Rocksdb uses this to its advantage. Applications can configure a prefix_extractor to specify a key-prefix. Rocksdb uses this to store blooms for every key-prefix. A iterator that specifies a prefix (via ReadOptions) will use these bloom bits to avoid looking into data files that do not contain keys with the specified key-prefix.
 
 ### Updates
 There is a Put api that can insert a single key-value to the database. A WriteBatch api allows multiple keys-values to be inserted atomically into the database. The database guarantees that all the keys-values in a single WriteBatch call will either be inserted into the database or none of them will be inserted into the database. 
 
 ### Persistency
-Rocksdb has a transaction log. All Puts are stored in a in-memory buffer called the memtable as well as optionally inserted into a transaction log. Each Put has a bunch of flags specified via WriteOptions. The WriteOptions can specify whether the Put should be inserted into the transaction log. Also, the WriteOptions can specify whether a sync call is issued to the transaction log before a Put is declared to be committed. 
+Rocksdb has a transaction log. All Puts are stored in a in-memory buffer called the memtable as well as optionally inserted into a transaction log. Each Put has a set of flags specified via WriteOptions. The WriteOptions can specify whether the Put should be inserted into the transaction log. Also, the WriteOptions can specify whether a sync call is issued to the transaction log before a Put is declared to be committed. 
 
 Internally, rocksdb uses a batch-commit mechanism to batch transactions into the transaction log so that it can potentially commit multiple transactions using a single sync call.
 
