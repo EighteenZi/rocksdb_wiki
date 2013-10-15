@@ -479,4 +479,3 @@ If there are some times where it is okay to combine multiple operands into one (
 
 ## Useful Links
 * [Merge+Compaction Implementation Details](Merge-Operator Implementation): For RocksDB engineers who want to know how MergeOperator affects their code.
-* [Merge Benchmarks and Performance](Merge-Operator Benchmarks): To understand the performance benefits of using Merge under different use-cases.
