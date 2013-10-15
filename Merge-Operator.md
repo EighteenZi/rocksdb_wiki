@@ -1,7 +1,7 @@
 This page describes the Atomic Read-Modify-Write operation in RocksDB, known as the "Merge" operation. It is an interface overview, aimed at the client or RocksDB user who has the questions: when and why should I use Merge; and how do I use Merge?
 
 # Why
-RocksDB is a high-performance embedded persistent key-value store. It traditionally provides three simple operations Get, Put and Delete to allow an elegant Lookup-table-like interface. [https://github.com/facebook/rocksdb/blob/master/include/leveldb/db.h](https://github.com/facebook/rocksdb/blob/master/include/leveldb/db.h)
+RocksDB is a high-performance embedded persistent key-value store. It traditionally provides three simple operations Get, Put and Delete to allow an elegant Lookup-table-like interface. [https://github.com/facebook/rocksdb/blob/master/include/rocksdb/db.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/db.h)
 
 Often times, it's a common pattern to update an existing value in some ways. To do this in rocksdb, the client would have to read (Get) the existing value, modify it and then write (Put) it back to the db. Let's look at a concrete example.
 
