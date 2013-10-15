@@ -104,6 +104,6 @@ of the statistic.  The value contains the statistic.
   * **data size**: the total size of all data blocks. 
   * **index size**: the size of the index block.
   * **raw key size**: the size of all keys before any processes.
-  * **raw value size**: he size of all value before any processes.
+  * **raw value size**: the size of all value before any processes.
   * **number of entries**
   * **number of data blocks**
