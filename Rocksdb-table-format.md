@@ -1,7 +1,6 @@
 This page is forked from leveldb's table format documentation: http://leveldb.googlecode.com/svn/trunk/doc/table_format.txt. This article reflects the changes we have made during the development of rocksdb.
 
-File format
-===========
+### File format
 
     <beginning_of_file>
     [data block 1]
@@ -55,8 +54,7 @@ the `BlockHandle of the `metaindex` and index blocks as well as a magic number.
                                        // (40==2*BlockHandle::kMaxEncodedLength)
        magic:            fixed64;      // == 0xdb4775248b80fb57 (little-endian)
 
-
--------------------
+#### "filter" Meta Block
 
 If a "FilterPolicy" was specified when the database was opened, a
 filter block is stored in each table.  The "metaindex" block contains
@@ -96,14 +94,27 @@ The filter block is formatted as follows:
 The offset array at the end of the filter block allows efficient
 mapping from a data block offset to the corresponding filter.
 
-"stats" Meta Block
-------------------
+#### "stats" Meta Block
 
 This meta block contains a bunch of stats.  The key is the name
 of the statistic.  The value contains the statistic.
-  * **data size**: the total size of all data blocks. 
-  * **index size**: the size of the index block.
-  * **raw key size**: the size of all keys before any processes.
-  * **raw value size**: the size of all value before any processes.
-  * **number of entries**
-  * **number of data blocks**
+
+The stats block is formatted as follows:
+    
+     [stats1]    (Each statistic is a key/value pair)
+     [stats2]
+     ...
+     [statsN]
+   
+Statistics are guaranteed to be sorted with no duplication.
+
+By default, each table provides the following statistics.
+
+     data size               // the total size of all data blocks. 
+     index size              // the size of the index block.
+     raw key size            // the size of all keys before any processing.
+     raw value size          // the size of all value before any processing.
+     number of entries
+     number of data blocks
+
+TODO(kailiu) Rocksdb also providers users the "callback" to collect their interested statistics about this table.
