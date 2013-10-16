@@ -54,7 +54,7 @@ Here are the command(s) for loading the data into leveldb:
 
 Measure performance to overwrite 1B keys into the database. The database was first created by sequentially inserting all the 1 B keys. The results here do not measure the sequential-insertion phase, it measures only second part of the test that overwrites 1 B keys in random order.
 
-    rocksdb: 15 hours 38 minutes 56.295 micros/op 17763 ops/sec 13.8 MB/s
+    rocksdb: 15 hours 38 minutes; 56.295 micros/op 17763 ops/sec 13.8 MB/s; P99.99: 11636.26 micros
     leveldb: 
     
 Here are the commands to overwrite 1 B keys in rocksdb:
