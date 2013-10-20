@@ -16,7 +16,7 @@ All of the benchmarks are run on the same machine. Here are the details of the t
 Measure performance to load 1B keys into the database. The keys are inserted in random order. The database is empty at the beginning of this benchmark run and gradually fills up. No data is being read when the data load is in progress. 
 
     rocksdb:   103 minutes, 80 MBytes/sec (total data size 481 GB, 1 billion key-values)
-    leveldb:   many many days (in 24 hours it inserted only 2 million keys) 
+    leveldb:   many many days (in 24 hours it inserted only 2 million key-values) 
 
 Rocksdb was configured to first load all the data in L0 with compactions switched off and nd then it made a second pass over the data to merge-sort all the files in L0 into sorted files in L1. Leveldb is very slow because of high write amplification. Here are the command(s) for loading the data into rocksdb
 
@@ -54,8 +54,8 @@ Here are the command(s) for loading the data into leveldb:
 
 Measure performance to overwrite 1B keys into the database. The database was first created by sequentially inserting all the 1 B keys. The results here do not measure the sequential-insertion phase, it measures only second part of the test that overwrites 1 B keys in random order.
 
-    rocksdb: 15 hours 38 minutes; 56.295 micros/op 17763 ops/sec 13.8 MB/s; P99.99: 11636.26 micros
-    leveldb: 
+    rocksdb: 15 hours 38 min (1 billion keys); 56.295 micros/op 17K ops/sec 13.8 MB/s; P99.99: 11636.26 micros
+    leveldb: many many days (in 116 hours, it overwrite 662 million keys out of 1 billion keys)
     
 Here are the commands to overwrite 1 B keys in rocksdb:
 
