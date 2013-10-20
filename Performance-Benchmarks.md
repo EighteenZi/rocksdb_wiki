@@ -8,7 +8,6 @@ All of the benchmarks are run on the same machine. Here are the details of the t
 * Machine has 144 GB of RAM
 * Operating System Linux 2.6.38.4
 * 1G rocksdb block cache
-* snappy compression enabled
 * 1 Billion keys; each key is of size 10 bytes, each value is of size 800 bytes
 
 # 2. Bulk Load of keys in Random Order
@@ -57,7 +56,7 @@ Measure performance to overwrite 1B keys into the database. The database was fir
     rocksdb: 15 hours 38 min (1 billion keys); 56.295 micros/op 17K ops/sec 13.8 MB/s; P99.99: 11636.26 micros
     leveldb: many many days (in 5 days it overwrote only 662 million keys out of 1 billion keys)
     
-Rocksdb was configured with 20 compaction threads. These threads can simultaneously compact non-overlapping key ranges in the same or different levels. Rocksdb was also configured for a 1TB database by setting the number of levels to 6 so that write amplification is reduced. L0-L1 compactions were given priority to reduce stalls. Snappy compression was enabled only for levels 2 and higher so that L0 compactions can occur faster. Files were configured to be 64 MB in size so that frequent fsyncs after creation of newly compacted files are reduced. Here are the commands to overwrite 1 B keys in rocksdb:
+Rocksdb was configured with 20 compaction threads. These threads can simultaneously compact non-overlapping key ranges in the same or different levels. Rocksdb was also configured for a 1TB database by setting the number of levels to 6 so that write amplification is reduced. L0-L1 compactions were given priority to reduce stalls. zlib compression was enabled only for levels 2 and higher so that L0 compactions can occur faster. Files were configured to be 64 MB in size so that frequent fsyncs after creation of newly compacted files are reduced. Here are the commands to overwrite 1 B keys in rocksdb:
 
     echo "Overwriting the 1B keys in database in random order...."
     bpl=10485760;overlap=10;mcz=2;del=300000000;levels=6;ctrig=4; delay=8; stop=12; wbn=3; mbc=20; mb=67108864;wbs=134217728; dds=0; sync=0; r=1000000000; t=1; vs=800; bs=65536; cs=1048576; of=500000; si=1000000; ./db_bench --benchmarks=overwrite --disable_seek_compaction=1 --mmap_read=0 --statistics=1 --histogram=1 --num=$r --threads=$t --value_size=$vs --block_size=$bs --cache_size=$cs --bloom_bits=10 --cache_numshardbits=4 --open_files=$of --verify_checksum=1 --db=/data/mysql/leveldb/test --sync=$sync --disable_wal=1 --compression_type=zlib --stats_interval=$si --compression_ratio=50 --disable_data_sync=$dds --write_buffer_size=$wbs --target_file_size_base=$mb --max_write_buffer_number=$wbn --max_background_compactions=$mbc --level0_file_num_compaction_trigger=$ctrig --level0_slowdown_writes_trigger=$delay --level0_stop_writes_trigger=$stop --num_levels=$levels --delete_obsolete_files_period_micros=$del --min_level_to_compress=$mcz --max_grandparent_overlap_factor=$overlap --stats_per_interval=1 --max_bytes_for_level_base=$bpl --use_existing_db=1
