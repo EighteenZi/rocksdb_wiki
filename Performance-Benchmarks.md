@@ -52,7 +52,7 @@ Here are the command(s) for loading the data into leveldb:
 
 # 4. Write Performance
 
-Measure performance to overwrite 1B keys into the database. The database was first created by sequentially inserting all the 1 B keys. The results here do not measure the sequential-insertion phase, it measures only second part of the test that overwrites 1 B keys in random order.
+Measure performance to overwrite 1B keys into the database. The database was first created by sequentially inserting all the 1 B keys. The results here do not measure the sequential-insertion phase, it measures only second part of the test that overwrites 1 B keys in random order. The test was run with the Write-Ahead-Log (WAL) enabled but fsync on commit was not done to the WAL.
 
     rocksdb: 15 hours 38 min (1 billion keys); 56.295 micros/op 17K ops/sec 13.8 MB/s; P99.99: 11636.26 micros
     leveldb: many many days (in 5 days it overwrote only 662 million keys out of 1 billion keys)
