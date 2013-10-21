@@ -51,7 +51,7 @@ Here are the command(s) for loading the data into leveldb:
 
 # 4. Write Performance
 
-Measure performance to overwrite 1B keys into the database. The database was first created by sequentially inserting all the 1 B keys. The results here do not measure the sequential-insertion phase, it measures only second part of the test that overwrites 1 B keys in random order. The test was run with the Write-Ahead-Log (WAL) enabled but fsync on commit was not done to the WAL.
+Measure performance to randomly overwrite 1B keys into the database. The database was first created by sequentially inserting all the 1 B keys. The results here do not measure the sequential-insertion phase, it measures only second part of the test that overwrites 1 B keys in random order. The test was run with the Write-Ahead-Log (WAL) enabled but fsync on commit was not done to the WAL.
 
     rocksdb: 15 hours 38 min (1 billion keys); 56.295 micros/op 17K ops/sec 13.8 MB/s; P99.99: 11636.26 micros
     leveldb: many many days (in 5 days it overwrote only 662 million keys out of 1 billion keys)
@@ -73,7 +73,7 @@ Measure random read performance of a database with 1 Billion keys, each  key is 
     rocksdb: 
     leveldb:
 
-Data was first loaded into the database by sequentially writing all the 1B keys to the database. Once the load is complete, the benchmark randomly picks a key and issues a read request. The above measure measurement does not include the data loading part, it measures only the part that issues the random reads to database. The reason rocksdb is faster is because it does not use mmaped IO because mmaped IOs on some linux platforms are known to be slow. Also, rocksdb shards the block cache into 64 parts to reduce lock contention.
+Data was first loaded into the database by sequentially writing all the 1B keys to the database. Once the load is complete, the benchmark randomly picks a key and issues a read request. The above measure measurement does not include the data loading part, it measures only the part that issues the random reads to database. The reason rocksdb is faster is because it does not use mmaped IO because mmaped IOs on some linux platforms are known to be slow. Also, rocksdb shards the block cache into 64 parts to reduce lock contention. rocksdb is configured to avoid compactions triggered by seeks whereas leveldb does seek-compaction for this workload.
 
 Here are the commands used to run the benchmark with rocksdb:
     
