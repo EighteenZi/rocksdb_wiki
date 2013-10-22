@@ -7,7 +7,7 @@ Rocksdb borrows significant code from the open source [leveldb](https://code.goo
 ## 2. Assumptions and Goals
 
 ### Performance:
-The primary design point for rocksdb is that it should be performant for fast storage and for server workloads. It should be able to exploit the full potential of high read/write rates offered by flash or RAM-memory subsystems.  It should support efficient point lookups as well as range scans. It should be configurable to support high random-read workloads, high update workloads or a combination of both.
+The primary design point for rocksdb is that it should be performant for fast storage and for server workloads. It should be able to exploit the full potential of high read/write rates offered by flash or RAM-memory subsystems.  It should support efficient point lookups as well as range scans. It should be configurable to support high random-read workloads, high update workloads or a combination of both. Its architecture should support easy tuning of Read Amplification, Write Amplification and Space Amplification.
 
 ### Production Support:
 Rocksdb should be designed in such a way that it has built-in support for tools and utilities that help deployment and debugging in production environments. Most major parameters should be fully tunable so that it can be used by different applications on different hardware.
