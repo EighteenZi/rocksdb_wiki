@@ -55,7 +55,7 @@ Measure performance to randomly overwrite 1B keys into the database. The databas
 
     rocksdb: 15 hours 38 min;  56.295 micros/op, 17K ops/sec,  13.8 MB/sec, P99.99: 11636.26 micros
     leveldb: many many days;  600 micros/op,     1.6K ops/sec, 1.3 MB/sec
-              (in 5 days it overwrote only 662 million keys out of 1 billion keys)
+              (in 5 days it overwrote only 662 million out of 1 billion keys, after which I killed the test)
     
 Rocksdb was configured with 20 compaction threads. These threads can simultaneously compact non-overlapping key ranges in the same or different levels. Rocksdb was also configured for a 1TB database by setting the number of levels to 6 so that write amplification is reduced. L0-L1 compactions were given priority to reduce stalls. zlib compression was enabled only for levels 2 and higher so that L0 compactions can occur faster. Files were configured to be 64 MB in size so that frequent fsyncs after creation of newly compacted files are reduced. Here are the commands to overwrite 1 B keys in rocksdb:
 
