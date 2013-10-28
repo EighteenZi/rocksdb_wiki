@@ -10,6 +10,7 @@ The goal of these benchmark is to demonstrate the benefit of Merge operators on 
 
 # Update random benchmark
 We ran update random benchmark that executes 50.000.000 iterations of:
+
 1. Read a random key
 2. Write a new value to a random key
 
@@ -25,6 +26,7 @@ Here is the result of the benchmark:
 
 # Merge operator update random
 Using merge operator, we are able to perform read-modify-write using only one operator. In this benchmark, we did 50.000.000 iterations of:
+
 * Using "uint64add" merge operator, read a random key, add 1, write a random key
 
 As in previous benchmark, each value was 8 bytes and Write Ahead Log was turned off.
