@@ -9,7 +9,7 @@ We ran the benchmark on the following machine:
 The goal of these benchmark is to demonstrate the benefit of Merge operators on read-modify-write workloads, e.g. counters.
 
 # Update random benchmark
-We ran update random benchmark that executes 50.000.000 iterations of:
+We ran "update random" benchmark that executes 50.000.000 iterations of:
 
 1. Read a random key
 2. Write a new value to a random key
