@@ -14,7 +14,7 @@ We ran update random benchmark that executes 50.000.000 iterations of:
 1. Read a random key
 2. Write a new value to a random key
 
-Each value was 8 bytes big, to simulate uint64_t counter. Write Ahead Log was turned off.
+Each value was 8 bytes, simulating uint64_t counter. Write Ahead Log was turned off.
 
 Here are the exact benchmark parameters we used:
 
