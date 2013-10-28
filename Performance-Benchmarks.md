@@ -56,7 +56,7 @@ Here are the command(s) for loading the data into leveldb:
 
 Measure performance to randomly overwrite 1B keys into the database. The database was first created by sequentially inserting all the 1 B keys. The results here do not measure the sequential-insertion phase, it measures only second part of the test that overwrites 1 B keys in random order. The test was run with the Write-Ahead-Log (WAL) enabled but fsync on commit was not done to the WAL.
 
-    rocksdb: 15 hours 38 min;  56.295 micros/op, 17K ops/sec,  13.8 MB/sec, P99.99: 11636.26 micros
+    rocksdb: 15 hours 38 min;  56.295 micros/op, 17K ops/sec,  13.8 MB/sec
     leveldb: many many days;  600 micros/op,     1.6K ops/sec, 1.3 MB/sec
               (in 5 days it overwrote only 662 million out of 1 billion keys, after which I killed the test)
     
@@ -74,8 +74,8 @@ Here are the commands to overwrite 1 B keys in leveldb:
 
 Measure random read performance of a database with 1 Billion keys, each  key is 10 bytes and value is 800 bytes. Rocksdb and leveldb were both configured with a block size of 4 KB. Data compression is not enabled. There were 32 threads in the benchmark application issuing random reads to the database. 
 
-    rocksdb:  70 hours,   8 micros/op, 126K ops/sec
-    leveldb: 102 hours, 370 micros/op, 2.7K ops/sec
+    rocksdb:  70 hours,  8 micros/op, 126K ops/sec
+    leveldb: 102 hours, 12 micros/op,  83K ops/sec
 
 Data was first loaded into the database by sequentially writing all the 1B keys to the database. Once the load is complete, the benchmark randomly picks a key and issues a read request. The above measure measurement does not include the data loading part, it measures only the part that issues the random reads to database. The reason rocksdb is faster is because it does not use mmaped IO because mmaped IOs on some linux platforms are known to be slow. Also, rocksdb shards the block cache into 64 parts to reduce lock contention. rocksdb is configured to avoid compactions triggered by seeks whereas leveldb does seek-compaction for this workload.
 
