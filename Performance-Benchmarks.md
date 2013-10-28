@@ -74,8 +74,8 @@ Here are the commands to overwrite 1 B keys in leveldb:
 
 Measure random read performance of a database with 1 Billion keys, each  key is 10 bytes and value is 800 bytes. Rocksdb and leveldb were both configured with a block size of 4 KB. Data compression is not enabled. There were 32 threads in the benchmark application issuing random reads to the database. 
 
-    rocksdb: 
-    leveldb: 102 hours, 370.829 micros/op, 2.7K ops/sec, 2.2MB/sec
+    rocksdb:  70 hours,   8 micros/op, 126K ops/sec
+    leveldb: 102 hours, 370 micros/op, 2.7K ops/sec
 
 Data was first loaded into the database by sequentially writing all the 1B keys to the database. Once the load is complete, the benchmark randomly picks a key and issues a read request. The above measure measurement does not include the data loading part, it measures only the part that issues the random reads to database. The reason rocksdb is faster is because it does not use mmaped IO because mmaped IOs on some linux platforms are known to be slow. Also, rocksdb shards the block cache into 64 parts to reduce lock contention. rocksdb is configured to avoid compactions triggered by seeks whereas leveldb does seek-compaction for this workload.
 
