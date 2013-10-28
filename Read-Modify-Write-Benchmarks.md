@@ -25,9 +25,9 @@ Here is the result of the benchmark:
     TODO
 
 # Merge operator update random
-Using merge operator, we are able to perform read-modify-write using only one operator. In this benchmark, we did 50.000.000 iterations of:
+Using merge operator, we are able to perform read-modify-write using only one operator. In this benchmark, we performed 50.000.000 iterations of:
 
-* Using "uint64add" merge operator, read a random key, add 1, write a random key
+* Execute "uint64add" merge operator on a random key, which adds 1 to the value associated with the key
 
 As in previous benchmark, each value was 8 bytes and Write Ahead Log was turned off.
 
