@@ -6,7 +6,7 @@ We ran the benchmark on the following machine:
 * 144GB RAM
 * Linux 3.2.45
 
-The goal of these benchmark is to demonstrate the benefit of Merge operators on read-modify-write workloads, e.g. counters.
+The goal of these benchmark is to demonstrate the benefit of Merge operators on read-modify-write workloads, e.g. counters. Both benchmarks were executed using a single thread.
 
 # Update random benchmark
 We ran "update random" benchmark that executes 50.000.000 iterations of:
