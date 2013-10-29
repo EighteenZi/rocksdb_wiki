@@ -22,7 +22,8 @@ Here are the exact benchmark parameters we used:
 
 Here is the result of the benchmark:
 
-    TODO
+   29.852 micros/op 33498 ops/sec; ( updates:50000000 found:45003817)
+   Total time 248 minutes and 46 seconds
 
 # Merge operator update random
 Using merge operator, we are able to perform read-modify-write using only one operator. In this benchmark, we performed 50.000.000 iterations of:
