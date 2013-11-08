@@ -15,4 +15,4 @@ for (iter.Seek(prefix); iter.Valid() && iter.key().startswith(prefix); iter.Next
 
 You can reuse the iterator for seeking to other prefixes, which we strongly encourage since creating iterators is very costly. However, keep in mind that iterators reflect the state of the database when they were created. You will not see new updates when you Seek() to a new prefix.
 
-SeekToFirst() or SeekToLast() calls on prefix iterators are not supported. If you need total ordering anyway, you can set ReadOptions::total_order to true. This operation is slow on DBs opened with prefix_extractor, but will provide you with total ordering within keys. You are able to do both SeekToFirst() and SeekToFirst() on iterators created with total_order = true.
+SeekToFirst() or SeekToLast() calls on prefix iterators are not supported. If you need total ordering anyway, you can set ReadOptions::total_order to true. This operation is slow on DBs opened with prefix_extractor, but will provide you with total ordering within keys. You are able to do both SeekToFirst() and SeekToLast() on iterators created with total_order = true.
