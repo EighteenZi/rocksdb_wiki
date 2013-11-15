@@ -26,7 +26,7 @@ The format of an _sstfile_ is described in more details [here](https://github.co
 ## 4. Features
 
 ### Gets, Iterators and Snapshots
-Rocksdb is a data store that stores arbitrary keys and values. The keys and values are treated as pure byte streams. There is no limit to the size of a key or a value. There is a `Get` api that allows an appliaction to fetch a single key-value from the database. A `MultiGet` api allows an application to retrieve  a bunch of keys from the database, all the keys-values returned via a `MultiGet` call are consistent with one-another.
+Rocksdb is a data store that stores arbitrary keys and values. The keys and values are treated as pure byte streams. There is no limit to the size of a key or a value. There is a `Get` api that allows an application to fetch a single key-value from the database. A `MultiGet` api allows an application to retrieve  a bunch of keys from the database, all the keys-values returned via a `MultiGet` call are consistent with one-another.
 
 All data in the database is logically arranged in sorted order. An application can specify a Key-Comparison method that specifies a total ordering of keys. An `Iterator` api allows an application to do a `RangeScan` on the database. The `Iterator` can seek to a specified key and then the application can start scanning one key at a time from that point. The `Iterator` api can also be used to do a reverse iteration of the keys in the database. A consistent-point-in-time view of the database is created when the Iterator is created. Thus, all keys returned via the Iterator are from a consistent view of the database.
 
