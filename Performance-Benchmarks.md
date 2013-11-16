@@ -18,7 +18,7 @@ The following benchmark results compare the performance of rocksdb compared to [
 Measure performance to load 1B keys into the database. The keys are inserted in random order. The database is empty at the beginning of this benchmark run and gradually fills up. No data is being read when the data load is in progress. 
 
     rocksdb:   103 minutes, 80 MB/sec (total data size 481 GB, 1 billion key-values)
-    leveldb:   many many days (in 24 hours it inserted only 2 million key-values) 
+    leveldb:   many many days (in 20 hours it inserted only 200 million key-values) 
 
 Rocksdb was configured to first load all the data in L0 with compactions switched off and using an unsorted vector memtable. Then it made a second pass over the data to merge-sort all the files in L0 into sorted files in L1. Leveldb is very slow because of high write amplification. Here are the command(s) for loading the data into rocksdb
 
