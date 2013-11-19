@@ -8,7 +8,7 @@ This page is forked from leveldb's document on [table format](http://leveldb.goo
     ...
     [data block N]
     [meta block 1: filter block]           (see section: "filter" Meta Block)
-    [meta block 1: stats block]            (see section: "Stats" Meta Block)
+    [meta block 1: stats block]            (see section: "properties" Meta Block)
     ...
     [meta block K: future extended block]  (we may add more meta blocks in the future)
     [metaindex block]
@@ -94,27 +94,28 @@ The filter block is formatted as follows:
 The offset array at the end of the filter block allows efficient
 mapping from a data block offset to the corresponding filter.
 
-#### `Stats` Meta Block
+#### `Properties` Meta Block
 
-This meta block contains a bunch of stats.  The key is the name
-of the statistic.  The value contains the statistic.
+This meta block contains a bunch of properties.  The key is the name
+of the property.  The value value the property.
 
 The stats block is formatted as follows:
     
-     [stats1]    (Each statistic is a key/value pair)
-     [stats2]
+     [prop1]    (Each property is a key/value pair)
+     [prop2]
      ...
-     [statsN]
+     [propN]
    
-Statistics are guaranteed to be sorted with no duplication.
+Properties are guaranteed to be sorted with no duplication.
 
-By default, each table provides the following statistics.
+By default, each table provides the following properties.
 
      data size               // the total size of all data blocks. 
      index size              // the size of the index block.
+     filter size              // the size of the filter block.
      raw key size            // the size of all keys before any processing.
      raw value size          // the size of all value before any processing.
      number of entries
      number of data blocks
 
-TODO(kailiu): Rocksdb also providers users the "callback" to collect their interested statistics about this table.
+Rocksdb also providers users the "callback" to collect their interested properties about this table. Please refer to `UserDefinedPropertiesCollector`.
