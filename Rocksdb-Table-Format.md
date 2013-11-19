@@ -112,7 +112,7 @@ By default, each table provides the following properties.
 
      data size               // the total size of all data blocks. 
      index size              // the size of the index block.
-     filter size              // the size of the filter block.
+     filter size             // the size of the filter block.
      raw key size            // the size of all keys before any processing.
      raw value size          // the size of all value before any processing.
      number of entries
