@@ -11,7 +11,7 @@ All of the benchmarks are run on the same machine. Here are the details of the t
 * 1 Billion keys; each key is of size 10 bytes, each value is of size 800 bytes
 * total database size is 800GB
 
-The following benchmark results compare the performance of rocksdb compared to [leveldb.](https://code.google.com/p/leveldb/). This is an IO bound workload where the database is 800GB while the machine has only 144Gb of RAM.
+The following benchmark results compare the performance of rocksdb compared to [leveldb.](https://code.google.com/p/leveldb/). This is an IO bound workload where the database is 800GB while the machine has only 144GB of RAM.
 
 # 2. Bulk Load of keys in Random Order
 
