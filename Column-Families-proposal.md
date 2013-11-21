@@ -1,4 +1,4 @@
-We are proposing Column Family concept for RocksDB. Each key-value pair will be assigned to a Column Family and will be logically separated from key-value pairs in other Column Families. Here are some of the properties we are proposing:
+We are planning to develop Column Family concept for RocksDB. Each key-value pair will be assigned to a Column Family and will be logically separated from key-value pairs in other Column Families. Here are some of the properties we are proposing:
 * We will support atomic writes across Column Families. For example, a user will be able to atomically execute Write([(cf1, key1, value1), (cf2, key2, value2)]). Also, a user can request consistent state of the database across Column Families using MultiGet() or NewIterator() calls.
 * We won't support iterations/scans across Column Families. We will still support iterations within one Column Family.
 * Each Column Family will have its own options, which will enable user to tune performance, compression and compaction strategy for each Column Family.
