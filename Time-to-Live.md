@@ -1,9 +1,9 @@
-#  Rocksdb can be opened with Time to Live(TTL) support
+## Rocksdb can be opened with Time to Live(TTL) support
 
-** USE-CASES:**
+### USE-CASES
 This API should be used to open the db when key-values inserted are meant to be removed from the db in a non-strict 'ttl' amount of time therefore, this guarantees that key-values inserted will remain in the db for >= ttl amount of time and the db will make efforts to remove the key-values as soon as possible after ttl seconds of their insertion.
 
-** BEHAVIOUR:**
+### BEHAVIOUR
 * TTL is accepted in seconds
 * (int32_t)Timestamp(creation) is suffixed to values in Put internally
 * Expired TTL values are deleted in compaction only:(Timestamp+ttl<time_now)
@@ -13,13 +13,13 @@ This API should be used to open the db when key-values inserted are meant to be 
            Open2 at t=3 with ttl=5. Now k1,k2 should be deleted at t>=5
 * read_only=true opens in the usual read-only mode. Compactions will not be triggered(neither manual nor automatic), so no expired entries removed
 
-** CONSTRAINTS:**
+### CONSTRAINTS
 Not specifying/passing or non-positive TTL behaves like TTL = infinity
 
-** !!!WARNING!!!:**
+### !!!WARNING!!!
 * Calling DB::Open directly to re-open a db created by this API will get corrupt values(timestamp suffixed) and no ttl effect will be there during the second Open, so use this API consistently to open the db 
 * Be careful when passing ttl with a small positive value because the whole database may be deleted in a small amount of time
     
-** API**
+### API
 static Status OpenTtlDB(const Options& options, const std::string& name, StackableDB** dbptr, 
                         int32_t ttl = 0, bool read_only = false);
