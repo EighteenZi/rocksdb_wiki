@@ -8,7 +8,7 @@ This page is forked from leveldb's document on [table format](http://leveldb.goo
     ...
     [data block N]
     [meta block 1: filter block]           (see section: "filter" Meta Block)
-    [meta block 1: stats block]            (see section: "properties" Meta Block)
+    [meta block 2: stats block]            (see section: "properties" Meta Block)
     ...
     [meta block K: future extended block]  (we may add more meta blocks in the future)
     [metaindex block]
