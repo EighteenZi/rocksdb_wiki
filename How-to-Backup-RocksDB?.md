@@ -17,7 +17,7 @@ This simple example will create a backup of your DB in "/tmp/rocksdb_backup". Re
     restore->RestoreDBFromLatestBackup("/tmp/rocksdb", "/tmp/rocksdb");
     delete restore;
 
-You have restored the backup back to "/tmp/rocksdb". The second parameter is the location of log files (In some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
+This code will restore the backup back to "/tmp/rocksdb". The second parameter is the location of log files (In some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
 
 Backups are incremental. You can create a new backup with `CreateNewBackup()` and only the new data will be copied to backup directory. Once you have more backups saved, you can issue `GetBackupInfo()` call to get a list of all backups together with information on timestamp of the backup and the size (please note that sum of all backups' sizes is bigger than the actual size of the backup directory because some data is shared by multiple backups). Backups are identified by their always-increasing IDs. `GetBackupInfo()` is available both in `BackupableDB` and `RestoreBackupableDB`.
 
