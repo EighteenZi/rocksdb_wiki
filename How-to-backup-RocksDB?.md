@@ -11,7 +11,9 @@ In RocksDB, we have implemented an easy way to backup your DB. Here is a simple 
     backupable_db->CreateNewBackup();
     delete backupable_db; // no need to also delete db
   
-This simple example will create a backup of your DB in "/tmp/rocksdb_backup". Restoring is also easy:
+This simple example will create a backup of your DB in "/tmp/rocksdb_backup". Creating new BackupableDB consumes DB* and you should be calling all the DB methods on object `backupable_db` going forward.
+
+Restoring is also easy:
 
     RestoreBackupableDB* restore = new RestoreBackupableDB(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"));
     restore->RestoreDBFromLatestBackup("/tmp/rocksdb", "/tmp/rocksdb");
@@ -19,7 +21,7 @@ This simple example will create a backup of your DB in "/tmp/rocksdb_backup". Re
 
 This code will restore the backup back to "/tmp/rocksdb". The second parameter is the location of log files (In some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
 
-Backups are incremental. You can create a new backup with `CreateNewBackup()` and only the new data will be copied to backup directory. Once you have more backups saved, you can issue `GetBackupInfo()` call to get a list of all backups together with information on timestamp of the backup and the size (please note that sum of all backups' sizes is bigger than the actual size of the backup directory because some data is shared by multiple backups). Backups are identified by their always-increasing IDs. `GetBackupInfo()` is available both in `BackupableDB` and `RestoreBackupableDB`.
+Backups are incremental. You can create a new backup with `CreateNewBackup()` and only the new data will be copied to backup directory (for more details on what gets copied, see Under the hood). Once you have more backups saved, you can issue `GetBackupInfo()` call to get a list of all backups together with information on timestamp of the backup and the size (please note that sum of all backups' sizes is bigger than the actual size of the backup directory because some data is shared by multiple backups). Backups are identified by their always-increasing IDs. `GetBackupInfo()` is available both in `BackupableDB` and `RestoreBackupableDB`.
 
 You probably want to keep around only small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
@@ -36,6 +38,17 @@ If you set `BackupableDBOptions::destroy_old_data` to true, creating new `Backup
 
 `BackupableDB::CreateNewBackup()` method takes a parameter `flush_before_backup`, which is false by default. When `flush_before_backup` is true, `BackupableDB` will first issue a memtable flush and only then copy the DB files to the backup directory. Doing so will prevent log files from being copied to the backup directory (since flush will delete them). If `flush_before_backup` is false, backup will not issue flush before starting the backup. In that case, the backup will also include log files corresponding to live memtables. Backup will be consistent with current state of the database regardless of `flush_before_backup` parameter.
 
+### Under the hood
+`BackupableDB` implements `DB` interface and adds four methods to it: `CreateNewBackup()`, `GetBackupInfo()`, `PurgeOldBackups()`, `DeleteBackup()`. Any `DB` interface calls will get forwarded to underlying `DB` object.
+
+When you call `BackupableDB::CreateNewBackup()`, it does the following:
+1. Disable file deletions
+2. Get live files (this includes table files, current and manifest file).
+3. Copy live files to the backup directory. Since table files are immutable and filenames unique, we don't copy a table file that is already present in the backup directory. For example, if there is a file 00050.sst already backed up and `GetLiveFiles()` returns 00050.sst, we will not copy that file to the backup directory. Both manifest and current files are copied, since they are not immutable.
+4. If `flush_before_backup` was set to false, we also need to copy log files to the backup directory. We call `GetSortedWalFiles()` and copy all live files to the backup directory.
+5. Enable file deletions
+
+Backup IDs are always increasing and we have a file `LATEST_BACKUP` that contains the ID of the latest backup. If we crash in middle of backing up, on a restart we will detect that there are newer backup files than `LATEST_BACKUP` claims there are. In that case, we will delete any backup newer than `LATEST_BACKUP` and clean up all the files since some of the table files might be corrupted. Having corrupted table files in the backup directory is dangerous because of our deduplication strategy.
 
 ### Further reading
 For the API details, see "include/utilities/backupable_db.h". For the implementation, see "utilities/backupable/backupable_db.cc".
