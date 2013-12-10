@@ -37,5 +37,5 @@ If you set `BackupableDBOptions::destroy_old_data` to true, creating new `Backup
 `BackupableDB::CreateNewBackup()` method takes a parameter `flush_before_backup`, which is false by default. When `flush_before_backup` is true, `BackupableDB` will first issue a memtable flush and only then copy the DB files to the backup directory. Doing so will prevent log files from being copied to the backup directory (since flush will delete them). If `flush_before_backup` is false, backup will not issue flush before starting the backup. In that case, the backup will also include log files corresponding to live memtables. Backup will be consistent with current state of the database regardless of `flush_before_backup` parameter.
 
 
-## Further reading
+### Further reading
 For the API details, see "include/utilities/backupable_db.h". For the implementation, see "utilities/backupable/backupable_db.cc".
