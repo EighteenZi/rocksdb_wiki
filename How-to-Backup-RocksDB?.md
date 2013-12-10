@@ -25,7 +25,7 @@ You can keep around only small fixed number of backups. To delete old backups, y
 
 `RestoreDBFromLatestBackup()` will restore the DB from the latest consistent backup. An alternative is `RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Very important thing to note here: Let's say you have backups 1, 2, 3, 4. If you restore from backup 2 and start putting more data to your database, newly created backups might conflict with backups 3 and 4. There are two ways to solve that: (1) delete backups 3 and 4, or (2) store new backups in different backup directory.
 
-== Advanced usage ==
+### Advanced usage
 Let's say you want to backup your DB to HDFS. There is an option in `BackupableDBOptions` to set `backup_env`, which will be used for all file I/O related to backup dir (writes when backuping, reads when restoring). If you set it to HDFS Env, all the backups will be stored in HDFS.
 
 `BackupableDBOptions::info_log` is a Logger object that is used to print out LOG messages if not-nullptr.
@@ -35,3 +35,7 @@ If `BackupableDBOptions::sync` is true, we will sync data to disk after every fi
 If you set `BackupableDBOptions::destroy_old_data` to true, creating new `BackupableDB` will delete all the old backups in the backup directory.
 
 `BackupableDB::CreateNewBackup()` method takes a parameter `flush_before_backup`, which is false by default. When `flush_before_backup` is true, `BackupableDB` will first issue a memtable flush and only then copy the DB files to the backup directory. Doing so will prevent log files from being copied to the backup directory (since flush will delete them). If `flush_before_backup` is false, backup will not issue flush before starting the backup. In that case, the backup will also include log files corresponding to live memtables. Backup will be consistent with current state of the database regardless of `flush_before_backup` parameter.
+
+
+## Further reading
+For the API details, see "include/utilities/backupable_db.h". For the implementation, see "utilities/backupable/backupable_db.cc".
