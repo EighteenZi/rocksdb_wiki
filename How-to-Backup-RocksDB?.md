@@ -23,7 +23,7 @@ Backups are incremental. You can create a new backup with `CreateNewBackup()` an
 
 You probably want to keep around only small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
-`RestoreDBFromLatestBackup()` will restore the DB from the latest consistent backup. An alternative is `RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Very important thing to note here: Let's say you have backups 1, 2, 3, 4. If you restore from backup 2 and start putting more data to your database, newly created backups might conflict with backups 3 and 4. There are two ways to solve that: (1) delete backups 3 and 4, or (2) store new backups in different backup directory.
+`RestoreDBFromLatestBackup()` will restore the DB from the latest consistent backup. An alternative is `RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Very important thing to note here: Let's say you have backups 1, 2, 3, 4. If you restore from backup 2 and start writing more data to your database, newly created backups might conflict with backups 3 and 4. There are two ways to solve that: (1) delete backups 3 and 4, or (2) store new backups in different backup directory.
 
 ### Advanced usage
 Let's say you want to backup your DB to HDFS. There is an option in `BackupableDBOptions` to set `backup_env`, which will be used for all file I/O related to backup dir (writes when backuping, reads when restoring). If you set it to HDFS Env, all the backups will be stored in HDFS.
