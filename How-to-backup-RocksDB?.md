@@ -42,13 +42,14 @@ If you set `BackupableDBOptions::destroy_old_data` to true, creating new `Backup
 `BackupableDB` implements `DB` interface and adds four methods to it: `CreateNewBackup()`, `GetBackupInfo()`, `PurgeOldBackups()`, `DeleteBackup()`. Any `DB` interface calls will get forwarded to underlying `DB` object.
 
 When you call `BackupableDB::CreateNewBackup()`, it does the following:
+
 1. Disable file deletions
 2. Get live files (this includes table files, current and manifest file).
-3. Copy live files to the backup directory. Since table files are immutable and filenames unique, we don't copy a table file that is already present in the backup directory. For example, if there is a file 00050.sst already backed up and `GetLiveFiles()` returns 00050.sst, we will not copy that file to the backup directory. Both manifest and current files are copied, since they are not immutable.
+3. Copy live files to the backup directory. Since table files are immutable and filenames unique, we don't copy a table file that is already present in the backup directory. For example, if there is a file `00050.sst` already backed up and `GetLiveFiles()` returns `00050.sst`, we will not copy that file to the backup directory. Both manifest and current files are copied, since they are not immutable.
 4. If `flush_before_backup` was set to false, we also need to copy log files to the backup directory. We call `GetSortedWalFiles()` and copy all live files to the backup directory.
 5. Enable file deletions
 
 Backup IDs are always increasing and we have a file `LATEST_BACKUP` that contains the ID of the latest backup. If we crash in middle of backing up, on a restart we will detect that there are newer backup files than `LATEST_BACKUP` claims there are. In that case, we will delete any backup newer than `LATEST_BACKUP` and clean up all the files since some of the table files might be corrupted. Having corrupted table files in the backup directory is dangerous because of our deduplication strategy.
 
 ### Further reading
-For the API details, see "include/utilities/backupable_db.h". For the implementation, see "utilities/backupable/backupable_db.cc".
+For the API details, see `include/utilities/backupable_db.h`. For the implementation, see `utilities/backupable/backupable_db.cc`.
