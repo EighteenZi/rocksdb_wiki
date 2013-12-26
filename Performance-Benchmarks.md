@@ -9,7 +9,7 @@ All of the benchmarks are run on the same machine. Here are the details of the t
 * Operating System Linux 2.6.38.4
 * 1G rocksdb block cache
 * 1 Billion keys; each key is of size 10 bytes, each value is of size 800 bytes
-* total database size is 800GB
+* total database size is 800GB, stored on XFS filesystem with TRIM support
 * [jemalloc](https://www.facebook.com/notes/facebook-engineering/scalable-memory-allocation-using-jemalloc/480222803919) memory allocator 
 
 The following benchmark results compare the performance of rocksdb compared to [leveldb](https://code.google.com/p/leveldb/). This is an IO bound workload where the database is 800GB while the machine has only 144GB of RAM. These results are obtained with a _release_ build of db_bench created via _make release_.
