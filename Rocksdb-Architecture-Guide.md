@@ -21,7 +21,7 @@ RocksDB is a key-value store where keys and values are arbitrary byte streams. R
 
 The three basic constructs of RocksDB are _memtable_, _sstfile_ and _logfile_. The _memtable_ is an in-memory data structure, new writes are inserted into the _memtable_ and are optionally written to the _logfile_. The _logfile_ is a sequentially written file on storage. When the _memtable_ fills up, it is flushed to a _sstfile_ on storage and the corresponding _logfile_ can be safely deleted.  The data in an _sstfile_ is kept sorted to facilitate easy lookup of keys.
 
-The format of a default _sstfile_ is described in more details [here](https://github.com/facebook/rocksdb/wiki/Rocksdb-table-format).
+The format of a default _sstfile_ is described in more details [here](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-(Default)-Format).
 
 ## 4. Features
 
