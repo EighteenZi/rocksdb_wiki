@@ -1,5 +1,7 @@
 This page is forked from leveldb's document on [table format](http://leveldb.googlecode.com/svn/trunk/doc/table_format.txt). This article reflects the changes we have made during the development of rocksdb.
 
+BlockBasedTable is the default SST table format in RocksDB.
+
 ### File format
 
     <beginning_of_file>
