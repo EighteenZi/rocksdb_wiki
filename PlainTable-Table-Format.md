@@ -1,4 +1,4 @@
-## Introduction
+### Introduction
 PlainTable (not yet committed to master branch)  is a format of SST files in RocksDB optimized for low query latency on pure-memory or really low-latency medias.
  
 The reason for the high latency:
@@ -17,6 +17,6 @@ Its limitation:
  
  
  
-## Future Plan
+### Future Plan
 * May consider to materialize the index to be a part of the SST file
 
