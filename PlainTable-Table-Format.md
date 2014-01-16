@@ -18,7 +18,7 @@ Its limitation:
  
  
 ### File Format
-Here is the on disk format
+Here is the on file format
  
     <beginning_of_file>
       [data row1]
