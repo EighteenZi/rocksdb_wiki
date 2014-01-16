@@ -67,11 +67,9 @@ The index consists of two piece of memory: an array for buckets, and a buffer co
 
 Key is hashed to buckets based on hash of its prefix (extracted using Options.prefix_extractor).
 
-+--------------+----------------------------------------+
-
-| Flag (1 bit) | Offset to buffer or file (31 bits)     +
-
-+--------------+----------------------------------------+
+  +--------------+----------------------------------------+
+  | Flag (1 bit) | Offset to buffer or file (31 bits)     +
+  +--------------+----------------------------------------+
 
 If Flag = 0 and offset field equals to the offset of end of the data of the file, it means null - no data for this bucket; offset is smaller, it means there is only one record of the bucket, which is for row(s) starting from that position. If Flag = 1, it means the offset is for buffer. The format from that offset is shown below.
 
