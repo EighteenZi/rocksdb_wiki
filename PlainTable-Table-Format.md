@@ -49,6 +49,57 @@ Each data row is encoded as:
  
 ^ If keys are of fixed length, there will not be "length of key" field.
  
+### In-Memory Index Format
+
+#### Basic Idea
+
+In-memory is built to be as compact as possible. On top level, the index is a hash table with each bucket to be an array list. The hash table is implemented in such a way:
+
+(1) Pointers are implemented as file offset or buffer offset to use only 31 bits
+
+(2) In hash table, the key is stored as a file offset to the row so that the key can be read from there
+
+(3) Because of (1) and (2), for each hash table entry, it is only an offset to the file.
+
+#### Format
+
+The index consists of two piece of memory: an array for buckets, and a buffer containing the array lists (call it "buffer" below, and "file" as the SST file). 
+
+Key is hashed to buckets based on hash of its prefix (extracted using Options.prefix_extractor).
+
++--------------+----------------------------------------+
+
+| Flag (1 bit) | Offset to buffer or file (31 bits)     +
+
++--------------+----------------------------------------+
+
+If Flag = 0 and offset field equals to the offset of end of the data of the file, it means null - no data for this bucket; offset is smaller, it means there is only one record of the bucket, which is for row(s) starting from that position. If Flag = 1, it means the offset is for buffer. The format from that offset is shown below.
+
+Starting from the offset of buffer, array list of entries of the buckets is encoded as following:
+
+    <begin>
+      number_of_records:  varint32
+      record 1 file offset:  fixedint32
+      record 2 file offset:  fixedint32
+      ....
+      record N file offset:  fixedint32
+    <end>
+
+where N = number_of_records-1. The offsets are in ascending order.
+
+#### Index Lookup
+
+Based on the index format, lookup procedure is straight-forward. To look up a key, first calculate prefix of the key using Options.prefix_extractor. Find the bucket for it. If the bucket has no record on it (Flag=0 and offset is the offset of data end in file), it can declared not found. Otherwise,
+
+If Flag=0, go and check the key pointed by the offset of the bucket. Keep compare keys of rows starting from this point. If a key matches the prefix of the lookup key and is equal or larger, return it. Otherwise, keep searching the next key as long as the prefix matches.
+
+If Flag=1, go to the area it points to in the buffer, doing a binary search. If an exact key match is identified, return it. Otherwise, identify Mth record where key is between keys pointed by Mth record and (M+1)th record. Both of Mth and (M+1)th offset can contain the prefix of the look-up key. Identify the one matching the prefix (if both matches, us M) and start linear search in file from there.
+
+#### Building the Index
+
+When Building indexes, scan the file, record hash value and offset for the first, and (16n+1)th row of each prefix. Also count number of prefixes. Based on the number of prefixes, determine an optimal bucket size. Fill in the indexes according to the bucket size.
+
+
 ### Future Plan
  
 * May consider to materialize the index to be a part of the SST file
