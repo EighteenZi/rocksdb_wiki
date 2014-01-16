@@ -94,7 +94,9 @@ If Flag=1, go to the area it points to in the buffer, doing a binary search. If 
 
 When Building indexes, scan the file. For each key, calculate prefix, record (hash value of the prefix, offset) for the (16n+1)th [TODO: explain the trade off when picking 16, which is the maximum number of linear scans]  row of each prefix (n=0,1,2...). Also count number of prefixes. Based on the number of prefixes, determine an optimal bucket size. Allocate exact buckets and buffer needed and fill in the indexes according to the bucket size.
 
-[TODO: also add a brief section about prefix bloom filter]
+#### Bloom Filter
+A bloom filter on prefixes can be configured for queries. User can config how many bits are allocated for every prefix. When doing the query (Seek() or Get()), bloom filter is checked and filter out non-existing prefixes before looking up the indexes.
+
 ### Future Plan
  
 * May consider to materialize the index to be a part of the SST file
