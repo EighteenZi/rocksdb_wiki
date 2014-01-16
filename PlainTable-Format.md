@@ -7,13 +7,15 @@ Advantages:
 * Avoid any memory copy when querying (mmap)
  
 Limitations:
-* File size needs to be smaller than 31 bits integer. (TODO: we might as well lift this limit if index memory overhead is not a concern)
+* File size needs to be smaller than 31 bits integer.
 * Data compression is not supported
 * Delta encoding is not supported
 * Iterator.Prev() is not supported
-* Non-prefix-based Seek() is not supported (TODO: sst is total ordered, normal seek is supported?)
+* Non-prefix-based Seek() is not supported
 * Table loading is slower for building indexes
 * Only support mmap mode.
+
+We have plan to reduce some of the limitations.
  
 ### File Format
 
@@ -46,7 +48,7 @@ Each data row is encoded as:
  
 ^ If keys are of fixed length, there will not be "length of key" field.
  
-### In-Memory Index Format [TODO: this section is a bit hard to read. Maybe restructure the content to make it cleaner. Also explain some of the decisions]
+### In-Memory Index Format
 
 #### Basic Idea
 
@@ -54,7 +56,7 @@ In-memory Index is built to be as compact as possible. On top level, the index i
 
 (1) Hash collisions: two or more prefixes are hashed to the same bucket
 
-(2) Too many Keys for one prefix: need to speed-up the look-up inside one prefix.
+(2) Too many keys for one prefix: need to speed-up the look-up inside the prefix.
 
 #### Format
 
@@ -66,7 +68,7 @@ Key is hashed to buckets based on hash of its prefix (extracted using Options.pr
     | Flag (1 bit) | Offset to binary search buffer or file (31 bits)     +
     +--------------+------------------------------------------------------+
 
-If Flag = 0 and offset field equals to the offset of end of the data of the file, it means null - no data for this bucket; offset is smaller, it means there is only one prefix [TODO: what about prefix with less than 16 entries?] in the bucket, starting from that file offset. If Flag = 1, it means the offset is for binary search buffer. The format from that offset is shown below.
+If Flag = 0 and offset field equals to the offset of end of the data of the file, it means null - no data for this bucket; if the offset is smaller, it means there is only one prefix for the bucket, starting from that file offset. If Flag = 1, it means the offset is for binary search buffer. The format from that offset is shown below.
 
 Starting from the offset of binary search buffer, a binary search index is encoded as following:
 
@@ -78,7 +80,7 @@ Starting from the offset of binary search buffer, a binary search index is encod
       record N file offset:  fixedint32
     <end>
 
-where N = number_of_records-1. [TODO: N = number of records?] The offsets are in ascending order.
+where N = number_of_records. The offsets are in ascending order.
 
 The reason for only storing 31-bit offset and use 1-bit to identify whether a binary search is needed is to make the index compact.
 
@@ -88,7 +90,7 @@ To look up a key, first calculate prefix of the key using Options.prefix_extract
 
 If Flag=0, it means there is only one prefix for the bucket and there are not many keys for the prefix, so the offset field points to the file offset of the prefix. We just need to do linear search from there.
 
-If Flag=1, a binary search is needed for this bucket. The binary search indexes can be retrieved from the offset field. After the binary search, identify the index that is equal or larger than the look-up key. Say Mth. Both of (M-1)th (if exists) and Mth can contain the prefix of the look-up key. Determine which one we should start the linear search with, by comparing their prefixes. [TODO: rephrase the above]
+If Flag=1, a binary search is needed for this bucket. The binary search indexes can be retrieved from the offset field. After the binary search, do the linear search from the offset found by the binary search.
 
 #### Building the Index
 
@@ -99,5 +101,6 @@ A bloom filter on prefixes can be configured for queries. User can config how ma
 
 ### Future Plan
  
-* May consider to materialize the index to be a part of the SST file
+* May consider to materialize the index to be a part of the SST file.
+* Add an option to remove the restriction of file size, by trading off memory consumption of indexes.
 * May build extra more sparse indexes to enable general iterator seeking.
