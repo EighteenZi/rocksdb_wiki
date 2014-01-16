@@ -84,6 +84,113 @@ where N = number_of_records. The offsets are in ascending order.
 
 The reason for only storing 31-bit offset and use 1-bit to identify whether a binary search is needed is to make the index compact.
 
+#### An Example of Index
+
+Let's assume here are the content of the file:
+
+    +----------------------------+ <== offset_0003_0000 = 0
+    | row (key: "0003 0000")     |
+    +----------------------------+ <== offset_0005_0000
+    | row (key: "0005 0000")     |
+    +----------------------------+
+    | row (key: "0005 0001")     |
+    +----------------------------+
+    | row (key: "0005 0002")     |
+    +----------------------------+
+    |                            |
+    |    ....                    |
+    |                            |
+    +----------------------------+
+    | row (key: "0005 000F")     |
+    +----------------------------+ <== offset_0005_0010
+    | row (key: "0005 0010")     |
+    +----------------------------+
+    |                            |
+    |    ....                    |
+    |                            |
+    +----------------------------+
+    | row (key: "0005 001F")     |
+    +----------------------------+ <== offset_0005_0020
+    | row (key: "0005 0020")     |
+    +----------------------------+
+    | row (key: "0005 0021")     |
+    +----------------------------+
+    | row (key: "0005 0022")     |
+    +----------------------------+ <== offset_0007_0000
+    | row (key: "0007 0000")     |
+    +----------------------------+
+    | row (key: "0007 0001")     |
+    +----------------------------+ <== offset_0008_0000
+    | row (key: "0008 0000")     |
+    +----------------------------+
+    | row (key: "0008 0001")     |
+    +----------------------------+
+    | row (key: "0008 0002")     |
+    +----------------------------+
+    |                            |
+    |    ....                    |
+    |                            |
+    +----------------------------+
+    | row (key: "0008 000F")     |
+    +----------------------------+ <== offset_0008_0010
+    | row (key: "0008 0010")     |
+    +----------------------------+ <== offset_end_data
+    |                            |
+    | property block and footer  |
+    |                            |
+    +----------------------------+
+
+Let's assume in the example, we use 2 bytes fixed length prefix and in each prefix, rows are always incremented by 0.
+
+By scanning the file, we know there are 4 distinct prefixes ("0003", "0005", "0007" and "0008") and assume we pick number of hash buckets to be 5 and based on the 
+
+hash function, prefixes are grouped into buckets:
+
+    bucket 0: 0005
+    bucket 1: empty
+    bucket 2: 0007
+    bucket 3: 0003 0008
+    bucket 4: empty
+
+Bucket 2 doesn't need binary search since there is only one prefix in it ("0007") and it has only 2 (<16) rows.
+
+Bucket 0 needs binary search because prefix 0005 has more than 16 rows.
+
+Bucket 3 needs binary search because it contains more than one prefix.
+
+We need to allocate binary search indexes for bucket 0 and 3, like this:
+
+    +---------------------+ <== bs_offset_bucket_0
+    +  2 (in varint32)    |
+    +---------------------+----------------+
+    +  offset_0005_0000 (in fixedint32)    |
+    +--------------------------------------+
+    +  offset_0005_0010 (in fixedint32)    |
+    +---------------------+----------------+ <== bs_offset_bucket_3
+    +  3 (in varint32)    |
+    +---------------------+----------------+
+    +  offset_0003_0000 (in fixedint32)    |
+    +--------------------------------------+
+    +  offset_0008_0000 (in fixedint32)    |
+    +--------------------------------------+
+    +  offset_0008_0000 (in fixedint32)    |
+    +--------------------------------------+
+
+Then here are the data in hash buckets:
+
+    +---+---------------------------------------+
+    | 1 |    bs_offset_bucket_0 (31 bits)       |  <=== bucket 0
+    +---+---------------------------------------+
+    | 0 |    offset_end_data    (31 bits)       |  <=== bucket 1
+    +---+---------------------------------------+
+    | 0 |    offset_0007_0000   (31 bits)       |  <=== bucket 2
+    +---+---------------------------------------+
+    | 0 |    offset_end_data    (31 bits)       |  <=== bucket 3
+    +---+---------------------------------------+
+    | 1 |    bs_offset_bucket_3 (31 bits)       |  <=== bucket 4
+    +---+---------------------------------------+
+
+
 #### Index Look-up
 
 To look up a key, first calculate prefix of the key using Options.prefix_extractor, and find the bucket for the prefix. If the bucket has no record on it (Flag=0 and offset is the offset of data end in file), the key is not found. Otherwise,
