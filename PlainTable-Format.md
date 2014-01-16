@@ -140,7 +140,7 @@ Let's assume here are the contents of a file:
     |                            |
     +----------------------------+
 
-Let's assume in the example, we use 2 bytes fixed length prefix and in each prefix, rows are always incremented by 0 [TODO: what does 'incremented by 0' mean?].
+Let's assume in the example, we use 2 bytes fixed length prefix and in each prefix, rows are always incremented by 1.
 
 Now we are building index for the file. By scanning the file, we know there are 4 distinct prefixes ("0003", "0005", "0007" and "0008") and assume we pick to use 5 hash buckets and based on the hash function, prefixes are hashed into the buckets:
 
@@ -171,7 +171,7 @@ We need to allocate binary search indexes for bucket 0 and 3. Here are the resul
     +--------------------------------------+
     +  offset_0008_0000 (in fixedint32)    |
     +--------------------------------------+
-    +  offset_0008_0000 [TODO:0010?] (in fixedint32)    |
+    +  offset_0008_0010 (in fixedint32)    |
     +--------------------------------------+
 
 Then here are the data in hash buckets:
@@ -199,7 +199,7 @@ If Flag=1, a binary search is needed for this bucket. The binary search indexes 
 
 #### Building the Index
 
-When Building indexes, scan the file. For each key, calculate its prefix, remember (hash value of the prefix, offset) information for the (16n+1)th row of each prefix (n=0,1,2...), starting from the first one. 16 is the maximum number of rows that need to be checked in the linear search following the binary search [TODO: explain the trade off around this number]. Based on the number of prefixes, determine an optimal bucket size. Allocate exact buckets and binary search buffer needed and fill in the indexes according to the bucket size.
+When Building indexes, scan the file. For each key, calculate its prefix, remember (hash value of the prefix, offset) information for the (16n+1)th row of each prefix (n=0,1,2...), starting from the first one. 16 is the maximum number of rows that need to be checked in the linear search following the binary search. By increasing the number, we would save memory consumption for indexes but paying more costs for linear search. Decreasing the number vise verse. Based on the number of prefixes, determine an optimal bucket size. Allocate exact buckets and binary search buffer needed and fill in the indexes according to the bucket size.
 
 #### Bloom Filter
 A bloom filter on prefixes can be configured for queries. User can config how many bits are allocated for every prefix. When doing the query (Seek() or Get()), bloom filter is checked and filter out non-existing prefixes before looking up the indexes.
