@@ -48,29 +48,27 @@ Each data row is encoded as:
  
 ### In-Memory Index Format [TODO: this section is a bit hard to read. Maybe restructure the content to make it cleaner. Also explain some of the decisions]
 
-#### Basic Idea [TODO: maybe explain the key idea as hash index + binary search index if prefix collides or there are simply too many entries within a single prefix] 
+#### Basic Idea
 
-In-memory Index is built to be as compact as possible. On top level, the index is a hash table with each bucket to be an array list [TODO: array list sounds very confusing. How about just 'a binary search index']. The hash table is implemented in such a way: [TODO: maybe remove the following (1)(2)(3), as they will be discussed more clearly later]
+In-memory Index is built to be as compact as possible. On top level, the index is a hash table with each bucket to be either offset in the file or a binary search index. The binary search is needed in two cases:
 
-(1) Pointers are implemented as file offset or buffer offset to use only 31 bits
+(1) Hash collisions: two or more prefixes are hashed to the same bucket
 
-(2) In hash table, the key is stored as a file offset to the row so that the key can be read from there
-
-(3) Because of (1) and (2), for each hash table entry, it is only an offset to the file.
+(2) Too many Keys for one prefix: need to speed-up the look-up inside one prefix.
 
 #### Format
 
-The index consists of two piece of memory: an array for hash buckets, and a buffer containing the binary searchable indexes (call it "buffer" below, and "file" as the SST file). 
+The index consists of two piece of memory: an array for hash buckets, and a buffer containing the binary searchable indexes (call it "binary search buffer" below, and "file" as the SST file). 
 
 Key is hashed to buckets based on hash of its prefix (extracted using Options.prefix_extractor).
 
-    +--------------+----------------------------------------+
-    | Flag (1 bit) | Offset to buffer or file (31 bits)     +
-    +--------------+----------------------------------------+
+    +--------------+------------------------------------------------------+
+    | Flag (1 bit) | Offset to binary search buffer or file (31 bits)     +
+    +--------------+------------------------------------------------------+
 
-If Flag = 0 and offset field equals to the offset of end of the data of the file, it means null - no data for this bucket; offset is smaller, it means there is only one record [TODO: what about prefix with less than 16 entries?] of the bucket, which is for row(s) starting from that position. If Flag = 1, it means the offset is for buffer. The format from that offset is shown below.
+If Flag = 0 and offset field equals to the offset of end of the data of the file, it means null - no data for this bucket; offset is smaller, it means there is only one prefix [TODO: what about prefix with less than 16 entries?] in the bucket, starting from that file offset. If Flag = 1, it means the offset is for binary search buffer. The format from that offset is shown below.
 
-Starting from the offset of buffer, a binary search index is encoded as following:
+Starting from the offset of binary search buffer, a binary search index is encoded as following:
 
     <begin>
       number_of_records:  varint32
@@ -84,15 +82,15 @@ where N = number_of_records-1. [TODO: N = number of records?] The offsets are in
 
 #### Index Look-up
 
-Based on the index format, look-up procedure is straight-forward. To look up a key, first calculate prefix of the key using Options.prefix_extractor. Find the bucket for it. If the bucket has no record on it (Flag=0 and offset is the offset of data end in file), it can declared not found. Otherwise,
+To look up a key, first calculate prefix of the key using Options.prefix_extractor, and find the bucket for the prefix. If the bucket has no record on it (Flag=0 and offset is the offset of data end in file), the key is not found. Otherwise,
 
-If Flag=0, go and check the key pointed by the offset of the bucket. Keep comparing the next key of rows starting from this point. If a key matches the prefix of the look-up key and is equal or larger, return it. Otherwise, keep searching the next key as long as the prefix matches.
+If Flag=0, it means there is only one prefix for the bucket and there are not many keys for the prefix, so the offset field points to the file offset of the prefix. We just need to do linear search from there.
 
-If Flag=1, go to the area it points to in the buffer, doing a binary search. If an exact key match is identified, return it. Otherwise, identify Mth record where key is between keys pointed by Mth record and (M+1)th record. Both of Mth and (M+1)th can contain the prefix of the look-up key. Identify which one (if both matches, us M) and start linear search in file from there like Flag=0 case. [TODO: rephrase the above]
+If Flag=1, a binary search is needed for this bucket. The binary search indexes can be retrieved from the offset field. After the binary search, identify the index that is equal or larger than the look-up key. Say Mth. Both of (M-1)th (if exists) and Mth can contain the prefix of the look-up key. Determine which one we should start the linear search with, by comparing their prefixes. [TODO: rephrase the above]
 
 #### Building the Index
 
-When Building indexes, scan the file. For each key, calculate prefix, record (hash value of the prefix, offset) for the (16n+1)th [TODO: explain the trade off when picking 16, which is the maximum number of linear scans]  row of each prefix (n=0,1,2...). Also count number of prefixes. Based on the number of prefixes, determine an optimal bucket size. Allocate exact buckets and buffer needed and fill in the indexes according to the bucket size.
+When Building indexes, scan the file. For each key, calculate its prefix, remember (hash value of the prefix, offset) information for the (16n+1)th row of each prefix (n=0,1,2...), starting from the first one. 16 the maximum number of rows need to check in the linear search following the binary search. Based on the number of prefixes, determine an optimal bucket size. Allocate exact buckets and binary search buffer needed and fill in the indexes according to the bucket size.
 
 #### Bloom Filter
 A bloom filter on prefixes can be configured for queries. User can config how many bits are allocated for every prefix. When doing the query (Seek() or Get()), bloom filter is checked and filter out non-existing prefixes before looking up the indexes.
