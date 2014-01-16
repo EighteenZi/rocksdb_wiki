@@ -11,7 +11,7 @@ Limitation:
 * Data compression is not supported
 * Delta encoding is not supported
 * Iterator.Prev() is not supported
-* Non-prefix-based Seek() is not supported (TODO: we do support total ordered iterator, though slow)
+* Non-prefix-based Seek() is not supported (TODO: sst is total ordered, normal seek is supported?)
 * Table loading is slower for building indexes
 * Only support mmap mode.
  
