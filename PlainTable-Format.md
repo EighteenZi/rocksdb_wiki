@@ -86,7 +86,7 @@ The reason for only storing 31-bit offset and use 1-bit to identify whether a bi
 
 #### An Example of Index
 
-Let's assume here are the content of the file:
+Let's assume here are the contents of a file:
 
     +----------------------------+ <== offset_0003_0000 = 0
     | row (key: "0003 0000")     |
@@ -142,9 +142,7 @@ Let's assume here are the content of the file:
 
 Let's assume in the example, we use 2 bytes fixed length prefix and in each prefix, rows are always incremented by 0.
 
-By scanning the file, we know there are 4 distinct prefixes ("0003", "0005", "0007" and "0008") and assume we pick number of hash buckets to be 5 and based on the 
-
-hash function, prefixes are grouped into buckets:
+Now we are building index for the file. By scanning the file, we know there are 4 distinct prefixes ("0003", "0005", "0007" and "0008") and assume we pick to use 5 hash buckets and based on the hash function, prefixes are hashed into the buckets:
 
     bucket 0: 0005
     bucket 1: empty
@@ -158,7 +156,7 @@ Bucket 0 needs binary search because prefix 0005 has more than 16 rows.
 
 Bucket 3 needs binary search because it contains more than one prefix.
 
-We need to allocate binary search indexes for bucket 0 and 3, like this:
+We need to allocate binary search indexes for bucket 0 and 3. Here are the result:
 
     +---------------------+ <== bs_offset_bucket_0
     +  2 (in varint32)    |
