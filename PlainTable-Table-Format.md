@@ -1,25 +1,24 @@
 ### Introduction
-PlainTable (not yet committed to master branch)  is a format of SST files in RocksDB optimized for low query latency on pure-memory or really low-latency medias.
+PlainTable (not yet committed to master branch)  is a format of SST files in RocksDB optimized for low query latency on pure-memory or really low-latency media.
  
-The reason for the high latency:
-* A in-memory index is build to replace plain binary search by hash + binary search
-* Bypassing block cache to void the costs of block copying and LRU cache maintaining.
-* Avoid any memory copy when querying (by forcing mmap mode and not supporting compression and delta encoding)
+Advantage:
+* An in-memory index is built to replace plain binary search with hash + binary search
+* Bypassing block cache to avoid the overhead of block copy and LRU cache maintenance.
+* Avoid any memory copy when querying (mmap)
  
-Its limitation:
-* File size needs to be smaller than 31 bits integer.
+Limitation:
+* File size needs to be smaller than 31 bits integer. (TODO: we might as well lift this limit if index memory overhead is not a concern)
 * Data compression is not supported
 * Delta encoding is not supported
 * Iterator.Prev() is not supported
-* Non-prefix-based Seek() is not supported
+* Non-prefix-based Seek() is not supported (TODO: we do support total ordered iterator, though slow)
 * Table loading is slower for building indexes
 * Only support mmap mode.
  
  
  
 ### File Format
-Here is the on file format
- 
+
     <beginning_of_file>
       [data row1]
       [data row1]
@@ -36,12 +35,12 @@ Two properties in property block are used to read data:
 
     data_size: the end of data part of the file
 
-    fixed_ken_len: tells whether key is fixed length and what is the length if it is.
+    fixed_ken_len: length of the key if all keys have the same length, 0 otherwise.
 
 Each data row is encoded as:
 
     <beginning of a row>
-      length of key: varint32 ^
+      [length of key: varint32] ^
       key bytes
       length of value: varint32
       value bytes
