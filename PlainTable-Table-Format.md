@@ -17,7 +17,7 @@ Its limitation:
  
  
  
-### On-Disk Format
+### File Format
 Here is the on disk format
  
     <beginning_of_file>
