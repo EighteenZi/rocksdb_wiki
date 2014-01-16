@@ -100,4 +100,4 @@ A bloom filter on prefixes can be configured for queries. User can config how ma
 ### Future Plan
  
 * May consider to materialize the index to be a part of the SST file
-
+* May build extra more sparse indexes to enable general iterator seeking.
