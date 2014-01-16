@@ -1,12 +1,12 @@
 ### Introduction
-PlainTable (not yet committed to master branch)  is a format of SST files in RocksDB optimized for low query latency on pure-memory or really low-latency media.
+PlainTable (not yet committed to master branch)  is one of RocksDB's SST file format optimized for low query latency on pure-memory or really low-latency media.
  
-Advantage:
+Advantages:
 * An in-memory index is built to replace plain binary search with hash + binary search
 * Bypassing block cache to avoid the overhead of block copy and LRU cache maintenance.
 * Avoid any memory copy when querying (mmap)
  
-Limitation:
+Limitations:
 * File size needs to be smaller than 31 bits integer. (TODO: we might as well lift this limit if index memory overhead is not a concern)
 * Data compression is not supported
 * Delta encoding is not supported
@@ -14,8 +14,6 @@ Limitation:
 * Non-prefix-based Seek() is not supported (TODO: sst is total ordered, normal seek is supported?)
 * Table loading is slower for building indexes
 * Only support mmap mode.
- 
- 
  
 ### File Format
 
