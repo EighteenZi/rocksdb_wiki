@@ -183,9 +183,9 @@ Then here are the data in hash buckets:
     +---+---------------------------------------+
     | 0 |    offset_0007_0000   (31 bits)       |  <=== bucket 2
     +---+---------------------------------------+
-    | 0 |    offset_end_data    (31 bits)       |  <=== bucket 3
+    | 1 |    bs_offset_bucket_3 (31 bits)       |  <=== bucket 3
     +---+---------------------------------------+
-    | 1 |    bs_offset_bucket_3 (31 bits)       |  <=== bucket 4
+    | 0 |    offset_end_data    (31 bits)       |  <=== bucket 4
     +---+---------------------------------------+
 
 
