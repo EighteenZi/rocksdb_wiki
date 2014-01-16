@@ -80,6 +80,8 @@ Starting from the offset of binary search buffer, a binary search index is encod
 
 where N = number_of_records-1. [TODO: N = number of records?] The offsets are in ascending order.
 
+The reason for only storing 31-bit offset and use 1-bit to identify whether a binary search is needed is to make the index compact.
+
 #### Index Look-up
 
 To look up a key, first calculate prefix of the key using Options.prefix_extractor, and find the bucket for the prefix. If the bucket has no record on it (Flag=0 and offset is the offset of data end in file), the key is not found. Otherwise,
