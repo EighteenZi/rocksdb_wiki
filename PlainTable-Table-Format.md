@@ -85,17 +85,17 @@ Starting from the offset of buffer, array list of entries of the buckets is enco
 
 where N = number_of_records-1. The offsets are in ascending order.
 
-#### Index Lookup
+#### Index Look-up
 
-Based on the index format, lookup procedure is straight-forward. To look up a key, first calculate prefix of the key using Options.prefix_extractor. Find the bucket for it. If the bucket has no record on it (Flag=0 and offset is the offset of data end in file), it can declared not found. Otherwise,
+Based on the index format, look-up procedure is straight-forward. To look up a key, first calculate prefix of the key using Options.prefix_extractor. Find the bucket for it. If the bucket has no record on it (Flag=0 and offset is the offset of data end in file), it can declared not found. Otherwise,
 
-If Flag=0, go and check the key pointed by the offset of the bucket. Keep compare keys of rows starting from this point. If a key matches the prefix of the lookup key and is equal or larger, return it. Otherwise, keep searching the next key as long as the prefix matches.
+If Flag=0, go and check the key pointed by the offset of the bucket. Keep comparing the next key of rows starting from this point. If a key matches the prefix of the look-up key and is equal or larger, return it. Otherwise, keep searching the next key as long as the prefix matches.
 
-If Flag=1, go to the area it points to in the buffer, doing a binary search. If an exact key match is identified, return it. Otherwise, identify Mth record where key is between keys pointed by Mth record and (M+1)th record. Both of Mth and (M+1)th offset can contain the prefix of the look-up key. Identify the one matching the prefix (if both matches, us M) and start linear search in file from there.
+If Flag=1, go to the area it points to in the buffer, doing a binary search. If an exact key match is identified, return it. Otherwise, identify Mth record where key is between keys pointed by Mth record and (M+1)th record. Both of Mth and (M+1)th can contain the prefix of the look-up key. Identify which one (if both matches, us M) and start linear search in file from there like Flag=0 case.
 
 #### Building the Index
 
-When Building indexes, scan the file, record hash value and offset for the first, and (16n+1)th row of each prefix. Also count number of prefixes. Based on the number of prefixes, determine an optimal bucket size. Fill in the indexes according to the bucket size.
+When Building indexes, scan the file. For each key, calculate prefix, record (hash value of the prefix, offset) for the (16n+1)th row of each prefix (n=0,1,2...). Also count number of prefixes. Based on the number of prefixes, determine an optimal bucket size. Allocate exact buckets and buffer needed and fill in the indexes according to the bucket size.
 
 
 ### Future Plan
