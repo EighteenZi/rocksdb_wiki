@@ -1,8 +1,8 @@
-Other than the default mem table implementation using skip lists, users can use another type of mem table implementation, HashLinkList or HashSkipList, to speed-up some queries.
+Other than the default mem table implementation using skip lists, users can use other types of mem table implementation, for example HashLinkList and HashSkipList, to speed-up some queries.
 
-As what their names show, mem table using HashLinkList organizes data in an open hash table with each hash bucket to be a skip list, while the HashSkipList one organizes data in a hash table with each hash bucket as a sorted single linked list. Both types are built to reduce number of comparisons when doing queries. One target setting is to use it with PlainTable SST format and store data in RAMFS.
+As their names imply, HashSkipList organizes data in a hash table with each hash bucket to be a skip list, while HashLinkList organizes data in a hash table with each hash bucket as a sorted single linked list. Both types are built to reduce number of comparisons when doing queries. One good use case is to combine them with PlainTable SST format and store data in RAMFS.
 
-When doing a look-up or inserting a key, target key's prefix is retrieved using Options.prefix_extractor, which is used to find the hash bucket. Inside a hash bucket, all the comparisions are done using whole (internal) keys, just as SkipList based mem table.
+When doing a look-up or inserting a key, target key's prefix is retrieved using Options.prefix_extractor, which is used to find the hash bucket. Inside a hash bucket, all the comparisons are done using whole (internal) keys, just as SkipList based mem table.
 
 Comparison:
 
@@ -15,10 +15,15 @@ Comparison:
 |-
 ! Optimized Use Case
 | General
-| Prefix-based iterating
-| Prefix-based iterating and there are only small number of rows for each prefix
+| Range query within a specific key prefix
+| Range query within a specific key prefix and there are only a small number of rows for each prefix
 |-
-! Get() or Find Position to Insert in Put()
+! Index type
+| binary search
+| hash + binary search
+| hash + linear search
+|-
+! Prefix Seek() before iterating
 | binary search
 | hash + binary search
 | hash + linear search
@@ -27,11 +32,6 @@ Comparison:
 | binary
 | extremely costly
 | extremely costly
-|-
-! Prefix Seek() before iterating
-| binary search
-| hash + binary search
-| hash + linear search
 |-
 ! Memory Usage
 | Average (data + pointers in list entries)
