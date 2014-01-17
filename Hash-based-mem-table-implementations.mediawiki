@@ -39,4 +39,4 @@ Comparison:
 | Slow with high temporary memory usage
 |}
 
-The biggest limitation of the hash based mem tables is that doing scan across multiple prefixes requires copy and sort, which is very slow with big memory consumption.
+The biggest limitation of the hash based mem tables is that doing scan across multiple prefixes requires copy and sort, which is very slow and memory costly.
