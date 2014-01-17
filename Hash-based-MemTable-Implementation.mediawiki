@@ -1,6 +1,6 @@
-Other than the default mem-table implementation using skip lists, users can use other types of mem-table implementation, for example `HashLinkList` and `HashSkipList`, to improve the performance for different cases.
+Other than the default mem-table implementation using skip lists, users can use other types of mem-table implementation, for example HashLinkList and HashSkipList, to improve the performance for different cases.
 
-As their names imply, `HashSkipList` organizes data in a hash table with each hash bucket to be a skip list, while `HashLinkList` organizes data in a hash table with each hash bucket as a sorted single linked list. Both types are built to reduce number of comparisons when doing queries. One good use case is to combine them with PlainTable SST format and store data in RAMFS.
+As their names imply, HashSkipList organizes data in a hash table with each hash bucket to be a skip list, while HashLinkList organizes data in a hash table with each hash bucket as a sorted single linked list. Both types are built to reduce number of comparisons when doing queries. One good use case is to combine them with PlainTable SST format and store data in RAMFS.
 
 When rocksdb is doing a look-up or inserting a key, target key's prefix is retrieved using `Options::prefix_extractor`, which is used to find the hash bucket. Inside a hash bucket, all the comparisons are done using whole (internal) keys, just as SkipList-based mem-table does.
 
