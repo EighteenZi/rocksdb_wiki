@@ -44,3 +44,4 @@ Comparison:
 | Slow with high memory usage (Sort all the entries into another list first)
 |}
 
+The biggest limitation of the hash based mem tables is that doing general iterating requires a pre-sorting, which is very slow and memory consumption.
