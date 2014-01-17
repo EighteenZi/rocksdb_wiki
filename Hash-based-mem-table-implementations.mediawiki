@@ -25,8 +25,8 @@ Comparison:
 |-
 ! Support totally ordered full db scan?
 | naturally
-| extremely costly (copy and sort to create a temporary totally-ordered view)
-| extremely costly (copy and sort to create a temporary totally-ordered view)
+| very costly (copy and sort to create a temporary totally-ordered view)
+| very costly (copy and sort to create a temporary totally-ordered view)
 |-
 ! Memory Overhead
 | Average (multiple pointers per entry)
