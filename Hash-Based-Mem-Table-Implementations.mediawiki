@@ -1,6 +1,6 @@
 Other than the default mem table implementation using skip lists, users can use another type of mem table implementation, HashLinkList or HashSkipList, to speed-up some queries.
 
-As what their names show, mem table using HashLinkList organizes data in an open hash table with each hash bucket to be a skip list, while the HashSkipList one organizes data in a hash table with each hash bucket as a single linked list. Both types are built to reduce number of comparisons when doing queries. One target setting is to use it with PlainTable SST format and store data in RAMFS.
+As what their names show, mem table using HashLinkList organizes data in an open hash table with each hash bucket to be a skip list, while the HashSkipList one organizes data in a hash table with each hash bucket as a sorted single linked list. Both types are built to reduce number of comparisons when doing queries. One target setting is to use it with PlainTable SST format and store data in RAMFS.
 
 When doing a look-up or inserting a key, target key's prefix is retrieved using Options.prefix_extractor, which is used to find the hash bucket. Inside a hash bucket, all the comparisions are done using whole (internal) keys, just as SkipList based mem table.
 
