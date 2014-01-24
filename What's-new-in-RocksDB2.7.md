@@ -1,5 +1,5 @@
-# Public API changes
+## Public API changes
 
-# New features
+## New features
 
-# Performance improvements
+## Performance improvements
