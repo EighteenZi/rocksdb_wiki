@@ -17,6 +17,7 @@
 * Use raw pointer instead of shared pointer for statistics: https://github.com/facebook/rocksdb/commit/5b825d6964e26ec3b4bb6faa708ebb1787f1d7bd -- huge increase in performance -- shared pointers are slow
 * Optimized locking for get -- https://github.com/facebook/rocksdb/commit/1fdb3f7dc60e96394e3e5b69a46ede5d67fb976c -- 1.5x QPS increase for some workloads
 * Cache speedup - https://github.com/facebook/rocksdb/commit/e8d40c31b3cca0c3e1ae9abe9b9003b1288026a9
+* Implemented autovector, which allocates first N elements on stack. Most of vectors in RocksDB are small. Also, we never want to allocate heap objects while holding a mutex. -- https://github.com/facebook/rocksdb/commit/c01676e46d3be08c3c140361ef1f5884f47d3b3c
 * Lots of efforts to move malloc, memcpy and IO outside of locks
 
 [1] You can see exact parameters in rocksdb/build_tools/regression_build_test.sh
