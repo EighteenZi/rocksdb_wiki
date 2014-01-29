@@ -37,7 +37,7 @@ An alternative API for backups is to use BackupEngine directly:
 
 Restoring with BackupEngine is similar to RestoreBackupableDB:
 
-    BackupEngine* backup_engine = CreateNewBackupEngine(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"));
+    BackupEngine* backup_engine = BackupEngine::NewBackupEngine(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"));
     backup_engine->RestoreDBFromLatestBackup("/tmp/rocksdb", "/tmp/rocksdb");
     delete backup_engine;
 
