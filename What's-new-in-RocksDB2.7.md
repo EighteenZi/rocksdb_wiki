@@ -20,4 +20,4 @@
 * Implemented autovector, which allocates first N elements on stack. Most of vectors in RocksDB are small. Also, we never want to allocate heap objects while holding a mutex. -- https://github.com/facebook/rocksdb/commit/c01676e46d3be08c3c140361ef1f5884f47d3b3c
 * Lots of efforts to move malloc, memcpy and IO outside of locks
 
-[1] You can see exact parameters in rocksdb/build_tools/regression_build_test.sh
+[1] You can see the exact parameters in rocksdb/build_tools/regression_build_test.sh
