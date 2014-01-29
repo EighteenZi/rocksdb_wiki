@@ -6,10 +6,10 @@
 * Added DB::GetDbIdentity() - https://github.com/facebook/rocksdb/commit/18802689b8081c4eaa9b477cf8fe1abddc887a3e
 
 ### New features
-* Implemented BackupableDB - https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F
-* Put with SliceParts - Variant of Put() that gathers output like writev(2)
-* Cache index and filter block in block cache - turned off by default
 * Tailing iterator - wiki page pending (TODO)
+* Implemented BackupableDB - https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F
+* Cache index and filter block in block cache - turned off by default
+* Put with SliceParts - Variant of Put() that gathers output like writev(2) -- https://github.com/facebook/rocksdb/commit/8a46ecd3579a2f6578a260c61ad89b24660bc81f
 
 ### Performance improvements
 * Huge benchmark performance improvements by multiple efforts. For example, increase in readonly QPS from about 530k in 2.6 release to 1.1 million in 2.7 [1]
