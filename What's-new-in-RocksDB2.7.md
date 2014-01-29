@@ -12,7 +12,7 @@
 * Tailing iterator - wiki page pending (TODO)
 
 ### Performance improvements
-* Huge benchmark performance improvements by multiple efforts. For example, increase in readonly QPS from about 300k in 2.6 release to 1.1 million in 2.7 [1]
+* Huge benchmark performance improvements by multiple efforts. For example, increase in readonly QPS from about 500k in 2.6 release to 1.1 million in 2.7 [1]
 * Speeding up a way RocksDB deleted obsolete files - no longer listing the whole directory under a lock -- decrease in p99
 * Use raw pointer instead of shared pointer for statistics: https://github.com/facebook/rocksdb/commit/5b825d6964e26ec3b4bb6faa708ebb1787f1d7bd -- huge increase in performance -- shared pointers are slow
 * Optimized locking for get -- https://github.com/facebook/rocksdb/commit/1fdb3f7dc60e96394e3e5b69a46ede5d67fb976c -- 1.5x QPS increase for some workloads
