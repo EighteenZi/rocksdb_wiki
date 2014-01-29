@@ -3,7 +3,7 @@
 * Renamed StackableDB::GetRawDB() to StackableDB::GetBaseDB(). The call returns the underlying DB* for a given StackableDB. Before, GetRawDB() returned the raw DB* by stripping away all StackableDB layers.
 * Support multi-threaded EnableFileDeletions() and DisableFileDeletions() - [b60c14f](https://github.com/facebook/rocksdb/commit/b60c14f6ee00dc179d400573d4b172d228a8c5a8)
 * Added DB::GetOptions() - [3ce3658](https://github.com/facebook/rocksdb/commit/3ce36584111e236e6d7170f0c0dc9adc4b1f949e)
-* Added DB::GetDbIdentity() - 1880268](https://github.com/facebook/rocksdb/commit/18802689b8081c4eaa9b477cf8fe1abddc887a3e)
+* Added DB::GetDbIdentity() - [1880268](https://github.com/facebook/rocksdb/commit/18802689b8081c4eaa9b477cf8fe1abddc887a3e)
 
 ### New features
 * Tailing iterator - [wiki page](https://github.com/facebook/rocksdb/wiki/Tailing-Iterator)
