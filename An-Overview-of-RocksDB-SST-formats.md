@@ -4,7 +4,9 @@ Rocksdb supports different types of tables (also known as `sst`, sorted static t
 
 Right now we have two types of tables: "plain table" and "block based table".
 
-**Block-based table:** this is the default table type that we inherited from [LevelDB](http://leveldb.googlecode.com/svn/trunk/doc/index.html), which was designed for storing data in hard disk or flash device.
+### Block-based table ###
+
+this is the default table type that we inherited from [LevelDB](http://leveldb.googlecode.com/svn/trunk/doc/index.html), which was designed for storing data in hard disk or flash device.
 
 In block-based table, data is chucked into (almost) fix-sized blocks (default block size is 4k). Each block, in turn, keeps a bunch of entries.
 
@@ -14,6 +16,6 @@ As for the record retrieval, we'll first locate the block where target record ma
 
 For more information about block-based table, please read this wiki: [Rocksdb BlockBasedTable Format](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format)
 
-Plain table:
+### Plain table ###
 
 ## Example
