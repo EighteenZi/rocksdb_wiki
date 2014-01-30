@@ -45,3 +45,45 @@ TBD
 
 ## Example
 
+By default, a database uses block-based table.
+    #include "rocksdb/db.h"
+    rocksdb::DB* db;
+    // Get a db with block-based table without any change.
+    rocksdb::DB::Open(rocksdb::Options(), "/tmp/testdb", &db);
+
+For a more customized block-based table:
+
+    #include "rocksdb/db.h"
+    // rocksdb/table.h includes all supported tables.
+    #include "rocksdb/table.h"
+
+    rocksdb::DB* db;
+    rocksdb::Options options;
+    options.table_factory.reset(NewBlockBasedTableFactory());
+    options.block_size = 4096; /* block size for the block-based table */
+    rocksdb::DB::Open(options, "/tmp/testdb", &db);
+
+For plain table, the process is similar:
+
+    #include "rocksdb/db.h"
+    // rocksdb/table.h includes all supported tables.
+    #include "rocksdb/table.h"
+
+    rocksdb::DB* db;
+    rocksdb::Options options;      
+    options.table_factory.reset(NewPlainTableFactory(
+        // prefix size, we shall use a fix-sized prefix of the keys for index building.
+        // Alternatively, you can pass `kPlainTableVariableLength` for keys with variable
+        // length.
+        8,
+        // For advanced users only. 
+        // Bits per key for plain table's bloom filter, which helps rule out non-existent
+        // keys faster.
+        // Default: 0, meaning do not use bloom filter.
+        0,
+        // For advanced users only.
+        // Hash table ratio. The hash index in a plain table is fix-sized. This parameter controls
+        // hash table size.
+        0.75
+    ));
+    rocksdb::DB::Open(options, "/tmp/testdb", &db);   
