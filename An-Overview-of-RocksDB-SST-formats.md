@@ -6,7 +6,7 @@ Right now we have two types of tables: "plain table" and "block based table".
 
 ### Block-based table ###
 
-this is the default table type that we inherited from [LevelDB](http://leveldb.googlecode.com/svn/trunk/doc/index.html), which was designed for storing data in hard disk or flash device.
+This is the default table type that we inherited from [LevelDB](http://leveldb.googlecode.com/svn/trunk/doc/index.html), which was designed for storing data in hard disk or flash device.
 
 In block-based table, data is chucked into (almost) fix-sized blocks (default block size is 4k). Each block, in turn, keeps a bunch of entries.
 
