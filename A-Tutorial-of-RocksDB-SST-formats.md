@@ -45,6 +45,7 @@ TBD
 
 ## Example
 
+### Block-based table
 By default, a database uses block-based table.
     #include "rocksdb/db.h"
     rocksdb::DB* db;
@@ -63,6 +64,7 @@ For a more customized block-based table:
     options.block_size = 4096; /* block size for the block-based table */
     rocksdb::DB::Open(options, "/tmp/testdb", &db);
 
+### Plain table
 For plain table, the process is similar:
 
     #include "rocksdb/db.h"
