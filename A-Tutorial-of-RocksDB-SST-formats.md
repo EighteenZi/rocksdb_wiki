@@ -43,7 +43,7 @@ For more information about block-based table, please read this wiki: [PlainTable
 
 TBD
 
-## Example
+## Examples
 
 ### Block-based table
 By default, a database uses block-based table.
