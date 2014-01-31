@@ -30,7 +30,7 @@ Plain table, as its name suggests, stores data in a sequence of key/value pairs.
 
 Of course, currently there're some limitations for this plain table format (more details please see the link provide below):
 
-*     File size may not be greater than than `2147483647` bytes.
+*     File size may not be greater than 2^31 - 1 (i.e., `2147483647`) bytes.
 *     Data compression/Delta encoding is not supported, which may resulted in bigger file size compared with block-based table.
 *     Backward (Iterator.Prev()) scan is not supported.
 *     Non-prefix-based Seek() is not supported
