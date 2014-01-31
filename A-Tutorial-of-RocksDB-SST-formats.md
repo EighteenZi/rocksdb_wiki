@@ -84,8 +84,8 @@ For plain table, the process is similar:
         // Default: 0, meaning do not use bloom filter.
         0,
         // For advanced users only.
-        // Hash table ratio. The hash index in a plain table is fix-sized. This parameter controls
-        // hash table size.
+        // Hash table ratio. the desired utilization of the hash table used for prefix
+        // hashing. hash_table_ratio = number of prefixes / #buckets in the hash table.
         0.75
     ));
     rocksdb::DB::Open(options, "/tmp/testdb", &db);   
