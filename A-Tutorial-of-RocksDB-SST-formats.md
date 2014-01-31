@@ -74,9 +74,9 @@ For plain table, the process is similar:
     rocksdb::DB* db;
     rocksdb::Options options;      
     options.table_factory.reset(NewPlainTableFactory(
-        // prefix size, we shall use a fix-sized prefix of the keys for index building.
-        // Alternatively, you can pass `kPlainTableVariableLength` for keys with variable
-        // length.
+        // plain table has optimization for fix-sized keys, which can be
+        // specified via user_key_len.  Alternatively, you can pass
+        // `kPlainTableVariableLength` if your keys have variable lengths.
         8,
         // For advanced users only. 
         // Bits per key for plain table's bloom filter, which helps rule out non-existent
