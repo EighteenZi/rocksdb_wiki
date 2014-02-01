@@ -72,7 +72,17 @@ For plain table, the process is similar:
     #include "rocksdb/table.h"
 
     rocksdb::DB* db;
-    rocksdb::Options options;      
+    rocksdb::Options options;
+    // To enjoy the benefits provided by plain table, you have to enable
+    // allow_mmap_reads for plain table.
+    options_.allow_mmap_reads = true;
+    // plain table will extract the prefix from a key. The prefix will be
+    // used for the calculating hash code, which will be used in hash-based
+    // index.
+    // Unlike Prefix_extractor is a raw pointer, please remember to delete it
+    // after use.
+    SliceTransform* prefix_extractor = new NewFixedPrefixTransform(8);
+    options_.prefix_extractor = prefix_extractor;
     options.table_factory.reset(NewPlainTableFactory(
         // plain table has optimization for fix-sized keys, which can be
         // specified via user_key_len.  Alternatively, you can pass
@@ -80,12 +90,14 @@ For plain table, the process is similar:
         8,
         // For advanced users only. 
         // Bits per key for plain table's bloom filter, which helps rule out non-existent
-        // keys faster.
-        // Default: 0, meaning do not use bloom filter.
-        0,
+        // keys faster. If you want to disable it, simply pass `0`.
+        // Default: 10.
+        10,
         // For advanced users only.
         // Hash table ratio. the desired utilization of the hash table used for prefix
         // hashing. hash_table_ratio = number of prefixes / #buckets in the hash table.
         0.75
     ));
-    rocksdb::DB::Open(options, "/tmp/testdb", &db);   
+    rocksdb::DB::Open(options, "/tmp/testdb", &db);
+    ...
+    delete prefix_extractor;
