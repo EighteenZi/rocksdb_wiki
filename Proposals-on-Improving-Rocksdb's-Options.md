@@ -1,4 +1,4 @@
-We already 84 options and they keep increasing. Along with the rise of number is the growing complexity: it's a impossible mission for a normal user to figure out what each option means -- not to mention the magical effect when combining some options together. Moreover, most of our users (eventually) will be made up by non-experts who interest more in getting things done quickly rather than understand RocksDB fully.
+We already have 84 options and they keep increasing. Along with the rise of number is the growing complexity: it's a impossible mission for a normal user to figure out what each option means -- not to mention the magical effect when combining some options together. Moreover, most of our users (eventually) will be made up by non-experts who interest more in getting things done quickly rather than understand RocksDB fully.
 
 As we discussed, ideally we hope there is a "tuning adviser" that analyze the system dynamically and give improvement suggestions with little effort from user's side. That's a great goal, but to start with, I'll propose several simple ways that may enhance our users' life quality in a shorter time.
 
