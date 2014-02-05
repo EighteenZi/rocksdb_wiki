@@ -1,10 +1,10 @@
-We already 84 options and they keep increasing. Along with the rise of number is the growing complexity: it's a impossible mission for a normal user to figure out what each individual option mean -- not to mention the magical effect when combining some options together. Moreover, most of our users (eventually) will be made up by non-experts who interest more in getting things done quickly rather than understand RocksDB fully.
+We already 84 options and they keep increasing. Along with the rise of number is the growing complexity: it's a impossible mission for a normal user to figure out what each option means -- not to mention the magical effect when combining some options together. Moreover, most of our users (eventually) will be made up by non-experts who interest more in getting things done quickly rather than understand RocksDB fully.
 
 As we discussed, ideally we hope there is a "tuning adviser" that analyze the system dynamically and give improvement suggestions with little effort from user's side. That's a great goal, but to start with, I'll propose several simple ways that may enhance our users' life quality in a shorter time.
 
-Below are the proposals. Each of them is relatively independent and can be complement to each other.
+Below are the proposals. Each of them is relatively independent and can be the complement to the others.
 
-### 1. Don't put everything in the same basket.
+### 1. Don't put all eggs in the same basket.
 
 **Motivation:** now almost every tunable things are put into `struct Options`, leading to cohorts of unrelated and/or contradicting options.
 
@@ -33,7 +33,7 @@ explicit PlainTableFactory(uint32_t user_key_len = kPlainTableVariableLength,
 
 **Motivation**: All options are equal, but some options are more equal than others. The overwhelming options plague both developers and ordinary users. To make study curves, we'd hide/remove the advanced options from most frequently used options.
 
-**Solutions**:
+**Solution**:
 
 One tentative solution will be providing two sets of options:
 ```c++
@@ -49,7 +49,7 @@ There are several ways to achieve this. But regardless of the specific implement
 
 **API Change:** if we prefer `Options` to represent simplified options, then users will be affected significantly. Or we can let `Options` still be the complete options and give simplified options another name.
 
-### 3. Provide a higher level of options interface
+### 3. Provide a higher level of abstraction
 
 **Motivation:** options don't always work alone. And the chemistry between them can be very complicated and uninteresting for users.
 
@@ -91,8 +91,8 @@ That looks nicer and of more fun than writing 20~30 lines of `options.blah = bla
 
 **And we can also do the verification when we are building optoins**. Not all these intents are compatible with each other. For example, you cannot specify plain table and block-based table; universal compaction may work poorly with some type of table format (I'm just making up an example).
 
-### More future actions
-By aggregating the feedback from other team members, we can also do the following in the future (more effort requires):
+### More proposals
+By aggregating the feedback from other team members, there are also some more complicated yet powerful directions to go:
 
 1. Getting the options used by all Facebook's rocksdb instances and their environment (qps, memory, cpu). These can help us better pinpoint how people use rocksdb and how can we improve them.
 2. Automatic options advisor, which can ask user questions and then generate the options accordingly. Also it will do dynamic analysis on the system and give options improvement suggestions for users.
