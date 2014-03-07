@@ -1,4 +1,4 @@
-# 1. Setup
+# Setup
 
 All of the benchmarks are run on the same machine. Here are the details of the test setup:
 
@@ -14,7 +14,7 @@ All of the benchmarks are run on the same machine. Here are the details of the t
 
 The following benchmark results compare the performance of rocksdb compared to [leveldb](https://code.google.com/p/leveldb/). This is an IO bound workload where the database is 800GB while the machine has only 144GB of RAM. These results are obtained with a _release_ build of db_bench created via _make release_.
 
-# 2. Bulk Load of keys in Random Order
+# Test 1. Bulk Load of keys in Random Order
 
 Measure performance to load 1B keys into the database. The keys are inserted in random order. The database is empty at the beginning of this benchmark run and gradually fills up. No data is being read when the data load is in progress. 
 
@@ -36,7 +36,7 @@ Here are the command(s) for loading the data into leveldb:
     echo "Bulk load database ...."
     wbs=268435456; r=1000000000; t=1; vs=800; cs=1048576; of=500000; ./db_bench --benchmarks=fillrandom --num=$r --threads=$t --value_size=$vs --cache_size=$cs --bloom_bits=10 --open_files=$of --db=/data/mysql/leveldb/test --compression_ratio=50 --write_buffer_size=$wbs --use_existing_db=0
 
-# 3. Bulk Load of keys in Sequential Order
+# Test 2. Bulk Load of keys in Sequential Order
 
 Measure performance to load 1B keys into the database. The keys are inserted in sequential order. The database is empty at the beginning of this benchmark run and gradually fills up. No data is being read when the data load is in progress.
 
@@ -53,7 +53,7 @@ Here are the command(s) for loading the data into leveldb:
     echo "Load 1B keys sequentially into database....."
     wbs=134217728; r=1000000000; t=1; vs=800; cs=1048576; of=500000; ./db_bench --benchmarks=fillseq --num=$r --threads=$t --value_size=$vs --cache_size=$cs --bloom_bits=10 --open_files=$of --db=/data/mysql/leveldb/test --compression_ratio=50 --write_buffer_size=$wbs --use_existing_db=0
 
-# 4. Write Performance
+# Test 3. Write Performance
 
 Measure performance to randomly overwrite 1B keys into the database. The database was first created by sequentially inserting all the 1 B keys. The results here do not measure the sequential-insertion phase, it measures only second part of the test that overwrites 1 B keys in random order. The test was run with the Write-Ahead-Log (WAL) enabled but fsync on commit was not done to the WAL.
 
@@ -71,7 +71,7 @@ Here are the commands to overwrite 1 B keys in leveldb:
     echo "Overwriting the 1B keys in database in random order...."
     wbs=268435456; r=1000000000; t=1; vs=800; cs=1048576; of=500000; ./db_bench --benchmarks=overwrite --num=$r --threads=$t --value_size=$vs --cache_size=$cs --bloom_bits=10 --open_files=$of --db=/data/mysql/leveldb/test --compression_ratio=50 --write_buffer_size=$wbs --use_existing_db=1
 
-# 5. Read performance
+# Test 4. Read performance
 
 Measure random read performance of a database with 1 Billion keys, each  key is 10 bytes and value is 800 bytes. Rocksdb and leveldb were both configured with a block size of 4 KB. Data compression is not enabled. There were 32 threads in the benchmark application issuing random reads to the database. rocksdb is configured to verify checksums on every read while leveldb has checksum verification switched off.
 
@@ -94,7 +94,7 @@ Here are the commands used to run the test on leveldb:
     echo "Reading the 1B keys in database in random order...."
     wbs=268435456; r=1000000000; t=32; vs=800; cs=1048576; of=500000; ./db_bench --benchmarks=readrandom --num=$r --threads=$t --value_size=$vs --cache_size=$cs --bloom_bits=10 --open_files=$of --db=/data/mysql/leveldb/test --compression_ratio=50 --write_buffer_size=$wbs --use_existing_db=1
 
-# 6. Multi-threaded read and single-threaded write performance
+# Test 5. Multi-threaded read and single-threaded write performance
 
 Measure performance to randomly read 100M keys out of database with 1B keys and ongoing updates to existing keys. Number of read keys is configured to 100M to shorten the experiment time. Each key is 10 bytes and value is 800 bytes. Rocksdb and leveldb are both configured with a block size of 4 KB. Data compression is not enabled. There are 32 dedicated read threads in the benchmark issuing random reads to the database. A separate thread issues writes to the database at its best effort.
 
