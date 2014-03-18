@@ -1,5 +1,5 @@
 ### Introduction
-PlainTable (not yet committed to master branch)  is one of RocksDB's SST file format optimized for low query latency on pure-memory or really low-latency media.
+PlainTable is one of RocksDB's SST file format optimized for low query latency on pure-memory or really low-latency media.
  
 Advantages:
 * An in-memory index is built to replace plain binary search with hash + binary search
