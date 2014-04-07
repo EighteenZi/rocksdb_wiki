@@ -15,7 +15,7 @@ All of the benchmarks are run on the same machine. Here are common setup used fo
 * No compression
 * Database is initially loaded with 500M unique keys by using db_bench's **filluniquerandom** mode, then read performance is measured for a 7200-second run in **readwhilewriting** mode with 32 reader threads. Each reader thread issues random key request, which is guaranteed to be found. Another dedicated writer thread issues write requests in the meantime.
 * Performance are measured for light write rate (10K writes/sec => ~1.2MB/sec) and moderate write rate (80K writes/sec => ~9.6 MB/sec) respectively. 
-* Total database size is ~73GB at steady state, stored in tmpfs
+* Total database size is ~73GB at steady state, data files stored in tmpfs
 * Statistics is disabled during the benchmark and perf_context level is set to 0
 * [jemalloc](https://www.facebook.com/notes/facebook-engineering/scalable-memory-allocation-using-jemalloc/480222803919) memory allocator
 
