@@ -30,7 +30,7 @@ Below is the reported read performance when write rate is set to 80K writes/sec:
 
     readwhilewriting :       0.220 micros/op 4553529 ops/sec; (1026765999 of 1026765999 found)
 
-The actual sustained write rate is found to be at ~52K writes/sec
+The actual sustained write rate is found to be at ~52K writes/sec. This test is CPU-bound, with ~98.4% of CPU is observed in user space and ~1.6% of CPU is spent in kernel during the measurement.
 
 Here is the command for filling up the DB:
 
@@ -49,7 +49,7 @@ Below is the reported read performance when write rate is set to 80K writes/sec:
 
     readwhilewriting :       0.251 micros/op 3979207 ops/sec; (893448999 of 893448999 found)
 
-The actual sustained write rate is found to be at ~67K writes/sec
+The actual sustained write rate is found to be at ~67K writes/sec. This test is CPU-bound, with ~98.0% of CPU is observed in user space and ~2.0% of CPU is spent in kernel during the measurement. 
 
 Here is the command for filling up the DB:
 
