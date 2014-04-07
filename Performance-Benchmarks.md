@@ -1,3 +1,5 @@
+These benchmark measures RocksFDB performance when data resides on flash storage.
+
 # Setup
 
 All of the benchmarks are run on the same machine. Here are the details of the test setup:
