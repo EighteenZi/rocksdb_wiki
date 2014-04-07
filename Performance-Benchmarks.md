@@ -1,4 +1,4 @@
-These benchmark measures RocksFDB performance when data resides on flash storage.
+These benchmark measures RocksDB performance when data resides on flash storage.
 
 # Setup
 
