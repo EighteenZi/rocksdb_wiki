@@ -6,6 +6,8 @@ All of the benchmarks are run on the same machine. Here are common setup used fo
 * 20MB CPU cache, 144GB Ram
 * CentOS release 6.3 (Kernel 3.2.51)
 * Commit (c90d446ee7b87682b1e0ec7e0c778d25a90c6294) from master branch
+* 2 max writer buffers of 128MB each
+* Level style compaction
 * PlainTable SST format, with BloomFilter enabled
 * HashSkipList memtable format, with BloomFilter disabled
 * WAL is enabled and kept on spinning disk. However, they are not archived and no DB backup is performed during the benchmark
