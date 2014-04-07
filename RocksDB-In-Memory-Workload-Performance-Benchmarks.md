@@ -39,9 +39,9 @@ Here is the command for running readwhilewriting benchmark:
     ./db_bench --db=/mnt/db/rocksdb --num_levels=6 --key_size=20 --prefix_size=20 --keys_per_prefix=0 --value_size=100 --block_size=4096 --cache_size=17179869184 --cache_numshardbits=6 --compression_type=none --compression_ratio=1 --min_level_to_compress=-1 --disable_seek_compaction=1 --hard_rate_limit=2 --write_buffer_size=134217728 --max_write_buffer_number=2 --level0_file_num_compaction_trigger=8 --target_file_size_base=134217728 --max_bytes_for_level_base=1073741824 --disable_wal=0 --wal_dir=/data/users/rocksdb/WAL_LOG --sync=0 --disable_data_sync=1 --verify_checksum=1 --delete_obsolete_files_period_micros=314572800 --max_grandparent_overlap_factor=10 --max_background_compactions=4 --max_background_flushes=0 --level0_slowdown_writes_trigger=16 --level0_stop_writes_trigger=24 --statistics=0 --stats_per_interval=0 --stats_interval=1048576 --histogram=0 --use_plain_table=1 --open_files=-1 --mmap_read=1 --mmap_write=0 --memtablerep=prefix_hash --bloom_bits=10 --bloom_locality=1 --perf_level=0 --duration=7200 --benchmarks=readwhilewriting --use_existing_db=1 --num=524288000 --threads=32 --writes_per_second=81920
 
 
-# Test 2. Range Query
+# Test 2. Prefix Range Query
 
-In this test, a key prefix size of 12 bytes is indexed (i.e. prefix_extractor = NewFixedPrefixTransform(12)). db_bench is configured to generate approximately 10 keys per unique prefix. In this setting, **Seek()** can be performed for a given prefix as well as iteration on the returned iterator. However, behavior of scanning beyond the prefix boundary is not defined. This is a fairly common access pattern for graph data. Point lookup through put is measured under this setting:
+In this test, a key prefix size of 12 bytes is indexed (i.e. prefix_extractor = NewFixedPrefixTransform(12)). db_bench is configured to generate approximately 10 keys per unique prefix. In this setting, **Seek()** can be performed within a given prefix as well as iteration on the returned iterator. However, behavior of scanning beyond the prefix boundary is not defined. This is a fairly common access pattern for graph data. Point lookup throughput is measured under this setting:
 
 Below is the reported read performance when write rate is set to 80K writes/sec:
 
