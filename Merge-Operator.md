@@ -473,9 +473,9 @@ If there are some times where it is okay to combine multiple operands into one (
 
 ## Tips
 
-    **Multiplexing:** While a RocksDB DB object can only be passed 1 merge-operator at the time of construction, your user-defined merge operator class can behave differently depending on the data passed to it. The key, as well as the values themselves, will be passed to the merge operator; so one can encode different "operations" in the operands themselves, and get the MergeOperator to perform different functions accordingly.
+**Multiplexing:** While a RocksDB DB object can only be passed 1 merge-operator at the time of construction, your user-defined merge operator class can behave differently depending on the data passed to it. The key, as well as the values themselves, will be passed to the merge operator; so one can encode different "operations" in the operands themselves, and get the MergeOperator to perform different functions accordingly.
 
-    **Is my use-case Associative?:** If you are unsure of whether the "associativity" constraints apply to your use-case, you can ALWAYS use the generic MergeOperator. The AssociativeMergeOperator is a direct subclass of MergeOperator, so any use-case that can be solved with the AssociativeMergeOperator can be solved with the more generic MergeOperator. The AssociativeMergeOperator is mostly provided for convenience.
+**Is my use-case Associative?:** If you are unsure of whether the "associativity" constraints apply to your use-case, you can ALWAYS use the generic MergeOperator. The AssociativeMergeOperator is a direct subclass of MergeOperator, so any use-case that can be solved with the AssociativeMergeOperator can be solved with the more generic MergeOperator. The AssociativeMergeOperator is mostly provided for convenience.
 
 ## Useful Links
 * [Merge+Compaction Implementation Details](Merge-Operator Implementation): For RocksDB engineers who want to know how MergeOperator affects their code.
