@@ -21,4 +21,4 @@ Let's look at another example. We want to get key 230. A binary search on level 
 
 Inspired by this concept, we pre-build pointers at compaction time on level 1 files that point to a range of files on level 2. For example, file 1 on level 1 points to file 3 (on level 2) on the left and file 4 on the right. File 2 will point to level 2 files 6 and 7. At query time, these pointers are used to determine the actual binary search range based on comparison result.
 
-Our benchmark shows that this optimization improves lookup QPS by ~5% for similar setup mentioned [here](https://github.com/facebook/rocksdb/wiki/RocksDB-In-Memory-Workload-Performance-Benchmarks).
+Our benchmark shows that this optimization improves lookup QPS by ~5% for the setup mentioned [here](https://github.com/facebook/rocksdb/wiki/RocksDB-In-Memory-Workload-Performance-Benchmarks).
