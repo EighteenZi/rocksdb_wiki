@@ -9,7 +9,7 @@ This is the traditional seek behavior you'd expect. The seek performs on a total
     Slice key = "foo_bar";
     iter->Seek(key);
 
-Not all table format supports total order seek. For example, the newly introduced [PlainTable](https://github.com/facebook/rocksdb/wiki/PlainTable-Format) format only supports prefix-based seek() unless it is opened in total order mode.
+Not all table format supports total order seek. For example, the newly introduced [PlainTable](https://github.com/facebook/rocksdb/wiki/PlainTable-Format) format only supports prefix-based seek() unless it is opened in total order mode (Options.prefix_extractor == nullptr).
 
 ### Use ReadOptions.prefix
 This is the least flexible way to do a seek. Prefix needs to be supplied when creating an iterator. 
