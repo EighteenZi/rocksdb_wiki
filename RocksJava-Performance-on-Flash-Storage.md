@@ -1,7 +1,7 @@
 RocksJava is a project we launched in April 2014 to build a high performance Java driver for RocksDB.  Here we would like to release its very first performance numbers on flash storage.  This page will first present the result summary.  Details about experimental setup and commands to run the benchmark will be covered in the later sections.
 
 # Result Summary
-We repeated the benchmarks on flash storage described in [3] and compare the performance between RocksJava and the RocksDB C++.  The database used in the benchmarks has one billion key-values, and each key / value has 16 / 800 bytes respectively.  Below are the performance comparison between RocksJava and RocksDB c++ on different workloads:
+We repeated the benchmarks on flash storage described in [3] and compare the performance between RocksJava and the RocksDB C++.  The database used in the benchmarks has one billion key-values, and each key / value has 16 / 800 bytes respectively.  Below are the performance comparison between RocksJava and RocksDB C++ on different workloads:
 
 ### Table 1.  Performance comparison over 1TB database on flash storage.
 | Benchmark                               | RocksJava | RocksDB C++ | Diff(%) |     Detail Setting      |
