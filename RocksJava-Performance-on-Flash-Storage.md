@@ -4,7 +4,7 @@ RocksJava is a project that we launched in April 2014 to build a high performanc
 We repeated the benchmarks on flash storage described in [3] and compare the performance between RocksJava and the RocksDB C++.  In this benchmark, the database has one billion key-values, and each key / value has 16 / 800 bytes respectively.  Below shows the summary of the results:
 
 ### Table 1.  Performance comparison over 1TB database on flash storage.
-| Benchmark                          | RocksJava |RocksDB C++| Difference (%)| Details |
+| Benchmark                          | RocksJava |RocksDB C++| Diff (%)| Details |
 |------------------------------------|----------:|------------:|:-------:|:--------|
 |1 Sequential Writer                 | 369k wps  |  371K wps   |   < 1%  | [Seq Bulk Load](#fillseq) |
 |32 Random Readers	             | 270K rps  |  303K rps   | -10.8%  |         |
