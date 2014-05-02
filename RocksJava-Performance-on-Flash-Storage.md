@@ -50,7 +50,7 @@ We tried to reuse the settings used in [].  Here are some of important settings 
 * Snappy 1.1.1 is used as the compression algorithm.
 * Test with 1 billion key / value pairs. Each key is 16 bytes, and each value is 800 bytes. Total database size is 800GB
 * For 32 readers w/ 1 writer benchmark, the writer performs 10k writes per second.
-* JEMALLOC is not used.
+* [JEMALLOC](https://github.com/jemalloc/jemalloc) is not used.
 
 <a name="fillseq"/>
 ## Test 2. Bulk Load of keys in Sequential Order
