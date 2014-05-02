@@ -53,7 +53,7 @@ We tried to reuse the settings used in [].  Here are some of important settings 
 * JEMALLOC is not used.
 
 <a name="fillseq"/>
-## Bulk Load of keys in Sequential Order
+## Test 2. Bulk Load of keys in Sequential Order
 This benchmark measures the performance of loading 1B keys into the database. The keys are inserted in sequential order. The database is empty at the beginning of this benchmark run and gradually fills up. No data is being read when the data load is in progress.  In this benchmark, each key / value is 16 / 800 bytes respectively.
 
 Here're the commands we used to run the benchmark:
@@ -89,8 +89,12 @@ RocksDB C++:
     --use_existing_db=0 --num=1000000000
 ```
 
+<a name="fillrandom"/>
+## Test 3. Random Write
+TBD
+
 <a name="readrandom"/>
-## Random Read
+## Test 4. Random Read
 In this benchmark, 32 threads together issue 1 billion random reads in total from the database created in the [sequential bulk load benchmark](#fillseq).
 
 Below are the commands used to run the benchmark.  Note that the argument `--num` has slightly different meanings in the Java db_bench and C++ db_bench:  `--num` in Java db_bench presents the total number of operations among all threads while `--num` in C++ db_bench means the number of operations each thread will perform.
@@ -125,12 +129,8 @@ RocksDB C++:
     --use_existing_db=1 --num=31250000
 ```
 
-<a name="fillrandom"/>
-## Random Write
-TBD
-
 <a name="readwhilewriting"/>
-## Multi-Threaded Read and Single-Threaded Write
+## Test 5. Multi-Threaded Read and Single-Threaded Write
 
 In this benchmark, there are 32 threads issuing random reads while a single writer thread issues 10k writes per second, and we only measure the performance of the reader threads.  The database is again created by the [sequential bulk-load benchmark](#fillseq).  Below are the commands we used to run this benchmark:
 
