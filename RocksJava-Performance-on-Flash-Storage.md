@@ -1,4 +1,3 @@
-
 RocksJava is a project that we launched in April 2014 to build a high performance Java driver for RocksDB.  Here we would like to show its performance numbers on flash storage.  We will first show the result summary.  Details about experimental setup and commands to run the benchmark will be covered in the later sections.
 
 # Result Summary
@@ -9,7 +8,7 @@ We repeated the benchmarks on flash storage described in [3] and compare the per
 |------------------------------------|----------:|------------:|:-------:|:--------|
 |1 Sequential Writer                 | 369k wps  |  371K wps   |   < 1%  | [Seq Bulk Load](#fillseq) |
 |32 Random Readers	             | 270K rps  |  303K rps   | -10.8%  |         |
-|32 Random Readers w/ 1 Random Writer| 206K rps  |  336K rps   | -38.5%  |         |
+|32 Random Readers <br/>w/ 1 Random Writer| 206K rps  |  336K rps   | -38.5%  |         |
 |32 Sequential Readers               |2.12M rps  | 6.84M rps   | -69.0%  |         |
 <br/>
 
