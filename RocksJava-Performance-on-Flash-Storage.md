@@ -4,10 +4,10 @@ RocksJava is a project that we initiated in April 2014 to build a high performan
 We repeated the benchmarks on flash storage described in [3] and compare the performance between RocksJava and the RocksDB C++.  The database used in the benchmarks has one billion key-values, and each key / value has 16 / 800 bytes respectively.  Below are the performance comparison between RocksJava and RocksDB c++ on different workloads:
 
 ### Table 1.  Performance comparison over 1TB database on flash storage.
-| Benchmark                          | RocksJava|RocksDB C++| Diff(%) |     Details      |
-|------------------------------------|---------:|----------:|:-------:|:----------------:|
-|1 Sequential Writer                 | 369k wps | 371K wps  |   < 1%  | [link](#fillseq) |
-|32 Random Readers	             | 270K rps | 303K rps  | -10.8%  | [link](#readrandom) |
+| Benchmark                          | RocksJava|RocksDB C++| Diff(%) |     Detail Setting      |
+|------------------------------------|---------:|----------:|:-------:|:-----------------------:|
+|1 Sequential Writer                 | 369k wps | 371K wps  |   < 1%  | [link](#fillseq)        |
+|32 Random Readers	             | 270K rps | 303K rps  | -10.8%  | [link](#readrandom)     |
 |32 Random Readers <br/>w/ 1 Random Writer| 206K rps |  336K rps | -38.5% | [link](#readwhilewriting) |
 |32 Sequential Readers               |2.12M rps      | 6.84M rps | -69.0% | [link](#readseq)|
 * wps: writes per second.
@@ -52,8 +52,8 @@ We tried to reuse the settings used in [].  Here are some of important settings 
 * For 32 readers w/ 1 writer benchmark, the writer performs 10k writes per second.
 * JEMALLOC is not used.
 
-## Bulk Load of keys in Sequential Order
 <a name="fillseq"/>
+## Bulk Load of keys in Sequential Order
 This benchmark measures the performance of loading 1B keys into the database. The keys are inserted in sequential order. The database is empty at the beginning of this benchmark run and gradually fills up. No data is being read when the data load is in progress.  In this benchmark, each key / value is 16 / 800 bytes respectively.
 
 Here're the commands we used to run the benchmark:
@@ -89,8 +89,8 @@ RocksDB C++:
         --use_existing_db=0 --num=1000000000
 ```
 
-## Random Read performance
 <a name="readrandom"/>
+## Random Read
 In this benchmark, 32 threads together issue 1 billion random reads in total from the database created in the [sequential bulk load benchmark](#fillseq).
 
 Below are the commands used to run the benchmark.  Note that the argument `--num` has slightly different meanings in the Java db_bench and C++ db_bench:  `--num` in Java db_bench presents the total number of operations among all threads while `--num` in C++ db_bench means the number of operations each thread will perform.
@@ -125,8 +125,8 @@ RocksDB C++:
         --use_existing_db=1 --num=31250000
 ```
 
-## Multi-Threaded Read and Single-Threaded Write Performance
-<a name="readwhilewriting/>
+<a name="readwhilewriting"/>
+## Multi-Threaded Read and Single-Threaded Write
 
 In this benchmark, there are 32 threads issuing random reads while a single writer thread issues 10k writes per second, and we only measure the performance of the reader threads.  The database is again created by the [sequential bulk-load benchmark](#fillseq).  Below are the commands we used to run this benchmark:
 
@@ -159,5 +159,36 @@ RocksDB C++:
         --max_grandparent_overlap_factor=10 --max_bytes_for_level_base=10485760 \
         --writes_per_second=10000 --use_existing_db=1 --num=31250000
 ```
-## Sequential Read Performance
+
 <a name="readseq"/>
+## Sequential Read
+In this benchmark, 32 threads concurrently read the whole database sequentially.  The database is again created using the sequential bulk-load benchmark.  Here are the commands we used to run this benchmark:
+
+RocksJava:
+```c++
+   java -server -d64 -XX:NewSize=4m -XX:+AggressiveOpts -Djava.library.path=.:../ -cp rocksdbjni.jar:.:./*
+       org.rocksdb.benchmark.DbBenchmark --benchmarks=readseq --disable_seek_compaction=true \
+       --mmap_read=false --statistics=1 --histogram=1 --threads=32 --value_size=800 --block_size=4096 \
+       --cache_size=1048576 --bloom_bits=10 --cache_numshardbits=6 --open_files=500000 \
+       --verify_checksum=true --db=/rocksdb-bench/java/b2 --sync=false --disable_wal=true \
+       --stats_interval=1000000 --compression_ratio=0.5 --disable_data_sync=false \
+       --write_buffer_size=134217728 --target_file_size_base=67108864 --max_write_buffer_number=3 \
+       --max_background_compactions=20 --level0_file_num_compaction_trigger=4 \
+       --level0_slowdown_writes_trigger=8 --level0_stop_writes_trigger=12 --num_levels=6 \
+       --delete_obsolete_files_period_micros=300000000 --min_level_to_compress=2 \
+       --max_grandparent_overlap_factor=10 --max_bytes_for_level_base=10485760 \
+       --use_existing_db=true --num=32000000000
+```
+RocksDB C++:
+```c++
+    ./db_bench --benchmarks=readseq --disable_seek_compaction=1 --mmap_read=0 \
+        --threads=32 --value_size=800 --block_size=4096 --cache_size=1048576 --bloom_bits=10 \
+        --cache_numshardbits=6 --open_files=500000 --verify_checksum=1 --db=/rocksdb-bench/cc/b2 \
+        --sync=0 --disable_wal=1 --compression_type=none --compression_ratio=50 --disable_data_sync=0 \
+        --write_buffer_size=134217728 --target_file_size_base=67108864 --max_write_buffer_number=3 \
+        --max_background_compactions=20 --level0_file_num_compaction_trigger=4 \
+        --level0_slowdown_writes_trigger=8 --level0_stop_writes_trigger=12 --num_levels=6 \
+        --delete_obsolete_files_period_micros=300000000 --min_level_to_compress=2 \
+        --max_grandparent_overlap_factor=10 --max_bytes_for_level_base=10485760 --use_existing_db=1 \
+        --threads=32 --num=1000000000
+```
