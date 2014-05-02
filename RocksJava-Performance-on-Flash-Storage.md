@@ -4,12 +4,12 @@ RocksJava is a project we launched in April 2014 to build a high performance Jav
 We repeated the benchmarks on flash storage described in [3] and compare the performance between RocksJava and the RocksDB C++.  The database used in the benchmarks has one billion key-values, and each key / value has 16 / 800 bytes respectively.  Below are the performance comparison between RocksJava and RocksDB c++ on different workloads:
 
 ### Table 1.  Performance comparison over 1TB database on flash storage.
-| Benchmark                          | RocksJava|RocksDB C++| Diff(%) |     Detail Setting      |
-|------------------------------------|---------:|----------:|:-------:|:-----------------------:|
-|1 Sequential Writer                 | 369k wps | 371K wps  |   < 1%  | [link](#fillseq)        |
-|32 Random Readers	             | 270K rps | 303K rps  | -10.8%  | [link](#readrandom)     |
-|32 Random Readers <br/>w/ 1 Random Writer| 206K rps |  336K rps | -38.5% | [link](#readwhilewriting) |
-|32 Sequential Readers               |2.12M rps      | 6.84M rps | -69.0% | [link](#readseq)|
+| Benchmark                               | RocksJava | RocksDB C++ | Diff(%) |     Detail Setting      |
+|-----------------------------------------|----------:|------------:|:-------:|:-----------------------:|
+|1 Sequential Writer                      |  369k wps |   371K wps  |   < 1%  | [link](#fillseq)        |
+|32 Random Readers	                  |  270K rps |   303K rps  | -10.8%  | [link](#readrandom)     |
+|32 Random Readers <br/>w/ 1 Random Writer|  206K rps |   336K rps  | -38.5%  | [link](#readwhilewriting) |
+|32 Sequential Readers                    | 2.12M rps |  6.84M rps  | -69.0%  | [link](#readseq)|
 * wps: writes per second.
 * rps: reads per second.
 
