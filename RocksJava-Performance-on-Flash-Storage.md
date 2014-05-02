@@ -1,4 +1,4 @@
-RocksJava is a project that we initiated in April 2014 to build a high performance Java driver for RocksDB.  Here we would like to release its very first performance numbers on flash storage.  This page will first present the result summary.  Details about experimental setup and commands to run the benchmark will be covered in the later sections.
+RocksJava is a project we launched in April 2014 to build a high performance Java driver for RocksDB.  Here we would like to release its very first performance numbers on flash storage.  This page will first present the result summary.  Details about experimental setup and commands to run the benchmark will be covered in the later sections.
 
 # Result Summary
 We repeated the benchmarks on flash storage described in [3] and compare the performance between RocksJava and the RocksDB C++.  The database used in the benchmarks has one billion key-values, and each key / value has 16 / 800 bytes respectively.  Below are the performance comparison between RocksJava and RocksDB c++ on different workloads:
@@ -61,32 +61,32 @@ Here're the commands we used to run the benchmark:
 RocksJava:
 
 ```c++
-    java -server -d64 -XX:NewSize=4m -XX:+AggressiveOpts -Djava.library.path=.:../ -cp rocksdbjni.jar:.:./* \
-        org.rocksdb.benchmark.DbBenchmark --benchmarks=fillseq --disable_seek_compaction=true \
-        --mmap_read=false --statistics=true --histogram=true --threads=1 --value_size=800 \
-        --block_size=65536 --cache_size=1048576 --bloom_bits=10 --cache_numshardbits=4 \
-        --open_files=500000 --verify_checksum=true --db=/rocksdb-bench/java/b2 --sync=false \
-        --disable_wal=true --stats_interval=1000000 --compression_ratio=0.50 --disable_data_sync=0 \
-        --write_buffer_size=134217728 --target_file_size_base=67108864 --max_write_buffer_number=3 \
-        --max_background_compactions=20 --level0_file_num_compaction_trigger=4 \
-        --level0_slowdown_writes_trigger=8 --level0_stop_writes_trigger=12 --num_levels=6 \
-        --delete_obsolete_files_period_micros=300000000 --min_level_to_compress=0
-        --max_grandparent_overlap_factor=10 --stats_per_interval=1 --max_bytes_for_level_base=10485760 \
-        --use_existing_db=false --cache_remove_scan_count_limit=16 --num=1000000000
+java -server -d64 -XX:NewSize=4m -XX:+AggressiveOpts -Djava.library.path=.:../ -cp rocksdbjni.jar:.:./* \
+    org.rocksdb.benchmark.DbBenchmark --benchmarks=fillseq --disable_seek_compaction=true \
+    --mmap_read=false --statistics=true --histogram=true --threads=1 --value_size=800 \
+    --block_size=65536 --cache_size=1048576 --bloom_bits=10 --cache_numshardbits=4 \
+    --open_files=500000 --verify_checksum=true --db=/rocksdb-bench/java/b2 --sync=false \
+    --disable_wal=true --stats_interval=1000000 --compression_ratio=0.50 --disable_data_sync=0 \
+    --write_buffer_size=134217728 --target_file_size_base=67108864 --max_write_buffer_number=3 \
+    --max_background_compactions=20 --level0_file_num_compaction_trigger=4 \
+    --level0_slowdown_writes_trigger=8 --level0_stop_writes_trigger=12 --num_levels=6 \
+    --delete_obsolete_files_period_micros=300000000 --min_level_to_compress=0
+    --max_grandparent_overlap_factor=10 --stats_per_interval=1 --max_bytes_for_level_base=10485760 \
+    --use_existing_db=false --cache_remove_scan_count_limit=16 --num=1000000000
 ```
 RocksDB C++:
 ```c++
-    ./db_bench --benchmarks=fillseq --disable_seek_compaction=1 \
-        --mmap_read=0 --statistics=0 --histogram=0 --threads=1 --value_size=800 \
-        --block_size=65536 --cache_size=1048576 --bloom_bits=10 --cache_numshardbits=4 \
-        --open_files=500000 --verify_checksum=1 --db=/rocksdb-bench/cc/b2 --sync=0 \
-        --disable_wal=1 --compression_ratio=50 --disable_data_sync=0 \
-        --write_buffer_size=134217728 --target_file_size_base=67108864 --max_write_buffer_number=3 \
-        --max_background_compactions=20 --level0_file_num_compaction_trigger=4 \
-        --level0_slowdown_writes_trigger=8 --level0_stop_writes_trigger=12 --num_levels=6 \
-        --delete_obsolete_files_period_micros=300000000 --min_level_to_compress=0 \
-        --max_grandparent_overlap_factor=10 --max_bytes_for_level_base=10485760 \
-        --use_existing_db=0 --num=1000000000
+./db_bench --benchmarks=fillseq --disable_seek_compaction=1 \
+    --mmap_read=0 --statistics=0 --histogram=0 --threads=1 --value_size=800 \
+    --block_size=65536 --cache_size=1048576 --bloom_bits=10 --cache_numshardbits=4 \
+    --open_files=500000 --verify_checksum=1 --db=/rocksdb-bench/cc/b2 --sync=0 \
+    --disable_wal=1 --compression_ratio=50 --disable_data_sync=0 \
+    --write_buffer_size=134217728 --target_file_size_base=67108864 --max_write_buffer_number=3 \
+    --max_background_compactions=20 --level0_file_num_compaction_trigger=4 \
+    --level0_slowdown_writes_trigger=8 --level0_stop_writes_trigger=12 --num_levels=6 \
+    --delete_obsolete_files_period_micros=300000000 --min_level_to_compress=0 \
+    --max_grandparent_overlap_factor=10 --max_bytes_for_level_base=10485760 \
+    --use_existing_db=0 --num=1000000000
 ```
 
 <a name="readrandom"/>
