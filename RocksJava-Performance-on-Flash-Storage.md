@@ -125,6 +125,10 @@ RocksDB C++:
     --use_existing_db=1 --num=31250000
 ```
 
+<a name="fillrandom"/>
+## Random Write
+TBD
+
 <a name="readwhilewriting"/>
 ## Multi-Threaded Read and Single-Threaded Write
 
