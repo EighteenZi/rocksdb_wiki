@@ -165,7 +165,7 @@ RocksDB C++:
 ```
 
 <a name="readseq"/>
-## Sequential Read
+## Test 6. Sequential Read
 In this benchmark, 32 threads concurrently read the whole database sequentially.  The database is again created using the sequential bulk-load benchmark.  Here are the commands we used to run this benchmark:
 
 RocksJava:
