@@ -4,7 +4,7 @@ RocksJava is a project to build high performance but easy-to-use Java driver for
 To build RocksJava, the first thing is to specify the environmental variable JAVA_HOME to where you install Java SDK.  Once JAVA_HOME is properly set, simply run `make rocksdbjava` will build the Java binding for RocksDB:
 
 ```bash
-    rocksdb $ make rocksdbjava
+rocksdb $ make rocksdbjava
 ```
 
 This will generate `rocksdbjni.jar` and `librocksdbjni.so` (or librocksdbjni.jnilib in Mac) in `java/` directory under the rocksdb's root directory.  Specifically, `rocksdbjni.jar` contains the Java classes that defines the Java API for RocksDB, while `librocksdbjni.so` includes the C++ rocksdb library and the native implementation of the Java classes defined in `rocksdbjni.jar`.
