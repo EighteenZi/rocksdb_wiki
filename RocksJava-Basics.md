@@ -1,6 +1,6 @@
 RocksJava is a project to build high performance but easy-to-use Java driver for RocksDB.  In this page you will learn the basics of RocksDB Java API.
 
-# Getting Started
+## Getting Started
 To build RocksJava, the first thing is to specify the environmental variable JAVA_HOME to where you install Java SDK.  Once JAVA_HOME is properly set, simply run `make rocksdbjava` will build the Java binding for RocksDB:
 
 ```bash
@@ -53,7 +53,7 @@ java -ea -Djava.library.path=.:../ -cp "rocksdbjni.jar:.:./*" org.rocksdb.test.R
 Passed ReadOptionsTest
 ```
 
-# Opening a Database
+## Opening a Database
 A `rocksdb` database has a name which corresponds to a file system directory. All of the contents of database are stored in this directory. The following example shows how to open a database, creating it if necessary:
 
 ```java
@@ -77,10 +77,9 @@ import org.rocksdb.Options;
 ...
 ```
 
-# Error Handling
-You may notice the `RocksDBException` class above.  This exception class extends `java.lang.Exception` and encapsulates the `Status` class in the C++ rocksdb and describes any internal errors of RocksDB.
+> TIP: You may notice the `RocksDBException` class above.  This exception class extends `java.lang.Exception` and encapsulates the `Status` class in the C++ rocksdb, which describes any internal errors of RocksDB.
 
-# Closing a Database
+## Closing a Database
 When you are done with a database, it is suggested to call `RocksDB.close()` (or its equivalent method `dispose()`) and `options.dispose()` to release their C++ resource manually, although these associated C++ resources will also be released in their finalizer:
 
 ```java
@@ -88,9 +87,9 @@ When you are done with a database, it is suggested to call `RocksDB.close()` (or
   options.dispose();
 ```
 
-> **TIP**: When you see a class extends `RocksObject`, it means any instance of this class has a native handle which stores a C++ pointer pointing to some resource.  It is suggested to invoke `RocksObject.dispose()` manually once its all associated database has been closed.  Note that calling methods of an already-disposed RocksObject instance is an undefined behavior.
+> **TIP**: When you see a class extends `RocksObject`, it means any instance of this class has a native handle which stores a C++ pointer pointing to some rocksdb related resource.  It is suggested to invoke `RocksObject.dispose()` manually once its all associated database has been closed.  Note that calling methods of an already-disposed RocksObject instance is an undefined behavior.
 
-# Reads and Writes
+## Reads and Writes
 The database provides `put`, `remove`, and `get` methods to modify/query the database. For example, the following code moves the value stored under `key1` to `key2`.
 
 ```java
@@ -113,5 +112,5 @@ try {
 <!-- separator -->
 > **TIP**: To avoid creating a byte-array in `RocksDB.get()`, you can also use its parametric method `int RocksDB.get(byte[] key, byte[] value)` or `int RocksDB.get(ReadOptions opt, byte[] key, byte[] value)`, where the output value will be filled into the pre-allocated output buffer `value`, and its `int` returned value will indicate the actual length of the value associated with the input `key`.  When the returned value is greater than `value.length`, this indicates the size of the output buffer is insufficient.
 
-# Further Documentation
+## Further Documentation
 TBD
