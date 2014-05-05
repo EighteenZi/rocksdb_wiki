@@ -88,7 +88,7 @@ When you are done with a database, it is suggested to call `RocksDB.close()` (or
   options.dispose();
 ```
 
-> **TIP**: When you see a class extends `RocksObject`, it means any instance of this class has a native handle which stores a C++ pointer pointing to some resource.  It is suggested to invoke `RocksObject.dispose()` manually once its all associated database has been closed.  Note that calling methods of an already-disposed RocksObject instance will yield undefined behavior.
+> **TIP**: When you see a class extends `RocksObject`, it means any instance of this class has a native handle which stores a C++ pointer pointing to some resource.  It is suggested to invoke `RocksObject.dispose()` manually once its all associated database has been closed.  Note that calling methods of an already-disposed RocksObject instance is an undefined behavior.
 
 # Reads and Writes
 The database provides `put`, `remove`, and `get` methods to modify/query the database. For example, the following code moves the value stored under `key1` to `key2`.
