@@ -28,4 +28,5 @@
 * [Release 2.7] (https://github.com/facebook/rocksdb/wiki/What's-new-in-RocksDB2.7)
 
 ### RocksJava --- The Java Binding for RocksDB
+* [RocksJava Basics] (https://github.com/facebook/rocksdb/wiki/RocksJava-Basics)
 * [RocksJava performance] (https://github.com/facebook/rocksdb/wiki/RocksJava-Performance-on-Flash-Storage)
