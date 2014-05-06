@@ -14,6 +14,7 @@
 * [Read-Modify-Write Operator] (https://github.com/facebook/rocksdb/wiki/Merge-Operator)
 * [Tailing Iterator] (https://github.com/facebook/rocksdb/wiki/Tailing-Iterator)
 * [Time to Live (TTL) Support] (https://github.com/facebook/rocksdb/wiki/Time-to-Live)
+* [Huge Page TLB Support] (https://github.com/facebook/rocksdb/wiki/Allocating-Some-Indexes-and-Bloom-Filters-using-Huge-Page-TLB)
 
 ### Tools / Utilities
 * [Administration and Data Access Tool] (https://github.com/facebook/rocksdb/wiki/Ldb-Tool)
