@@ -19,6 +19,8 @@
 ### Tools / Utilities
 * [Administration and Data Access Tool] (https://github.com/facebook/rocksdb/wiki/Ldb-Tool)
 * [How to Backup RocksDB?] (https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F)
+* [How to persist in-memory RocksDB database] (https://github.com/facebook/rocksdb/wiki/How-to-persist-in-memory-RocksDB-database%3F)
+
 
 ### Implementation Details
 * [How We Index SST] (https://github.com/facebook/rocksdb/wiki/Indexing-SST-Files-for-Better-Lookup-Performance)
