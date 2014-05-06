@@ -7,6 +7,7 @@ Currently, it is only supported in Linux.
 #### Requisition 
 * You need to pre-reserve huge pages in linux
 * Find out the huge page size to allocate
+
 See Linux Documentation/vm/hugetlbpage.txt for details.
 
 #### Configure
