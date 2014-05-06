@@ -27,8 +27,9 @@
 * [Merge Operator Implementation] (https://github.com/facebook/rocksdb/wiki/Merge-Operator-Implementation)
 
 ### Release Notes
-* [Release Methodology] (https://github.com/facebook/rocksdb/wiki/RocksDB-Release-Methodology)
+* [Release 2.8] (http://rocksdb.org/blog/371/rocksdb-2-8-release/)
 * [Release 2.7] (https://github.com/facebook/rocksdb/wiki/What's-new-in-RocksDB2.7)
+* [Release Methodology] (https://github.com/facebook/rocksdb/wiki/RocksDB-Release-Methodology)
 
 ### RocksJava --- The Java Binding for RocksDB
 * [RocksJava Basics] (https://github.com/facebook/rocksdb/wiki/RocksJava-Basics)
