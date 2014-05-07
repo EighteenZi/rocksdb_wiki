@@ -44,7 +44,14 @@ Although we needed to make drastic API changes to support Column Families, we st
     db->Put(rocksdb::WriteOptions(), handles[1], Slice("key"), Slice("value")); 
     std::string value;
     db->Get(rocksdb::ReadOptions(), handles[1], Slice("key"), &value);
- 
+
+    // atomic write
+    rocksdb::WriteBatch batch;
+    batch.Put(handle[0], Slice("key2"), Slice("value2"));
+    batch.Put(handle[1], Slice("key3"), Slice("value3"));
+    batch.Delete(handle[0], Slice("key"));
+    db->Write(rocksdb::WriteOptions(), &batch);
+
     // drop column family
     db->DropColumnFamily(handles[1]);
 
