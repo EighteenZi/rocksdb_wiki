@@ -15,6 +15,45 @@ Column Families provide a way to logically partition the database. Some interest
 ### Backward compatibility
 Although we needed to make drastic API changes to support Column Families, we still support the old API. You don't need to make any changes to upgrade your application to RocksDB 3.0. All key-value pairs inserted through the old API are inserted into the Column Family "default". The same is true for downgrade after an upgrade. If you never use more than one Column Family, we don't change any disk format, which means you can safely roll back to RocksDB 2.8. This is very important for our customers inside Facebook.
 
+### Example usage
+ 
+    // open DB
+    rocksdb::Options options;
+    options.create_if_missing = true;
+    rocksdb::DB* db;
+    rocksdb::DB::Open(options, "test_db", &db);
+    
+    // create column family
+    rocksdb::ColumnFamilyHandle* cf;
+    rocksdb::CreateColumnFamily(rocksdb::ColumnFamilyOptions(), "new_cf", &cf);
+
+    // close DB
+    delete cf;
+    delete db;
+
+    // open DB with two column families
+    std::vector<ColumnFamilyDescriptor> column_families;
+    // have to open default column familiy
+    column_families.push_back(ColumnFamilyDescriptor(kDefaultColumnFamilyName, rocksdb::ColumnFamilyOptions());
+    // open the new one, too
+    column_families.push_back(ColumnFamilyDescriptor("new_cf", rocksdb::ColumnFamilyOptions());
+    std::vector<ColumnFamilyHandle*> handles;
+    rocksdb::DB::Open(rocksdb::DBOptions(), "test_db", column_families, &handles, &db);
+
+    // put and get from non-default column family
+    db->Put(rocksdb::WriteOptions(), handles[1], Slice("key"), Slice("value")); 
+    std::string value;
+    db->Get(rocksdb::ReadOptions(), handles[1], Slice("key"), &value);
+ 
+    // drop column family
+    db->DropColumnFamily(handles[1]);
+
+    // close db
+    for (auto handle : handles) {
+       delete handle;
+    }
+    delete db;
+
 ### Reference
 
 \# `Options, ColumnFamilyOptions, DBOptions`
