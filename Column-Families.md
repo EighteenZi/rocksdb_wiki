@@ -32,12 +32,12 @@ Although we needed to make drastic API changes to support Column Families, we st
     delete db;
 
     // open DB with two column families
-    std::vector<ColumnFamilyDescriptor> column_families;
+    std::vector<rocksdb::ColumnFamilyDescriptor> column_families;
     // have to open default column familiy
-    column_families.push_back(ColumnFamilyDescriptor(kDefaultColumnFamilyName, rocksdb::ColumnFamilyOptions());
+    column_families.push_back(ColumnFamilyDescriptor(rocksdb::kDefaultColumnFamilyName, rocksdb::ColumnFamilyOptions());
     // open the new one, too
     column_families.push_back(ColumnFamilyDescriptor("new_cf", rocksdb::ColumnFamilyOptions());
-    std::vector<ColumnFamilyHandle*> handles;
+    std::vector<rocksdb::ColumnFamilyHandle*> handles;
     rocksdb::DB::Open(rocksdb::DBOptions(), "test_db", column_families, &handles, &db);
 
     // put and get from non-default column family
@@ -105,4 +105,6 @@ All other API calls have a new argument `ColumnFamilyHandle*`, through which you
 
 ## Implementation
 
-TODO
+The main idea behind Column Families is that they share the write-ahead log and don't share memtables and table files. By sharing write-ahead logs we get awesome benefit of atomic writes. By separating memtables and table files, we are able to configure column families independently and delete them quickly.
+
+Every time a single Column Family is flushed, we create a new WAL (write-ahead log). All new writes to all Column Families go to the new WAL. However, we still can't delete the old WAL since it contains live data from other Column Families. We can delete the old WAL only when all Column Families have been flushed and all data contained in that WAL persisted in table files. This created some interesting implementation details and will create interesting tuning requirements. Make sure to tune your RocksDB such that all column families are regularly flushed. Also, take a look at `Options::max_total_wal_size`, which might help you with deleting stale column families.
