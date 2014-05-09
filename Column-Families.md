@@ -17,50 +17,8 @@ Although we needed to make drastic API changes to support Column Families, we st
 
 ### Example usage
  
-    // open DB
-    rocksdb::Options options;
-    options.create_if_missing = true;
-    rocksdb::DB* db;
-    rocksdb::DB::Open(options, "test_db", &db);
-    
-    // create column family
-    rocksdb::ColumnFamilyHandle* cf;
-    rocksdb::CreateColumnFamily(rocksdb::ColumnFamilyOptions(), "new_cf", &cf);
-
-    // close DB
-    delete cf;
-    delete db;
-
-    // open DB with two column families
-    std::vector<rocksdb::ColumnFamilyDescriptor> column_families;
-    // have to open default column familiy
-    column_families.push_back(ColumnFamilyDescriptor(rocksdb::kDefaultColumnFamilyName, rocksdb::ColumnFamilyOptions());
-    // open the new one, too
-    column_families.push_back(ColumnFamilyDescriptor("new_cf", rocksdb::ColumnFamilyOptions());
-    std::vector<rocksdb::ColumnFamilyHandle*> handles;
-    rocksdb::DB::Open(rocksdb::DBOptions(), "test_db", column_families, &handles, &db);
-
-    // put and get from non-default column family
-    db->Put(rocksdb::WriteOptions(), handles[1], Slice("key"), Slice("value")); 
-    std::string value;
-    db->Get(rocksdb::ReadOptions(), handles[1], Slice("key"), &value);
-
-    // atomic write
-    rocksdb::WriteBatch batch;
-    batch.Put(handle[0], Slice("key2"), Slice("value2"));
-    batch.Put(handle[1], Slice("key3"), Slice("value3"));
-    batch.Delete(handle[0], Slice("key"));
-    db->Write(rocksdb::WriteOptions(), &batch);
-
-    // drop column family
-    db->DropColumnFamily(handles[1]);
-
-    // close db
-    for (auto handle : handles) {
-       delete handle;
-    }
-    delete db;
-
+TODO
+   
 ### Reference
 
 #### `Options, ColumnFamilyOptions, DBOptions`
