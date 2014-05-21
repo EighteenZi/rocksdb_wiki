@@ -2,6 +2,10 @@ FIFO compaction style is the simplest compaction strategy. It is suited for keep
 
 In FIFO compaction, all files are in level 0. When total size of the data exceeds configured size (CompactionOptionsFIFO::max_table_files_size), we delete the oldest table file. This means that write amplification of data is always 1 (in addition to WAL write amplification).
 
+Currently, CompactRange() function just manually triggers the compaction and deletes the old table files if there is need. It ignores the parameters of the function (begin and end keys).
+
+Since we never rewrite the key-value pair, we also don't ever apply the compaction filter on the keys.
+
 Please use FIFO compaction style with caution. It's still an experimental feature not tested in production. It also doesn't honor database snapshots (yet).
 
 ## Future work
