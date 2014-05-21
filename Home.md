@@ -1,5 +1,5 @@
 ### Overview
-* [RocksDB Overview](https://github.com/facebook/rocksdb/wiki/RocksDB-Overview)
+* [RocksDB Basics](https://github.com/facebook/rocksdb/wiki/RocksDB-Basics)
 
 ### Performance
 * [Performance on Flash Storage] (https://github.com/facebook/rocksdb/wiki/Performance-Benchmarks)
