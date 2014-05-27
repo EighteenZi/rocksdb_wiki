@@ -1,5 +1,6 @@
 ### Overview
 * [RocksDB Basics](https://github.com/facebook/rocksdb/wiki/RocksDB-Basics)
+* [Release Methodology] (https://github.com/facebook/rocksdb/wiki/RocksDB-Release-Methodology)
 
 ### Performance
 * [Performance on Flash Storage] (https://github.com/facebook/rocksdb/wiki/Performance-Benchmarks)
@@ -23,15 +24,9 @@
 * [How to Backup RocksDB?] (https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F)
 * [How to persist in-memory RocksDB database] (https://github.com/facebook/rocksdb/wiki/How-to-persist-in-memory-RocksDB-database%3F)
 
-
 ### Implementation Details
 * [How We Index SST] (https://github.com/facebook/rocksdb/wiki/Indexing-SST-Files-for-Better-Lookup-Performance)
 * [Merge Operator Implementation] (https://github.com/facebook/rocksdb/wiki/Merge-Operator-Implementation)
-
-### Release Notes
-* [Release 2.8] (http://rocksdb.org/blog/371/rocksdb-2-8-release/)
-* [Release 2.7] (https://github.com/facebook/rocksdb/wiki/What's-new-in-RocksDB2.7)
-* [Release Methodology] (https://github.com/facebook/rocksdb/wiki/RocksDB-Release-Methodology)
 
 ### RocksJava --- The Java Binding for RocksDB
 * [RocksJava Basics] (https://github.com/facebook/rocksdb/wiki/RocksJava-Basics)
