@@ -22,9 +22,9 @@ See [RocksDB version macros](https://github.com/facebook/rocksdb/wiki/RocksDB-ve
 We use both Jenkins and Travis to continuously run tests on our master branch. We run:
 
 1. All unit tests with `make check`.
-2. All unit tests with valgrind.
-3. All unit tests with ASAN enabled.
-3. db_stress tests to verify data correctness. We run it in both normal and ASAN mode.
-4. db_bench to detect any performance regressions.
+2. All unit tests with valgrind -- `make valgrind_check`.
+3. All unit tests with ASAN enabled -- `make asan_check`.
+3. db_stress tests to verify data correctness. We run it in both normal and ASAN mode -- `make crash_test` and `make asan_crash_test`.
+4. db_bench to detect any performance regressions -- `build_tools/regression_build_test.sh`
 
 Every release is pushed to a big number of Facebook servers across lots of different services and configurations in the following week or two. This is the real test. We sometimes find issues in production that we fix by releasing new patches to the release branch. You can assume that releases that are two weeks old are very stable and throughly tested.
