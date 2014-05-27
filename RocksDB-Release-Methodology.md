@@ -19,7 +19,8 @@ See [RocksDB version macros](https://github.com/facebook/rocksdb/wiki/RocksDB-ve
 
 # Testing
 
-We use both Jenkins and Travis to continuously run tests on our master branch. Tests we run:
+We use both Jenkins and Travis to continuously run tests on our master branch. We run:
+
 1. All unit tests with `make check`.
 2. Valgrind and ASAN tests.
 3. db_stress tests to verify data correctness. We run it in both normal and ASAN mode.
