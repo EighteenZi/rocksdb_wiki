@@ -1,4 +1,4 @@
-FIFO compaction style is the simplest compaction strategy. It is suited for keeping event log data with very low overhead (query log for example).
+FIFO compaction style is the simplest compaction strategy. It is suited for keeping event log data with very low overhead (query log for example). It periodically deletes the old data, so it's basically a TTL compaction style.
 
 In FIFO compaction, all files are in level 0. When total size of the data exceeds configured size (CompactionOptionsFIFO::max_table_files_size), we delete the oldest table file. This means that write amplification of data is always 1 (in addition to WAL write amplification).
 
