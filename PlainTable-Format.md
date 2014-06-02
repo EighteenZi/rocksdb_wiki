@@ -61,6 +61,7 @@ Each data row is encoded as:
       length of value: varint32
       value bytes
     <end of a row>
+See [Key Encoding](#key-encoding) for format of encoded key.
  
 #### Key Encoding
 There are two encoding type to the key: kPlain and kPrefix, which can be specified when creating the plain table factory.
