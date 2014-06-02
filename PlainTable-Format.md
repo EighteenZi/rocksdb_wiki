@@ -17,6 +17,23 @@ Limitations:
 
 We have plan to reduce some of the limitations.
  
+### Usage
+
+You can call two factory functions NewPlainTableFactory() or NewTotalOrderPlainTableFactory() in table.h to generate a table factory for plain table with your parameters and pass it to Options.table_factory or ColumnFamilyOptions.table_factory. You need to specify a prefix extractor if you use the former function. Examples:
+
+    options.table_factory.reset(NewPlainTableFactory());
+    options.prefix_extractor.reset(NewFixedPrefixTransform(8));
+
+or
+
+    options.table_factory.reset(NewTotalOrderPlainTableFactory());
+
+See comments of the two functions in include/rocksdb/table.h for explanation to the parameters.
+
+NewPlainTableFactory() creates plain table factory for plain tables with hash-based index using key prefixes. It is what PlainTable is optimized for.
+
+While NewTotalOrderPlainTableFactory() doesn't requrie a prefix extractor and uses a totally binary index. This function is mainly to make PlainTable feature-complete. We haven't yet highly optimized query performance in this case.
+
 ### File Format
 
     <beginning_of_file>
