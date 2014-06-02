@@ -70,7 +70,15 @@ If fixed key length is given the plain internal key is encoded.
 
 If the fixed key length is not given, the key is variable length and will be encoded as
 
-    [length of key: varint32] + key bytes
+    [length of key: varint32] + user key + internal bytes
+
+See ##### Internal Bytes Encoding for details of internal bytes.
+
+##### Prefix Encoding
+Coming soon
+
+##### Internal Bytes Encoding
+In both of Plain and Prefix encoding type, internal bytes of the internal key are encoded in the same way.
  
 ### In-Memory Index Format
 
