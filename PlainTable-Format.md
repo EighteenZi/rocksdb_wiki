@@ -47,6 +47,8 @@ While NewTotalOrderPlainTableFactory() doesn't requrie a prefix extractor and us
     <end_of_file>
  
 Format of property block and footer is the same as [BlockBasedTable format](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format)
+
+See [Row Format](#row-format) for the format of each data row.
  
 Two properties in property block are used to read data:
 
