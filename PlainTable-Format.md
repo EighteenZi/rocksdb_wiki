@@ -118,21 +118,23 @@ Here are the format for the three cases mentioned:
 
 See [Internal Bytes Encoding](#internal-bytes-encoding) for details of internal bytes for all the three cases.
 
+With this format, without knowing the prefix, rows key only be seek using file offset of a full key. So if there are too many keys in a prefix, plain table builder might determine to rewrite the full key again, even if it is not the first key of the prefix, to make seek easier.
+
 Here is an example, we for following keys (prefix and suffix are separated by spaces):
 
-    0000 0001
-    0000 00021
-    0000 0002
-    00011 00
-    0002 0001
+    AAAA AAAB
+    AAAA AAABA
+    AAAA AAAC
+    AAABB AA
+    AAAC AAAB
 
 Will be encoded like this:
 
-    FK 8 00000001
-    PF 4 SF 5 00021
-    SF 4 0002
-    FK 7 0001100
-    FK 8 00020001
+    FK 8 AAAAAAAB
+    PF 4 SF 5 AAABA
+    SF 4 AAAC
+    FK 7 AAABBAA
+    FK 8 AAACAAAB
 
 (where FK means full key flag, PF means prefix flag and SF means suffix flag)
 
