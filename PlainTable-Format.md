@@ -35,7 +35,7 @@ NewPlainTableFactory() creates plain table factory for plain tables with hash-ba
 While NewTotalOrderPlainTableFactory() doesn't requrie a prefix extractor and uses a totally binary index. This function is mainly to make PlainTable feature-complete. We haven't yet highly optimized query performance in this case.
 
 ### File Format
-
+#### Basic
     <beginning_of_file>
       [data row1]
       [data row1]
@@ -54,16 +54,23 @@ Two properties in property block are used to read data:
 
     fixed_ken_len: length of the key if all keys have the same length, 0 otherwise.
 
+#### Row Format
 Each data row is encoded as:
-
     <beginning of a row>
-      [length of key: varint32] ^
-      key bytes
+      encoded key
       length of value: varint32
       value bytes
     <end of a row>
  
-^ If keys are of fixed length, there will not be "length of key" field.
+#### Key Encoding
+There are two encoding type to the key: kPlain and kPrefix, which can be specified when creating the plain table factory.
+
+##### Plain Encoding
+If fixed key length is given the plain internal key is encoded.
+
+If the fixed key length is not given, the key is variable length and will be encoded as
+
+    [length of key: varint32] + key bytes
  
 ### In-Memory Index Format
 
@@ -100,6 +107,7 @@ Starting from the offset of binary search buffer, a binary search index is encod
 where N = number_of_records. The offsets are in ascending order.
 
 The reason for only storing 31-bit offset and use 1-bit to identify whether a binary search is needed is to make the index compact.
+
 
 #### An Example of Index
 
