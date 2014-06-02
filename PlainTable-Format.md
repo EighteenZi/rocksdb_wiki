@@ -89,6 +89,7 @@ In RocksDB, Internal bytes of a key include a row type (value, delete, merge, et
 where type takes one byte and sequence ID takes 7 bytes.
 
 In Plain Table format, it is also the normal way one key can be optimized. Furthermore, we have an optimization to save some extra bytes for a common case: value type with sequence ID 0. In RocksDB, we have an optimization to fill sequence ID to be 0 for a key when we are sure there is no previous value for this key in the system (to be specifically, the first key of the last level for level-style compaction or last file in universal style) to enable better compression or encoding. In PlainTable, we use 1 byte "0x80" instead of 8 bytes for the internal bytes:
+
      +----------- ...... -------------+----+
      |       user key                 |0x80|
      +----------- ..... --------------+----+
