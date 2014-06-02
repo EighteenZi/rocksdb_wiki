@@ -78,7 +78,63 @@ If the fixed key length is not given, the key is variable length and will be enc
 See [Internal Bytes Encoding](#internal-bytes-encoding) for details of internal bytes.
 
 ##### Prefix Encoding
-Coming soon
+kPrefix encoding type is a special delta encoding, in which if a row shows the same prefix (determined by prefix extractor given by the user) as the previous key, we can avoid to repeat the prefix part of the key.
+
+In that case, there are three cases to encode a key (remember all keys are sorted so the keys sharing the same prefixes are together):
+
+* the first key of a prefix, where a full key need to be written
+* the second key of a prefix, where the prefix length needs to be recorded, as well as bytes other than prefix (to simplify, we call it suffix here)
+* the third or later key of a prefix, where only the suffix part needs to be written.
+
+We defined three flags for indicate full key, a prefix, as well as a suffix. For all the three cases, we need a size with it. They are encoded in this format:
+
+The 8 bits of the first byte:
+
+    +----+----+----+----+----+----+----+----+
+    |  Type   |            Size             |
+    +----+----+----+----+----+----+----+----+
+
+The first two bits indicate full key (00), prefix (01), or suffix (02). The last 6 bits are for size. If the size bits are not all 1, it means the size of the key. Otherwise, varint32 is written after this byte. This varint value + 0x3F (the value of all 1) will be the key size. In this way, shorter keys only need one byte.
+
+Here are the format for the three cases mentioned:
+
+(1) Full Key
+
+    +----------------------+---------------+----------------+
+    | Full Key Flag + Size | Full User Key | Internal Bytes |
+    +----------------------+---------------+----------------+
+
+(2) The second key of the prefix
+
+    +--------------------+--------------------+------------+----------------+
+    | Prefix Flag + Size | Suffix Flag + Size | Key Suffix | Internal Bytes |
+    +--------------------+--------------------+------------+----------------+
+
+(3) The third and later key of the prefix:
+
+    +--------------------+------------+----------------+
+    | Suffix Flag + Size | Key Suffix | Internal Bytes |
+    +--------------------+------------+----------------+
+
+See [Internal Bytes Encoding](#internal-bytes-encoding) for details of internal bytes for all the three cases.
+
+Here is an example, we for following keys (prefix and suffix are separated by spaces):
+
+    0000 0001
+    0000 00021
+    0000 0002
+    00011 00
+    0002 0001
+
+Will be encoded like this:
+
+    FK 8 00000001
+    PF 4 SF 5 00021
+    SF 4 0002
+    FK 7 0001100
+    FK 8 00020001
+
+(where FK means full key flag, PF means prefix flag and SF means suffix flag)
 
 ##### Internal Bytes Encoding
 In both of Plain and Prefix encoding type, internal bytes of the internal key are encoded in the same way.
