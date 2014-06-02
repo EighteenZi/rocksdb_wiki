@@ -72,7 +72,7 @@ If the fixed key length is not given, the key is variable length and will be enc
 
     [length of key: varint32] + user key + internal bytes
 
-See (Internal Bytes Encoding)[##### Internal Bytes Encoding] for details of internal bytes.
+See [Internal Bytes Encoding](##### Internal Bytes Encoding) for details of internal bytes.
 
 ##### Prefix Encoding
 Coming soon
