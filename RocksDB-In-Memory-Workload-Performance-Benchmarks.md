@@ -7,7 +7,7 @@ The goal of these benchmarks is to measure the performance of RocksDB when the d
 
 All of the benchmarks are run on the same machine. Here are common setup used for following benchmark tests. Some configs vary based on tests and will be mentioned in the corresponding subsection.
 
-* Intel Xeon E5-2660 @ 2.2GHz, 32 cores
+* 2 Intel Xeon E5-2660 @ 2.2GHz, total 16 cores (32 with HT)
 * 20MB CPU cache, 144GB Ram
 * CentOS release 6.3 (Kernel 3.2.51)
 * Commit (c90d446ee7b87682b1e0ec7e0c778d25a90c6294) from master branch
