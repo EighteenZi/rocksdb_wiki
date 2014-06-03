@@ -1,5 +1,8 @@
 The goal of these benchmarks is to measure the performance of RocksDB when the data resides in RAM. The system is configured to store transaction logs on persistent storage so that data is not lost on machine reboots.
 
+# TLDR
+4.5M - 7M read QPS for point lookups with sustained writes. 4M - 6M QPS prefix range scans with sustained writes.
+
 # Setup
 
 All of the benchmarks are run on the same machine. Here are common setup used for following benchmark tests. Some configs vary based on tests and will be mentioned in the corresponding subsection.
