@@ -21,35 +21,51 @@ https://github.com/facebook/rocksdb/blob/master/examples/column_families_example
    
 ### Reference
 
-#### `Options, ColumnFamilyOptions, DBOptions`
+```cpp
+Options, ColumnFamilyOptions, DBOptions
+```
 
 Defined in `include/rocksdb/options.h`, `Options` structures define how RocksDB behaves and performs. Before, every option was defined in a single `Options` struct. Going forward, options specific to a single Column Family will be defined in `ColumnFamilyOptions` and options specific to the whole RocksDB instance will be defined in `DBOptions`. Options struct is inheriting both ColumnFamilyOptions and DBOptions, which means you can still use it to define all the options for a DB instance with a single (default) column family.
 
-#### `ColumnFamilyHandle`
+```cpp
+ColumnFamilyHandle
+```
 
 Column Families are handled and referenced with a `ColumnFamilyHandle`. Think of it as a open file descriptor. You need to delete all `ColumnFamilyHandle`s before you delete your DB pointer. One interesting thing: Even if `ColumnFamilyHandle` is pointing to a dropped Column Family, you can continue using it. The data is actually deleted only after you delete all outstanding `ColumnFamilyHandle`s.
 
-#### `DB::Open(const DBOptions& db_options, const std::string& name, const std::vector<ColumnFamilyDescriptor>& column_families, std::vector<ColumnFamilyHandle*>* handles, DB** dbptr);`
+```cpp
+DB::Open(const DBOptions& db_options, const std::string& name, const std::vector<ColumnFamilyDescriptor>& column_families, std::vector<ColumnFamilyHandle*>* handles, DB** dbptr);
+```
 
 When opening a DB in a read-write mode, you need to specify all Column Families that currently exist in a DB. If that's not the case, `DB::Open` call will return `Status::InvalidArgument()`.  You specify Column Families with a vector of `ColumnFamilyDescriptor`s. `ColumnFamilyDescriptor` is just a struct with a Column Family name and `ColumnFamilyOptions`. Open call will return a `Status` and also a vector of pointers to `ColumnFamilyHandle`s, which you can then use to reference Column Families. Make sure to delete all `ColumnFamilyHandle`s before you delete the DB pointer.
 
-#### `DB::OpenForReadOnly(const DBOptions& db_options, const std::string& name, const std::vector<ColumnFamilyDescriptor>& column_families, std::vector<ColumnFamilyHandle*>* handles, DB** dbptr, bool error_if_log_file_exist = false)`
+```cpp
+DB::OpenForReadOnly(const DBOptions& db_options, const std::string& name, const std::vector<ColumnFamilyDescriptor>& column_families, std::vector<ColumnFamilyHandle*>* handles, DB** dbptr, bool error_if_log_file_exist = false)
+```
 
 The behavior is similar to `DB::Open`, except that it opens DB in read-only mode. One big difference is that when opening the DB as read-only, you don't need to specify all Column Families -- you can only open a subset of Column Families.
 
-#### `DB::ListColumnFamilies(const DBOptions& db_options, const std::string& name, std::vector<std::string>* column_families)`
+```cpp
+DB::ListColumnFamilies(const DBOptions& db_options, const std::string& name, std::vector<std::string>* column_families)
+```
 
 `ListColumnFamilies` is a static function that returns the list of all column families currently present in the DB.
 
-#### `DB::CreateColumnFamily(const ColumnFamilyOptions& options, const std::string& column_family_name, ColumnFamilyHandle** handle)`
+```cpp
+DB::CreateColumnFamily(const ColumnFamilyOptions& options, const std::string& column_family_name, ColumnFamilyHandle** handle)
+```
 
 Creates a Column Family specified with option and a name and returns `ColumnFamilyHandle` through an argument.
 
-#### `DropColumnFamily(ColumnFamilyHandle* column_family)`
+```cpp
+DropColumnFamily(ColumnFamilyHandle* column_family)
+```
 
 Drop the column family specified by `ColumnFamilyHandle`. Note that the actual data is not deleted until the client calls `delete column_family;`. You can still continue using the column family if you have outstanding `ColumnFamilyHandle` pointer.
 
-#### `DB::NewIterators(const ReadOptions& options, const std::vector<ColumnFamilyHandle*>& column_families, std::vector<Iterator*>* iterators)`
+```cpp
+DB::NewIterators(const ReadOptions& options, const std::vector<ColumnFamilyHandle*>& column_families, std::vector<Iterator*>* iterators)
+```
 
 This is the new call, which enables you to create iterators on multiple Column Families that have consistent view of the database.
 
