@@ -2,6 +2,7 @@ The ldb command line tool offers multiple data access and database admin command
 
 Example data access sequence:
 
+```bash
     $./ldb --db=/tmp/test_db --create_if_missing put a1 b1
     OK 
 
@@ -50,19 +51,19 @@ Example data access sequence:
     a3 : b3
     a4 : b4
     multiple words key : multiple words value
-
+```
 
 To dump an existing leveldb database in HEX:
-`
+```bash
 $ ./ldb --db=/tmp/test_db dump --hex > /tmp/dbdump
-`
+```
 
 To load the dumped HEX format data to a new leveldb database:
-`
+```bash
 $ cat /tmp/dbdump | ./ldb --db=/tmp/test_db_new load --hex --compression_type=bzip2 --block_size=65536 --create_if_missing --disable_wal
-`
+```
 
 To compact an existing leveldb database:
-`
+```bash
 $ ./ldb --db=/tmp/test_db_new compact --compression_type=bzip2 --block_size=65536
-`
+```
