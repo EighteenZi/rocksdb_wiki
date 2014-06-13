@@ -21,12 +21,16 @@ We have plan to reduce some of the limitations.
 
 You can call two factory functions NewPlainTableFactory() or NewTotalOrderPlainTableFactory() in table.h to generate a table factory for plain table with your parameters and pass it to Options.table_factory or ColumnFamilyOptions.table_factory. You need to specify a prefix extractor if you use the former function. Examples:
 
+```cpp
     options.table_factory.reset(NewPlainTableFactory());
     options.prefix_extractor.reset(NewFixedPrefixTransform(8));
+```
 
 or
 
+```cpp
     options.table_factory.reset(NewTotalOrderPlainTableFactory());
+```
 
 See comments of the two functions in include/rocksdb/table.h for explanation to the parameters.
 
@@ -34,6 +38,7 @@ NewPlainTableFactory() creates plain table factory for plain tables with hash-ba
 
 While NewTotalOrderPlainTableFactory() doesn't requrie a prefix extractor and uses a totally binary index. This function is mainly to make PlainTable feature-complete. We haven't yet highly optimized query performance in this case.
 
+```cpp
 ### File Format
 #### Basic
     <beginning_of_file>
@@ -45,6 +50,7 @@ While NewTotalOrderPlainTableFactory() doesn't requrie a prefix extractor and us
       [Property Block]
       [Footer]                               (fixed size; starts at file_size - sizeof(Footer))
     <end_of_file>
+```
  
 Format of property block and footer is the same as [BlockBasedTable format](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format)
 
@@ -52,17 +58,22 @@ See [Row Format](#row-format) for the format of each data row.
  
 Two properties in property block are used to read data:
 
+```cpp
     data_size: the end of data part of the file
 
     fixed_ken_len: length of the key if all keys have the same length, 0 otherwise.
+```
 
 #### Row Format
 Each data row is encoded as:
+```cpp
     <beginning of a row>
       encoded key
       length of value: varint32
       value bytes
     <end of a row>
+```
+
 See [Key Encoding](#key-encoding) for format of encoded key.
  
 #### Key Encoding
@@ -73,7 +84,9 @@ If fixed key length is given the plain internal key is encoded.
 
 If the fixed key length is not given, the key is variable length and will be encoded as
 
+```cpp
     [length of key: varint32] + user key + internal bytes
+```
 
 See [Internal Bytes Encoding](#internal-bytes-encoding) for details of internal bytes.
 
