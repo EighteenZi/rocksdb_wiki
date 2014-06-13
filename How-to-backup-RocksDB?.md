@@ -1,5 +1,6 @@
 In RocksDB, we have implemented an easy way to backup your DB. Here is a simple example:
  
+```cpp
     #include "rocksdb/db.h"
     #include "utilities/backupable_db.h"
     using namespace rocksdb;
@@ -10,14 +11,17 @@ In RocksDB, we have implemented an easy way to backup your DB. Here is a simple 
     backupable_db->Put(...); // do your thing 
     backupable_db->CreateNewBackup();
     delete backupable_db; // no need to also delete db
+```
   
 This simple example will create a backup of your DB in "/tmp/rocksdb_backup". Creating new BackupableDB consumes DB* and you should be calling all the DB methods on object `backupable_db` going forward.
 
 Restoring is also easy:
 
+```cpp
     RestoreBackupableDB* restore = new RestoreBackupableDB(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"));
     restore->RestoreDBFromLatestBackup("/tmp/rocksdb", "/tmp/rocksdb");
     delete restore;
+```
 
 This code will restore the backup back to "/tmp/rocksdb". The second parameter is the location of log files (In some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
 
