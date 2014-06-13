@@ -121,12 +121,8 @@ A database may only be opened by one process at a time. The <code>rocksdb</code>
 
 Merge operators provide efficient support for read-modify-write operation.
 More on the interface and implementation can be found on:
-
-<a href="https://github.com/facebook/rocksdb/wiki/Merge-Operator">
-    Merge Operator</a>
-
-<a href="https://github.com/facebook/rocksdb/wiki/Merge-Operator-Implementation">
-    Merge Operator Implementation</a>
+* [[Merge-Operator | Merge Operator]]
+* [[Merge-Operator-Implementation | Merge Operator Implementation]]
 
 
 ## Iteration
@@ -570,10 +566,7 @@ If both are not 0, WAL files will be checked every 10 min and both checks will b
 ## Other Information
 
 Details about the <code>rocksdb</code> implementation may be found in the following documents:
-<ul>
-<li> <a href="https://github.com/facebook/rocksdb/wiki/Overview">
-  RocksDB Overview and Architecture</a>
-<li> <a href="https://github.com/facebook/rocksdb/wiki/Rocksdb-Table-Format">
-    Format of an immutable Table file</a>
-<li> <a href="log_format.txt">Format of a log file</a>
+* [[RocksDB-Basics | RocksDB Overview and Architecture]]
+* [[Rocksdb-Table-Format | Format of an immutable Table file]]
+* <a href="log_format.txt">Format of a log file</a>
 </ul>
