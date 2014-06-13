@@ -9,24 +9,27 @@ Imagine we are maintaining a set of uint64 counters. Each counter has a distinct
 
 First, we define the interface and get the semantics right. Error handling is brushed aside for clarity.
 
-    class Counters {
-     public:
-      // (re)set the value of a named counter
-      virtual void Set(const string& key, uint64_t value);
+```cpp
+class Counters {
+ public:
+  // (re)set the value of a named counter
+  virtual void Set(const string& key, uint64_t value);
 
-      // remove the named counter
-      virtual void Remove(const string& key);
+  // remove the named counter
+  virtual void Remove(const string& key);
 
-      // retrieve the current value of the named counter, return false if not found
-      virtual bool Get(const string& key, uint64_t *value);
+  // retrieve the current value of the named counter, return false if not found
+  virtual bool Get(const string& key, uint64_t *value);
 
-      // increase the named counter by value.
-      // if the counter does not exist,  treat it as if the counter was initialized to zero
-      virtual void Add(const string& key, uint64_t value);
-    };
+  // increase the named counter by value.
+  // if the counter does not exist,  treat it as if the counter was initialized to zero
+  virtual void Add(const string& key, uint64_t value);
+  };
+```
 
 Second, we implement it with the existing rocksdb support. Pseudo-code follows:
 
+```cpp
     class RocksCounters : public Counters {
      public:
       static uint64_t kDefaultCount = 0;
@@ -64,6 +67,7 @@ Second, we implement it with the existing rocksdb support. Pseudo-code follows:
         Set(key, base + value);
       }
     };
+```
 
 Note that, other than the Add operation, all other three operations can be mapped directly to a single operation in rocksdb. Coding-wise, it's not that bad. However, a conceptually single operation Add is nevertheless mapped to two rocksdb operations. This has performance implication too - random Get is relatively slow in rocksdb.
 
@@ -71,10 +75,12 @@ Now, suppose we are going to host Counters as a service. Given the number of cor
 
 What if RocksDb directly supports the Add functionality? We might come up with something like this then:
 
+```cpp
     virtual void Add(const string& key, uint64_t value) {
       string serialized = Serialize(value);
       db->Add(add_option, key, serialized);
     }
+```
 
 This seems reasonable for Counters. But not everything you store in RocksDB is a counter. Say we need to track the locations where a user has been to. We could store a (serialized) list of locations as the value of a user key. It would be a common operation to add a new location to the existing list. We might want an Append operation in this case: db->Append(user_key, serialize(new_location)). This suggests that the semantics of the read-modify-write operation are really client value-type determined. To keep the library generic, we better abstract out this operation, and allow the client to specify the semantics. That brings us to our proposal: Merge.
 
@@ -109,6 +115,7 @@ And, for most simple applications (such as in our 64-Bit Counters example above)
 So the reader should assume that all merging is handled via an interface called AssociativeMergeOperator.
 Here is the public interface:
 
+```cpp
     // The Associative Merge Operator interface.
     // Client needs to provide an object implementing this interface.
     // Essentially, this class specifies the SEMANTICS of a merge, which only
@@ -142,6 +149,7 @@ Here is the public interface:
      private:
       ...
     };
+```
 
 **Some Notes:**
 * AssociativeMergeOperator is a sub-class of a class called MergeOperator. We will see later that the more generic MergeOperator class can be more powerful in certain cases. The AssociativeMergeOperator we use here is, on the other hand, a simpler interface.
@@ -150,6 +158,7 @@ Here is the public interface:
 
 Example:
 
+```cpp
      void Merge(...) {
        if (key start with "BAL:") {
          NumericAddition(...)
@@ -157,6 +166,7 @@ Example:
          ListAppend(...);
        }
      }
+```
 
 ## Other Changes to the client-visible interface
 
@@ -165,6 +175,7 @@ This object class should implement the functions of the interface, which will (e
 
 After defining this class, the user should have a way to specify to RocksDB to use this merge operator for its merges. We have introduced additional fields/methods to the DB class and the Options class for this purpose:
 
+```cpp
     // In addition to Get(), Put(), and Delete(), the DB class now also has an additional method: Merge().
     class DB {
       ...
@@ -194,6 +205,7 @@ After defining this class, the user should have a way to specify to RocksDB to u
       const std::shared_ptr<MergeOperator> merge_operator;
       ...
     };
+```
 
 **Note:** The Options::merge_operator field is defined as a shared-pointer to a MergeOperator. As specified above, the AssociativeMergeOperator inherits from MergeOperator, so it is okay to specify an AssociativeMergeOperator here. This is the approach used in the following example.
 
@@ -203,6 +215,7 @@ Given the above interface change, the client can implement a version of Counters
 
 **Counters v2:**
 
+```cpp
     // A 'model' merge operator with uint64 addition semantics
     class UInt64AddOperator : public AssociativeMergeOperator {
      public:
@@ -263,6 +276,7 @@ Given the above interface change, the client can implement a version of Counters
     ...
     uint64_t v;
     counters.Get("a", &v);
+```
 
 The user interface change is relatively small. And the RocksDB back-end takes care of the rest.
 
@@ -277,6 +291,7 @@ For example, look at the Counters case. The RocksDB database internally stores e
 
 By contrast, it turns out that RocksDB merge can be used in more powerful ways than this. For example, suppose we wanted our database to store a set of json strings (such as PHP arrays or objects). Then, within the database, we would want them to be stored and retrieved as fully formatted json strings, but we might want the "update" operation to correspond to updating a property of the json object. So we might be able to write code like:
 
+```cpp
     ...
     // Put/store the json string into to the database
     db_->Put(put_option_, "json_obj_key",
@@ -287,6 +302,7 @@ By contrast, it turns out that RocksDB merge can be used in more powerful ways t
     // Use a pre-defined "merge operator" to incrementally update the value of the json string
     db_->Merge(merge_option_, "json_obj_key", "employees[1].first_name = lucy");
     db_->Merge(merge_option_, "json_obj_key", "employees[0].last_name = dow");
+```
 
 In the above pseudo-code, we see that the data would be stored in RocksDB as a json string (corresponding to the original Put()), but when the client wants to update the value, a "javascript-like" assignment-statement string is passed as the merge-operand. The database would store all of these strings as-is, and would expect the user's merge operator to be able to handle it.
 
@@ -296,6 +312,7 @@ Now, the AssociativeMergeOperator model cannot handle this, simply because it as
 
 The MergeOperator interface is designed to support generality and also to exploit some of the key ways in which RocksDB operates in order to provide an efficient solution for "incremental updates". As noted above in the json example, it is possible for the base-value types (Put() into the database) to be formatted completely differently than the merge operands that are used to update them. Also, we will see that it is sometimes beneficial to exploit the fact that some merge operands can be combined to form a single merge operand, while some others may not. It all depends on the client's specific semantics. The MergeOperator interface provides a relatively simple way of providing these semantics as a client.
 
+```cpp
     // The Merge Operator
     //
     // Essentially, a MergeOperator specifies the SEMANTICS of a merge, which only
@@ -336,6 +353,7 @@ The MergeOperator interface is designed to support generality and also to exploi
       // accessed using a different MergeOperator)
       virtual const char* Name() const = 0;
     };
+```
 
 **Some Notes:**
 * MergeOperator has two methods, FullMerge() and PartialMerge(). The first method is used when a Put/Delete is the *existing_value (or nullptr). The latter method is used to combine two-merge operands (if possible).
@@ -360,6 +378,7 @@ As alluded to above, AssociativeMergeOperator inherits from MergeOperator and al
 
 Using our generic MergeOperator interface, we now have the ability to implement the json example.
 
+```
     // A 'model' pseudo-code merge operator with json update semantics
     // We pretend we have some in-memory data-structure (called JsonDataStructure) for
     // parsing and serializing json strings.
@@ -392,6 +411,7 @@ Using our generic MergeOperator interface, we now have the ability to implement 
         obj.SerializeTo(new_value);
         return true;
       }
+
 
       // Partial-merge two operands if and only if the two operands
       // both update the same value. If so, take the "later" operand.
@@ -435,6 +455,7 @@ Using our generic MergeOperator interface, we now have the ability to implement 
     // Use the "merge operator" to incrementally update the value of the json string
     db_->Merge(merge_option_, "json_obj_key", "employees[1].first_name = lucy");
     db_->Merge(merge_option_, "json_obj_key", "employees[0].last_name = dow");
+```
 
 # Error Handling
 
