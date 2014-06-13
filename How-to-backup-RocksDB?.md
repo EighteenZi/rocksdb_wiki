@@ -27,6 +27,7 @@ This code will restore the backup back to "/tmp/rocksdb". The second parameter i
 
 An alternative API for backups is to use BackupEngine directly:
 
+```cpp
     #include "rocksdb/db.h"
     #include "utilities/backupable_db.h"
     using namespace rocksdb;
@@ -38,12 +39,15 @@ An alternative API for backups is to use BackupEngine directly:
     backup_engine->CreateNewBackup(db);
     delete db;
     delete backup_engine;
+```
 
 Restoring with BackupEngine is similar to RestoreBackupableDB:
 
+```cpp
     BackupEngine* backup_engine = BackupEngine::NewBackupEngine(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"));
     backup_engine->RestoreDBFromLatestBackup("/tmp/rocksdb", "/tmp/rocksdb");
     delete backup_engine;
+```
 
 Backups are incremental. You can create a new backup with `CreateNewBackup()` and only the new data will be copied to backup directory (for more details on what gets copied, see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood)). Checksum is always calculated for any backuped file (including sst, log, and etc). It is used to make sure files are kept sound in the file system. Checksum is also verified for files from the previous backups even though they do not need to be copied. A checksum mismatch aborts the current backup (see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood) for more details). Once you have more backups saved, you can issue `GetBackupInfo()` call to get a list of all backups together with information on timestamp of the backup and the size (please note that sum of all backups' sizes is bigger than the actual size of the backup directory because some data is shared by multiple backups). Backups are identified by their always-increasing IDs. `GetBackupInfo()` is available both in `BackupableDB` and `RestoreBackupableDB`.
 
