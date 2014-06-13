@@ -566,7 +566,7 @@ If both are not 0, WAL files will be checked every 10 min and both checks will b
 ## Other Information
 
 Details about the <code>rocksdb</code> implementation may be found in the following documents:
-* [[RocksDB-Basics | RocksDB Overview and Architecture]]
-* [[Rocksdb-Table-Format | Format of an immutable Table file]]
+* [[RocksDB Overview and Architecture]](https://github.com/facebook/rocksdb/wiki/RocksDB-Basics)
+* [[Format of an immutable Table file]](https://github.com/facebook/rocksdb/wiki/Rocksdb-Table-Format)
 * <a href="log_format.txt">Format of a log file</a>
 </ul>
