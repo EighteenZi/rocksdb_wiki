@@ -8,13 +8,13 @@ The <code>rocksdb</code> library provides a persistent key value store. Keys and
 A <code>rocksdb</code> database has a name which corresponds to a file system directory. All of the contents of database are stored in this directory. The following example shows how to open a database, creating it if necessary:
 
 ```cpp
-  #include &lt;assert&gt;
+  #include <assert>
   #include "rocksdb/db.h"
 
   rocksdb::DB* db;
   rocksdb::Options options;
   options.create_if_missing = true;
-  rocksdb::Status status = rocksdb::DB::Open(options, "/tmp/testdb", &amp;db);
+  rocksdb::Status status = rocksdb::DB::Open(options, "/tmp/testdb", &db);
   assert(status.ok());
   ...
 ```
@@ -32,7 +32,7 @@ You may have noticed the <code>rocksdb::Status</code> type above. Values of this
 
 ```cpp
    rocksdb::Status s = ...;
-   if (!s.ok()) cerr &lt;&lt; s.ToString() &lt;&lt; endl;
+   if (!s.ok()) cerr << s.ToString() << endl;
 ```
 
 
@@ -55,9 +55,9 @@ The database provides <code>Put</code>, <code>Delete</code>, and <code>Get</code
 
 ```cpp
   std::string value;
-  rocksdb::Status s = db-&gt;Get(rocksdb::ReadOptions(), key1, &amp;value);
-  if (s.ok()) s = db-&gt;Put(rocksdb::WriteOptions(), key2, value);
-  if (s.ok()) s = db-&gt;Delete(rocksdb::WriteOptions(), key1);
+  rocksdb::Status s = db->Get(rocksdb::ReadOptions(), key1, &amp;value);
+  if (s.ok()) s = db->Put(rocksdb::WriteOptions(), key2, value);
+  if (s.ok()) s = db->Delete(rocksdb::WriteOptions(), key1);
 ```
 
 
@@ -69,12 +69,12 @@ Note that if the process dies after the Put of key2 but before the delete of key
   #include "rocksdb/write_batch.h"
   ...
   std::string value;
-  rocksdb::Status s = db-&gt;Get(rocksdb::ReadOptions(), key1, &amp;value);
+  rocksdb::Status s = db->Get(rocksdb::ReadOptions(), key1, &value);
   if (s.ok()) {
     rocksdb::WriteBatch batch;
     batch.Delete(key1);
     batch.Put(key2, value);
-    s = db-&gt;Write(rocksdb::WriteOptions(), &amp;batch);
+    s = db->Write(rocksdb::WriteOptions(), &batch);
   }
 ```
 
@@ -91,7 +91,7 @@ By default, each write to <code>leveldb</code> is asynchronous: it returns after
 ```cpp
   rocksdb::WriteOptions write_options;
   write_options.sync = true;
-  db-&gt;Put(write_options, ...);
+  db->Put(write_options, ...);
 ```
 
 
@@ -130,11 +130,11 @@ More on the interface and implementation can be found on:
 The following example demonstrates how to print all key,value pairs in a database.
 
 ```cpp
-  rocksdb::Iterator* it = db-&gt;NewIterator(rocksdb::ReadOptions());
-  for (it-&gt;SeekToFirst(); it-&gt;Valid(); it-&gt;Next()) {
-    cout &lt;&lt; it-&gt;key().ToString() &lt;&lt; ": " &lt;&lt; it-&gt;value().ToString() &lt;&lt; endl;
+  rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
+  for (it->SeekToFirst(); it->Valid(); it->Next()) {
+    cout << it->key().ToString() << ": " << it->value().ToString() << endl;
   }
-  assert(it-&gt;status().ok()); // Check for any errors found during the scan
+  assert(it->status().ok()); // Check for any errors found during the scan
   delete it;
 ```
 The following variation shows how to process just the keys in the
