@@ -1,10 +1,6 @@
 '''Contents'''
 * [[Home | RocksDB Wiki]]
 * [[RocksDB-Basics | Overview]]
-* '''Performance'''
-** [[Performance-Benchmarks | Performance on Flash Storage]]
-** [[RocksDB-In-Memory-Workload-Performance-Benchmarks | In Memory Workload Performance]]
-** [[Read-Modify-Write-Benchmarks | Read-Modify-Write Performance]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
@@ -27,5 +23,9 @@
 ** [[Merge-Operator-Implementation | Merge Operator Implementation]]
 * '''RocksJava'''
 ** [[RocksJava-Basics | RocksJava Basics]]
+* '''Performance'''
+** [[Performance-Benchmarks | Performance on Flash Storage]]
+** [[RocksDB-In-Memory-Workload-Performance-Benchmarks | In Memory Workload Performance]]
+** [[Read-Modify-Write-Benchmarks | Read-Modify-Write Performance]]
 * '''FAQ'''
 ** coming soon
