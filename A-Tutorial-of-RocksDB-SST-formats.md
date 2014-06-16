@@ -47,6 +47,7 @@ TBD
 
 ### Block-based table
 By default, a database uses block-based table.
+
     #include "rocksdb/db.h"
     rocksdb::DB* db;
     // Get a db with block-based table without any change.
