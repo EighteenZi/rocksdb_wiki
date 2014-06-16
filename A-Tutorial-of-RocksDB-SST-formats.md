@@ -48,57 +48,63 @@ TBD
 ### Block-based table
 By default, a database uses block-based table.
 
-    #include "rocksdb/db.h"
-    rocksdb::DB* db;
-    // Get a db with block-based table without any change.
-    rocksdb::DB::Open(rocksdb::Options(), "/tmp/testdb", &db);
+```cpp
+#include "rocksdb/db.h"
+rocksdb::DB* db;
+// Get a db with block-based table without any change.
+rocksdb::DB::Open(rocksdb::Options(), "/tmp/testdb", &db);
+```
 
 For a more customized block-based table:
 
-    #include "rocksdb/db.h"
-    // rocksdb/table.h includes all supported tables.
-    #include "rocksdb/table.h"
+```cpp
+#include "rocksdb/db.h"
+// rocksdb/table.h includes all supported tables.
+#include "rocksdb/table.h"
 
-    rocksdb::DB* db;
-    rocksdb::Options options;
-    options.table_factory.reset(NewBlockBasedTableFactory());
-    options.block_size = 4096; /* block size for the block-based table */
-    rocksdb::DB::Open(options, "/tmp/testdb", &db);
+rocksdb::DB* db;
+rocksdb::Options options;
+options.table_factory.reset(NewBlockBasedTableFactory());
+options.block_size = 4096; /* block size for the block-based table */
+rocksdb::DB::Open(options, "/tmp/testdb", &db);
+```
 
 ### Plain table
 For plain table, the process is similar:
 
-    #include "rocksdb/db.h"
-    // rocksdb/table.h includes all supported tables.
-    #include "rocksdb/table.h"
+```cpp
+#include "rocksdb/db.h"
+// rocksdb/table.h includes all supported tables.
+#include "rocksdb/table.h"
 
-    rocksdb::DB* db;
-    rocksdb::Options options;
-    // To enjoy the benefits provided by plain table, you have to enable
-    // allow_mmap_reads for plain table.
-    options_.allow_mmap_reads = true;
-    // plain table will extract the prefix from a key. The prefix will be
-    // used for the calculating hash code, which will be used in hash-based
-    // index.
-    // Unlike Prefix_extractor is a raw pointer, please remember to delete it
-    // after use.
-    SliceTransform* prefix_extractor = new NewFixedPrefixTransform(8);
-    options_.prefix_extractor = prefix_extractor;
-    options.table_factory.reset(NewPlainTableFactory(
-        // plain table has optimization for fix-sized keys, which can be
-        // specified via user_key_len.  Alternatively, you can pass
-        // `kPlainTableVariableLength` if your keys have variable lengths.
-        8,
-        // For advanced users only. 
-        // Bits per key for plain table's bloom filter, which helps rule out non-existent
-        // keys faster. If you want to disable it, simply pass `0`.
-        // Default: 10.
-        10,
-        // For advanced users only.
-        // Hash table ratio. the desired utilization of the hash table used for prefix
-        // hashing. hash_table_ratio = number of prefixes / #buckets in the hash table.
-        0.75
-    ));
-    rocksdb::DB::Open(options, "/tmp/testdb", &db);
-    ...
-    delete prefix_extractor;
+rocksdb::DB* db;
+rocksdb::Options options;
+// To enjoy the benefits provided by plain table, you have to enable
+// allow_mmap_reads for plain table.
+options_.allow_mmap_reads = true;
+// plain table will extract the prefix from a key. The prefix will be
+// used for the calculating hash code, which will be used in hash-based
+// index.
+// Unlike Prefix_extractor is a raw pointer, please remember to delete it
+// after use.
+SliceTransform* prefix_extractor = new NewFixedPrefixTransform(8);
+options_.prefix_extractor = prefix_extractor;
+options.table_factory.reset(NewPlainTableFactory(
+    // plain table has optimization for fix-sized keys, which can be
+    // specified via user_key_len.  Alternatively, you can pass
+    // `kPlainTableVariableLength` if your keys have variable lengths.
+    8,
+    // For advanced users only. 
+    // Bits per key for plain table's bloom filter, which helps rule out non-existent
+    // keys faster. If you want to disable it, simply pass `0`.
+    // Default: 10.
+    10,
+    // For advanced users only.
+    // Hash table ratio. the desired utilization of the hash table used for prefix
+    // hashing. hash_table_ratio = number of prefixes / #buckets in the hash table.
+    0.75
+));
+rocksdb::DB::Open(options, "/tmp/testdb", &db);
+...
+delete prefix_extractor;
+```
