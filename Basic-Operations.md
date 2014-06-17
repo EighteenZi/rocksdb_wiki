@@ -55,7 +55,7 @@ The database provides <code>Put</code>, <code>Delete</code>, and <code>Get</code
 
 ```cpp
   std::string value;
-  rocksdb::Status s = db->Get(rocksdb::ReadOptions(), key1, &amp;value);
+  rocksdb::Status s = db->Get(rocksdb::ReadOptions(), key1, &value);
   if (s.ok()) s = db->Put(rocksdb::WriteOptions(), key2, value);
   if (s.ok()) s = db->Delete(rocksdb::WriteOptions(), key1);
 ```
