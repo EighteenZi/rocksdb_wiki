@@ -10,8 +10,8 @@ Limitations:
 * File size needs to be smaller than 31 bits integer.
 * Data compression is not supported
 * Delta encoding is not supported
-* Iterator.Prev() is not supported
-* Non-prefix-based Seek() is not supported
+* `Iterator.Prev()` is not supported
+* Non-prefix-based `Seek()` is not supported
 * Table loading is slower for building indexes
 * Only support mmap mode.
 
@@ -19,24 +19,24 @@ We have plan to reduce some of the limitations.
  
 ### Usage
 
-You can call two factory functions NewPlainTableFactory() or NewTotalOrderPlainTableFactory() in table.h to generate a table factory for plain table with your parameters and pass it to Options.table_factory or ColumnFamilyOptions.table_factory. You need to specify a prefix extractor if you use the former function. Examples:
+You can call two factory functions `NewPlainTableFactory()` or `NewTotalOrderPlainTableFactory()` in `table.h` to generate a table factory for plain table with your parameters and pass it to `Options.table_factory` or `ColumnFamilyOptions.table_factory`. You need to specify a prefix extractor if you use the former function. Examples:
 
 ```cpp
-    options.table_factory.reset(NewPlainTableFactory());
-    options.prefix_extractor.reset(NewFixedPrefixTransform(8));
+options.table_factory.reset(NewPlainTableFactory());
+options.prefix_extractor.reset(NewFixedPrefixTransform(8));
 ```
 
 or
 
 ```cpp
-    options.table_factory.reset(NewTotalOrderPlainTableFactory());
+options.table_factory.reset(NewTotalOrderPlainTableFactory());
 ```
 
-See comments of the two functions in include/rocksdb/table.h for explanation to the parameters.
+See comments of the two functions in [`include/rocksdb/table.h`](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/table.h) for explanation to the parameters.
 
-NewPlainTableFactory() creates plain table factory for plain tables with hash-based index using key prefixes. It is what PlainTable is optimized for.
+`NewPlainTableFactory()` creates plain table factory for plain tables with hash-based index using key prefixes. It is what `PlainTable` is optimized for.
 
-While NewTotalOrderPlainTableFactory() doesn't requrie a prefix extractor and uses a totally binary index. This function is mainly to make PlainTable feature-complete. We haven't yet highly optimized query performance in this case.
+While `NewTotalOrderPlainTableFactory()` doesn't require a prefix extractor and uses a totally binary index. This function is mainly to make `PlainTable` feature-complete. We haven't yet highly optimized query performance in this case.
 
 ```cpp
 ### File Format
@@ -77,7 +77,7 @@ Each data row is encoded as:
 See [Key Encoding](#key-encoding) for format of encoded key.
  
 #### Key Encoding
-There are two encoding type to the key: kPlain and kPrefix, which can be specified when creating the plain table factory.
+There are two encoding type to the key: `kPlain` and `kPrefix`, which can be specified when creating the plain table factory.
 
 ##### Plain Encoding
 If fixed key length is given the plain internal key is encoded.
@@ -85,7 +85,7 @@ If fixed key length is given the plain internal key is encoded.
 If the fixed key length is not given, the key is variable length and will be encoded as
 
 ```cpp
-    [length of key: varint32] + user key + internal bytes
+[length of key: varint32] + user key + internal bytes
 ```
 
 See [Internal Bytes Encoding](#internal-bytes-encoding) for details of internal bytes.
