@@ -141,9 +141,9 @@ The following variation shows how to process just the keys in the
 range <code>[start,limit)</code>:
 
 ```cpp
-  for (it-&gt;Seek(start);
-       it-&gt;Valid() &amp;&amp; it-&gt;key().ToString() &lt; limit;
-       it-&gt;Next()) {
+  for (it->Seek(start);
+       it->Valid() && it->key().ToString() < limit;
+       it->Next()) {
     ...
   }
 ```
@@ -151,7 +151,7 @@ You can also process entries in reverse order. (Caveat: reverse
 iteration may be somewhat slower than forward iteration.)
 
 ```cpp
-  for (it-&gt;SeekToLast(); it-&gt;Valid(); it-&gt;Prev()) {
+  for (it->SeekToLast(); it->Valid(); it->Prev()) {
     ...
   }
 ```
@@ -167,12 +167,12 @@ Snapshots are created by the DB::GetSnapshot() method:
 
 ```cpp
   rocksdb::ReadOptions options;
-  options.snapshot = db-&gt;GetSnapshot();
+  options.snapshot = db->GetSnapshot();
   ... apply some updates to db ...
-  rocksdb::Iterator* iter = db-&gt;NewIterator(options);
+  rocksdb::Iterator* iter = db->NewIterator(options);
   ... read using iter to view the state when the snapshot was created ...
   delete iter;
-  db-&gt;ReleaseSnapshot(options.snapshot);
+  db->ReleaseSnapshot(options.snapshot);
 ```
 
 Note that when a snapshot is no longer needed, it should be released using the DB::ReleaseSnapshot interface. This allows the implementation to get rid of state that was being maintained just to support reading as of that snapshot.
@@ -220,23 +220,23 @@ The preceding examples used the default ordering function for key, which orders 
   class TwoPartComparator : public rocksdb::Comparator {
    public:
     // Three-way comparison function:
-    // if a &lt; b: negative result
-    // if a &gt; b: positive result
+    // if a < b: negative result
+    // if a > b: positive result
     // else: zero result
-    int Compare(const rocksdb::Slice&amp; a, const rocksdb::Slice&amp; b) const {
+    int Compare(const rocksdb::Slice& a, const rocksdb::Slice& b) const {
       int a1, a2, b1, b2;
-      ParseKey(a, &amp;a1, &amp;a2);
-      ParseKey(b, &amp;b1, &amp;b2);
-      if (a1 &lt; b1) return -1;
-      if (a1 &gt; b1) return +1;
-      if (a2 &lt; b2) return -1;
-      if (a2 &gt; b2) return +1;
+      ParseKey(a, &a1, &a2);
+      ParseKey(b, &b1, &b2);
+      if (a1 < b1) return -1;
+      if (a1 > b1) return +1;
+      if (a2 < b2) return -1;
+      if (a2 > b2) return +1;
       return 0;
     }
 
     // Ignore the following methods for now:
     const char* Name() const { return "TwoPartComparator"; }
-    void FindShortestSeparator(std::string*, const rocksdb::Slice&amp;) const { }
+    void FindShortestSeparator(std::string*, const rocksdb::Slice&) const { }
     void FindShortSuccessor(std::string*) const { }
   };
 ```
@@ -248,8 +248,8 @@ Now create a database using this custom comparator:
   rocksdb::DB* db;
   rocksdb::Options options;
   options.create_if_missing = true;
-  options.comparator = &amp;cmp;
-  rocksdb::Status status = rocksdb::DB::Open(options, "/tmp/testdb", &amp;db);
+  options.comparator = &cmp;
+  rocksdb::Status status = rocksdb::DB::Open(options, "/tmp/testdb", &db);
   ...
 ```
 
@@ -324,8 +324,8 @@ When performing a bulk read, the application may wish to disable caching so that
 ```cpp
   rocksdb::ReadOptions options;
   options.fill_cache = false;
-  rocksdb::Iterator* it = db-&gt;NewIterator(options);
-  for (it-&gt;SeekToFirst(); it-&gt;Valid(); it-&gt;Next()) {
+  rocksdb::Iterator* it = db->NewIterator(options);
+  for (it->SeekToFirst(); it->Valid(); it->Next()) {
     ...
   }
 ```
@@ -340,8 +340,8 @@ Note that the unit of disk transfer and caching is a block. Adjacent keys (accor
 For example, suppose we are implementing a simple file system on top of <code>rocksdb</code>. The types of entries we might wish to store are:
 
 ```cpp
-   filename -&gt; permission-bits, length, list of file_block_ids
-   file_block_id -&gt; data
+   filename -> permission-bits, length, list of file_block_ids
+   file_block_id -> data
 ```
 
 We might want to prefix <code>filename</code> keys with one letter (say '/') and the <code>file_block_id</code> keys with a different letter (say '0') so that scans over just the metadata do not force us to fetch and cache bulky file contents.
@@ -355,7 +355,7 @@ Because of the way <code>rocksdb</code> data is organized on disk, a single <cod
    rocksdb::Options options;
    options.filter_policy = NewBloomFilter(10);
    rocksdb::DB* db;
-   rocksdb::DB::Open(options, "/tmp/testdb", &amp;db);
+   rocksdb::DB::Open(options, "/tmp/testdb", &db);
    ... use the database ...
    delete db;
    delete options.filter_policy;
@@ -379,16 +379,16 @@ For example:
 
     void CreateFilter(const Slice* keys, int n, std::string* dst) const {
       // Use builtin bloom filter code after removing trailing spaces
-      std::vector&lt;Slice&gt; trimmed(n);
-      for (int i = 0; i &lt; n; i++) {
+      std::vector<Slice> trimmed(n);
+      for (int i = 0; i < n; i++) {
         trimmed[i] = RemoveTrailingSpaces(keys[i]);
       }
-      return builtin_policy_-&gt;CreateFilter(&amp;trimmed[i], n, dst);
+      return builtin_policy_->CreateFilter(&trimmed[i], n, dst);
     }
 
     bool KeyMayMatch(const Slice& key, const Slice& filter) const {
       // Use builtin bloom filter code after removing trailing spaces
-      return builtin_policy_-&gt;KeyMayMatch(RemoveTrailingSpaces(key), filter);
+      return builtin_policy_->KeyMayMatch(RemoveTrailingSpaces(key), filter);
     }
   };
 ```
@@ -493,7 +493,7 @@ A thread pool is associated with Env environment object. The client has to creat
   options.env = env;
   options.max_background_compactions = 2;
   options.max_background_flushes = 1;
-  rocksdb::Status status = rocksdb::DB::Open(options, "/tmp/testdb", &amp;db);
+  rocksdb::Status status = rocksdb::DB::Open(options, "/tmp/testdb", &db);
   assert(status.ok());
   ...
 ```
@@ -508,7 +508,7 @@ The <code>GetApproximateSizes</code> method can used to get the approximate numb
    ranges[0] = rocksdb::Range("a", "c");
    ranges[1] = rocksdb::Range("x", "z");
    uint64_t sizes[2];
-   rocksdb::Status s = db-&gt;GetApproximateSizes(ranges, 2, sizes);
+   rocksdb::Status s = db->GetApproximateSizes(ranges, 2, sizes);
 ```
 
 The preceding call will set <code>sizes[0]</code> to the approximate number of bytes of file system space used by the key range <code>[a..c)</code> and <code>sizes[1]</code> to the approximate number of bytes used by the key range <code>[x..z)</code>.
@@ -525,7 +525,7 @@ All file operations (and other operating system calls) issued by the <code>rocks
 
   SlowEnv env;
   rocksdb::Options options;
-  options.env = &amp;env;
+  options.env = &env;
   Status s = rocksdb::DB::Open(options, ...);
 ```
 
