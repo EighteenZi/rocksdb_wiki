@@ -74,6 +74,9 @@ RocksDB has extensive system to slow down writes when compaction can't keep up w
 
 **table_cache_numshardbits** -- This option controls table cache sharding and it makes sense to increase it if you see that table cache mutex is contended.
 
+## Sharing Env and cache
+TODO describe how thread pool and cache can be shared between different RocksDB instances.
+
 ## Example configurations
 TODO. Here we can also share some interesting configurations, for example when inserting monotonically increasing keys, doing only prefix lookups, etc.
 
