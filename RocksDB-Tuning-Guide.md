@@ -107,6 +107,7 @@ This is a configuration for DB on flash, which only supports Get() or prefix has
      options.write_buffer_size = 64 * 1024 * 1024;
      options.block_size = 4 * 1024;
      options.block_restart_interval = 16;
+     options.options.compaction_style = kCompactionStyleLevel;
      options.level0_file_num_compaction_trigger = 10;
      options.level0_slowdown_writes_trigger = 20;
      options.level0_stop_writes_trigger = 40;
@@ -120,7 +121,26 @@ This is a configuration for DB on flash, which only supports Get() or prefix has
      options.memtable_prefix_bloom_bits = 1024 * 1024 * 8;
      options.block_cache = rocksdb::NewLRUCache(512 * 1024 * 1024, 8);
 
-### An Example for Memory-Only Setting
+### An Example Setting for Flash Device
+This setting supports both of Get() and total order iterating:
+
+    options.env->SetBackgroundThreads(4);
+    options.compression = rocksdb::kSnappyCompression;
+    options.options.compaction_style = kCompactionStyleLevel;
+    options.write_buffer_size = 67108864;
+    options.target_file_size_base = 67108864;
+    options.max_write_buffer_number = 3;
+    options.max_background_compactions = 8;
+    options.level0_file_num_compaction_trigger = 8;
+    options.level0_slowdown_writes_trigger = 17;
+    options.level0_stop_writes_trigger = 24;
+    options.num_levels = 4;
+    options.max_bytes_for_level_base = 536870912;
+    options.delete_obsolete_files_period_micros = 60000000;
+    options.max_bytes_for_level_multiplier = 8;
+
+
+### An Example for tmpfs-based Setting
 In this use case, all data are stored in tmpfs and only Get() or prefix hash iterating is supported. We tune the compaction to an extreme so that usually only one SST table exists in the system, which also means temporarily memory usage will be doubled when compaction. So data is sharded into hundreds of shards, each storing in one DB but they share the same background thread pools. Here is the setting:
 
     options.table_factory = std::shared_ptr<rocksdb::TableFactory>(rocksdb::NewPlainTableFactory(0, 8, 0.85));
