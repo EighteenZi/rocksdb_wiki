@@ -98,6 +98,29 @@ TODO. Here we can also share some interesting configurations, for example when i
 
 [1] http://vimeo.com/album/2920922/video/98428203
 
+### Example Setting for Flash Device
+This is a configuration for DB on flash, which only supports Get() or prefix hash iterating:
+
+     rocksdb::BlockBasedTableOptions table_options;
+     table_options.index_type = rocksdb::BlockBasedTableOptions::kHashSearch;
+     options.table_factory.reset(NewBlockBasedTableFactory(table_options));
+     options.max_open_files = -1;
+     options.write_buffer_size = 64 * 1024 * 1024;
+     options.block_size = 4 * 1024;
+     options.block_restart_interval = 16;
+     options.level0_file_num_compaction_trigger = 10;
+     options.level0_slowdown_writes_trigger = 20;
+     options.level0_stop_writes_trigger = 40;
+     options.table_cache_numshardbits = 8;
+     options.target_file_size_base = 64 * 1024 * 1024;
+     options.max_bytes_for_level_base = 512 * 1024 * 1024;
+     options.max_background_compactions = 1
+     options.max_background_flushes = 1
+     options.keep_log_file_num = 20;
+     options.max_log_file_size = 1 * 1024 * 1024;
+     options.memtable_prefix_bloom_bits = 1024 * 1024 * 8;
+     options.block_cache = rocksdb::NewLRUCache(512 * 1024 * 1024, 8);
+
 ### A Memory-Only Setting
 In this use case, all data are stored in tmpfs and only Get() or prefix hash iterating is supported. We tune the compaction to an extreme so that usually only one SST table exists in the system, which also means temporarily memory usage will be doubled when compaction. So data is sharded into hundreds of shards, each storing in one DB but they share the same background thread pools. Here is the setting:
 
