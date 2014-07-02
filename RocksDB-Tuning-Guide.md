@@ -96,7 +96,7 @@ TODO
 ## Example configurations
 TODO. Here we can also share some interesting configurations, for example when inserting monotonically increasing keys, doing only prefix lookups, etc.
 
-### Example Setting for Flash Device
+### An Example Setting for Flash Device
 This is a configuration for DB on flash, which only supports Get() or prefix hash iterating:
 
      rocksdb::BlockBasedTableOptions table_options;
@@ -120,7 +120,7 @@ This is a configuration for DB on flash, which only supports Get() or prefix has
      options.memtable_prefix_bloom_bits = 1024 * 1024 * 8;
      options.block_cache = rocksdb::NewLRUCache(512 * 1024 * 1024, 8);
 
-### A Memory-Only Setting
+### An Example for Memory-Only Setting
 In this use case, all data are stored in tmpfs and only Get() or prefix hash iterating is supported. We tune the compaction to an extreme so that usually only one SST table exists in the system, which also means temporarily memory usage will be doubled when compaction. So data is sharded into hundreds of shards, each storing in one DB but they share the same background thread pools. Here is the setting:
 
     options.table_factory = std::shared_ptr<rocksdb::TableFactory>(rocksdb::NewPlainTableFactory(0, 8, 0.85));
