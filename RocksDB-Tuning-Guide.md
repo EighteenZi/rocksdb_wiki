@@ -97,3 +97,39 @@ TODO
 TODO. Here we can also share some interesting configurations, for example when inserting monotonically increasing keys, doing only prefix lookups, etc.
 
 [1] http://vimeo.com/album/2920922/video/98428203
+
+### A Memory-Only Setting
+In this use case, all data are stored in tmpfs and only Get() or prefix hash iterating is supported. We tune the compaction to an extreme so that usually only one SST table exists in the system, which also means temporarily memory usage will be doubled when compaction. So data is sharded into hundreds of shards, each storing in one DB but they share the same background thread pools. Here is the setting:
+
+    options.table_factory = std::shared_ptr<rocksdb::TableFactory>(rocksdb::NewPlainTableFactory(0, 8, 0.85));
+    options.memtable_factory.reset(rocksdb::NewHashLinkListRepFactory(200000));
+    options.memtable_prefix_bloom_bits = 10000000;
+    options.memtable_prefix_bloom_probes = 6;
+    options.write_buffer_size = 32 << 20;
+    options.max_write_buffer_number = 2;
+    options.min_write_buffer_number_to_merge = 1;
+    options.level0_file_num_compaction_trigger = 0;
+    options.level0_slowdown_writes_trigger = 8;
+    options.level0_stop_writes_trigger = 16;
+    options.allow_mmap_reads = true;
+    options.allow_mmap_writes = false;
+    options.allow_thread_local = true;
+    options.max_open_files = -1;
+    options.compression = rocksdb::kNoCompression;
+    options.no_block_cache = true;
+    options.max_background_compactions = 1;
+    options.max_background_flushes = 1;
+    options.disableDataSync = 1;
+    options.manifest_preallocation_size = 0;
+    options.bytes_per_sync = 2 << 20;
+    options.bloom_locality = 1;
+    options.delete_obsolete_files_period_micros = 24*60*60*1000*1000UL;
+    options.compaction_style = kUniversalCompaction;
+    options.compaction_options_universal.size_ratio = 10;
+    options.compaction_options_universal.min_merge_width = 2;
+    options.compaction_options_universal.max_size_amplification_percent = 50;
+
+Also, the global background queue size is set:
+
+    rocksdbEnv_->SetBackgroundThreads(1, rocksdb::Env::Priority::HIGH);
+    rocksdbEnv_->SetBackgroundThreads(2, rocksdb::Env::Priority::LOW);
