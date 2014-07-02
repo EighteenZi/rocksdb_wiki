@@ -6,10 +6,9 @@ RocksDB is optimized for Flash with extremely low latencies. RocksDB uses a Log 
 RocksDB features highly flexible configuration settings that may be tuned to run on a variety of production environments, including pure memory, Flash, hard disks or HDFS. It supports various compression algorithms and good tools for production support and debugging.
 
 ## Features
-* Designed for application servers wanting to store up to a few terabytes of data on locally attached Flash drives
-* Optimized for storing small to medium size key-values on flash
+* Designed for application servers wanting to store up to a few terabytes of data on locally attached Flash drives or in RAM
+* Optimized for storing small to medium size key-values on fast storage -- flash devices or in-memory
 * Scales linearly with number of CPUs so that it works well on ARM processors
-* Natively supports application-level objects like JSON, Maps, Sets, et cetera for better performance 
 
 
 ## Getting Started
