@@ -102,6 +102,7 @@ This is a configuration for DB on flash, which only supports Get() or prefix has
      rocksdb::BlockBasedTableOptions table_options;
      table_options.index_type = rocksdb::BlockBasedTableOptions::kHashSearch;
      options.table_factory.reset(NewBlockBasedTableFactory(table_options));
+     options.compression = rocksdb::kLZ4Compression;
      options.max_open_files = -1;
      options.write_buffer_size = 64 * 1024 * 1024;
      options.block_size = 4 * 1024;
