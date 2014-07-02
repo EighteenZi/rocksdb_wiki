@@ -3,6 +3,7 @@ In April'14, we started building a [Java extension](https://github.com/facebook/
 # Setup
 All of the benchmarks are run on the same machine. Here are the details of the test setup:
 
+* Test with 1 billion key / value pairs. Each key is 16 bytes, and each value is 800 bytes. Total database raw size is ~1TB.
 * Intel(R) Xeon(R) CPU E5-2660 v2 @ 2.20GHz, 40 cores.
 * 25 MB CPU cache, 144 GB Ram
 * CentOS release 5.2 (Final).
@@ -13,8 +14,6 @@ All of the benchmarks are run on the same machine. Here are the details of the t
 * Commit [85f9bb4](https://github.com/facebook/rocksdb/commit/85f9bb4ef4845910f22d152b7c0d9c478da42fc7) was used in the experiment.
 * 1G rocksdb block cache.
 * Snappy 1.1.1 is used as the compression algorithm.
-* Test with 1 billion key / value pairs. Each key is 16 bytes, and each value is 800 bytes. Total database raw size is ~1TB.
-* For 32 readers w/ 1 writer benchmark, the writer performs 10k writes per second.
 * JEMALLOC is not used.
 
 # Bulk Load of keys in Sequential Order (Test 2)
