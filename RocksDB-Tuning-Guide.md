@@ -78,6 +78,8 @@ RocksDB has extensive system to slow down writes when compaction can't keep up w
 
 **table_cache_numshardbits** -- This option controls table cache sharding and it makes sense to increase it if you see that table cache mutex is contended.
 
+**block_size** -- RocksDB packs user data in blocks. When reading key-value pair from a table file, an entire block is loaded into memory. Block size is 4KB by default. Each table file indexes containing blocks. Increasing block_size means that index contains less entries (since there are less blocks per file) and is thus smaller. Increasing block_size will decrease memory usage, but will increase read amplification.
+
 ## Sharing Env and cache
 TODO describe how thread pool and cache can be shared between different RocksDB instances.
 
