@@ -11,7 +11,7 @@ When we talk about tuning RocksDB, we often mean that we're trading off three am
 
 **Space amplification** is the ratio of the size of database files on disk and data size. If you store 10MB in the database and it stores 100MB on disk, this is space amplification of 10. Usually you will want to set hard limit on space amplification since you don't want to run out of disk space or memory.
 
-If you want to learn more about the three amplification factors in context of different database algorithms we strongly recommend Mark Callaghan's talk at Highload[1].
+If you want to learn more about the three amplification factors in context of different database algorithms we strongly recommend Mark Callaghan's talk at Highload -- http://vimeo.com/album/2920922/video/98428203.
 
 ## Parallelism options
 In LSM architecture, there are two background processes: flush and compaction. Both of them can execute concurrently to take full advantage of storage technology concurrency. Flush threads are submitted to HIGH priority pool, while compaction threads are submitted to LOW priority pool. To increase number of threads in respective thread pools call:
@@ -95,8 +95,6 @@ TODO
 
 ## Example configurations
 TODO. Here we can also share some interesting configurations, for example when inserting monotonically increasing keys, doing only prefix lookups, etc.
-
-[1] http://vimeo.com/album/2920922/video/98428203
 
 ### Example Setting for Flash Device
 This is a configuration for DB on flash, which only supports Get() or prefix hash iterating:
