@@ -1,4 +1,5 @@
-# Motivation
+# Proposal: Unifying Level and Universal Compactions
+## Motivation
 Currently, we observed the following needs in universal compactions:
 * Avoid doubling in space during compaction.
 * Allow universal compaction to be multi-threaded.
@@ -10,7 +11,7 @@ In the meantime, we also observed the following needs in level compaction:
 
 This undoubtably makes level compaction behaves similar to universal compaction.  This leads us to a global solution --- unifying level and universal compaction.
 
-# The Goals
+## The Goals
 The goal of unifying level and universal compactions is to take the advantages from the two compactions.  Specifically, we would like to achieve the following goals:
 
 * Reduce write amplification by considering compacting files across multiple levels.
@@ -18,7 +19,7 @@ The goal of unifying level and universal compactions is to take the advantages f
 * Improve scalability by partitioning one big compaction work into multiple smaller compaction jobs.
 * Reduce maintenance effort by unifying the two code paths into one.
 
-# Possible Solutions
+## Possible Solutions
 There are basically three approaches to unify universal and level compactions, where I found option 1 might be the best among the all:
 
 1. Add universal compaction features to level compaction and deprecate universal compaction.
@@ -31,7 +32,7 @@ There are basically three approaches to unify universal and level compactions, w
  * cons: Changes are likely not incremental.  Requires more effort on integrating with existing code.
 
 
-# The Proposed Approach
+## The Proposed Approach
 To support universal compaction in the current level compaction, we need to enable the following features:
 * Allow compaction across multiple levels.
 * Allow cross-level compaction to be partitioned into multiple smaller compaction jobs to improve concurrency.
@@ -46,7 +47,7 @@ Let `SM` denote the size multiplier between two consecutive levels, describing t
 
 Let `f_N+1` be the union of `f_N` and `F_N+1`, and we find the biggest `n >= N` such that `WAF(f_n) <= SM`.  If none of the possible `n` yields `WAF(f_n) <= SM`, then we pick the best `n` which yields minimal `WAF(f_n)`.
 
-## Example
+### Example
 TBD
 
-## Partition one big compaction work into multiple sub-jobs
+### Partition one big compaction work into multiple sub-jobs
