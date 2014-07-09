@@ -1,4 +1,3 @@
-# Proposal: Unifying Level and Universal Compactions
 ## Motivation
 Currently, we observed the following needs in universal compactions:
 * Avoid doubling in space during compaction.
