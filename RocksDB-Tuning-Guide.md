@@ -100,6 +100,7 @@ RocksDB keeps all data sorted and supports ordered iteration. However, some appl
 Those applications can benefit of configuring prefix_extractor for the database.
 
 **prefix_extractor** -- A SliceTransform object that defines key prefixes. Key prefixes are then used to perform some interesting optimizations:
+
 1. Define prefix bloom filters, which can reduce read amplification of prefix range queries (give me all keys that start with prefix `XXX`). Make sure to also define **Options::filter_policy**.
 2. Use hash map based memtables to avoid costs of binary search in memtables.
 3. Add hash index to table files to avoid costs of binary search in table files.
