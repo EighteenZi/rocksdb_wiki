@@ -68,7 +68,7 @@ and your write rate is 16MB/s. New memtable will be created every 32 seconds and
 ## Level Style Compaction
 In level style compaction, database files are organized into levels. Memtables are flushed to files in level 0, which contains the newest data. Higher levels contain older data with higher level containing oldest data. Files in level 0 can be overlapping, but files in level 1 and higher are non-overlapping. That means that Get() usually needs to check each file from level 0, but for each next level there can be no more than one file containing the key. Each level is 10 times bigger than the previous one (this multiplier is configurable). A compaction will take few files from level N and compact them with overlapping files from level N+1. Two compactions operating at different levels or at different key ranges are independent and can be executed concurrently. Speed of compaction is directly proportional to max write rate. If compaction can't keep up with the write rate, space used by the database will just keep increasing. It is important to configure RocksDB in such a way that compactions can be executed with high concurrency and fully utilize storage.
 
-Compactions at levels 0 and 1 are tricky. Files at level 0 usually span the entire key space. When compacting L0->L1 (from level 0 to level 1), compaction includes all files from level 1. With all files from L1 getting compacted with L0, compaction L1->L2 can not proceed -- it has to wait for the L0->L1 compaction to finish. If L0->L1 compaction is slow, it will be the only compaction running in the system most of the time, since other compactions will have to wait for L0->L1 to finish. You can check if that's the issue by checking disk utilization. If disk is not fully utilized, there might be an issue with compaction configuration. The advice we often give is to make L0->L1 as fast as possible by making size of level 0 similar to size of level 1.
+Compactions at levels 0 and 1 are tricky. Files at level 0 usually span the entire key space. When compacting L0->L1 (from level 0 to level 1), compaction includes all files from level 1. With all files from L1 getting compacted with L0, compaction L1->L2 can not proceed -- it has to wait for the L0->L1 compaction to finish. If L0->L1 compaction is slow, it will be the only compaction running in the system most of the time, since other compactions will have to wait for L0->L1 to finish. Also, L0->L1 compaction is single-threaded. It's hard to achieve good throughput with single-threaded compaction. You can check if that's the issue by checking disk utilization. If disk is not fully utilized, there might be an issue with compaction configuration. The advice we often give is to make L0->L1 as fast as possible by making **size of level 0 similar to size of level 1**.
 
 Once you determine the size of level 1, you will need to decide the level multiplier. Let's assume your level 1 size is 512 MB, level multiplier is 10 and size of the database is 500GB. Level 2 size will then be 5GB, level 3 51GB and level 4 512GB. Since your database size is 500GB, levels 5 and higher will be empty. Size amplification is easy to calculate. It is `(512 MB + 512 MB + 5GB + 51GB + 512GB) / (500GB) = 1.14`. Here is how we would calculate write amplification: every byte first gets written out to level 0. Next, it needs to be compacted into level 1. Since level 1 size is the same as level 0, write amplification of L0->L1 compaction is 2. However, when a byte from level 1 needs to get compacted into level 2, we need to compact it with 10 bytes from level 2 (because level 2 is 10x bigger). The same is also true for L2->L3 and L3->L4 compactions. Total write amplification is then approximately `1 + 2 + 10 + 10 + 10 = 33`. Point lookups need to consult all files in level 0 and at most one file from each other levels. However, bloom filters help and greatly reduce read amplification. Short-lived range scans are a bit more expensive, however. Bloom filters are not useful for range scans, so the read amplification is `number_of_level0_files + number_of_non_empty_levels`.
 
@@ -95,7 +95,16 @@ RocksDB has extensive system to slow down writes when compaction can't keep up w
 **soft_rate_limit** and **hard_rate_limit** -- In level style compaction, each level has its compaction score. Once compaction score is bigger than 1, we trigger the compaction. In case the score for any level is bigger than soft_rate_limit, we will slow down writes. If score is bigger than hard_rate_limit, writes will be stopped until the compaction for that level reduces its score.
 
 ## Prefix databases
+RocksDB keeps all data sorted and supports ordered iteration. However, some applications don't need the keys fully sorted. They are only interested about ordering keys with common prefix.
 
+Those applications can benefit of configuring prefix_extractor for the database.
+
+**prefix_extractor** -- A SliceTransform object that defines key prefixes. Key prefixes are then used to perform some interesting optimizations:
+1. Define prefix bloom filters, which can reduce read amplification of prefix range queries (give me all keys that start with prefix `XXX`). Make sure to also define **Options::filter_policy**.
+2. Use hash map based memtables to avoid costs of binary search in memtables.
+3. Add hash index to table files to avoid costs of binary search in table files.
+For more details on (2) and (3), see "Custom memtable and table factories".
+Make sure to check comments about prefix_extractor in `include/rocksdb/options.h`.
 
 ## Custom memtable and table factories
 TODO
@@ -109,6 +118,7 @@ This is a configuration for DB on flash, which only supports Get() or prefix has
      rocksdb::BlockBasedTableOptions table_options;
      table_options.index_type = rocksdb::BlockBasedTableOptions::kHashSearch;
      options.table_factory.reset(NewBlockBasedTableFactory(table_options));
+     options.prefix_extractor.reset(new CustomPrefixExtractor());
      options.compression = rocksdb::kLZ4Compression;
      options.max_open_files = -1;
      options.write_buffer_size = 64 * 1024 * 1024;
