@@ -107,11 +107,21 @@ Those applications can benefit of configuring prefix_extractor for the database.
 For more details on (2) and (3), see "Custom memtable and table factories".
 Make sure to check comments about prefix_extractor in `include/rocksdb/options.h`.
 
-## Custom memtable and table factories
-TODO
+## Custom memtable and table format
+Advanced users can also configure custom memtable and table format.
+
+**memtable_factory** -- Defines the memtable. Here's the list of memtables we support:
+
+1. SkipList -- this is the default memtable.
+2. HashSkipList -- it only makes sense with prefix_extractor. It keeps keys in buckets based on prefix of the key. Each bucket is a skip list.
+3. HashLinkedList -- it only makes sense with prefix_extractor.  It keeps keys in buckets based on prefix of the key. Each bucket is a linked list.
+
+**table_factory** -- Defines the table format and implementation. Here's the list of tables we support:
+
+1. Block based -- This is the default table. It is suited for storing data on disk and flash storage. It is addressed and loaded in block sized chunks (see block_size option). Thus the name block based.
+2. Plain Table -- Only makes sense with prefix_extractor. It is suited for storing data on memory (on tmpfs filesystem). It is byte-addressible.
 
 ## Example configurations
-TODO. Here we can also share some interesting configurations, for example when inserting monotonically increasing keys, doing only prefix lookups, etc.
 
 ### An Example Setting for Flash Device
 This is a configuration for DB on flash, which only supports Get() or prefix hash iterating:
