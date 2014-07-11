@@ -5,7 +5,8 @@ We assume you have basic knowledge of how Log-structured merge-tree (LSM) works.
 ## Amplification factors
 When we talk about tuning RocksDB, we often mean that we're trading off three amplification factors: write amplification, read amplification and space amplification. Let's define them here.
 
-**Write amplification** is the ratio of bytes written to database and bytes written to storage. For example, if you are writing 10 MB/s to the database and you observe 30 MB/s disk write rate, your write amplification is 3. If write amplification is high the workload might be bottlenecked on disk throughput. For example, if write amplification is 50 and max disk throughput is 500 MB/s, your database can sustain 10 MB/s write rate. Decreasing write amplification will directly increase max write rate. High write amplification will also decrease flash lifetime.
+**Write amplification** is the ratio of bytes written to database and bytes written to storage. For example, if you are writing 10 MB/s to the database and you observe 30 MB/s disk write rate, your write amplification is 3. If write amplification is high the workload might be bottlenecked on disk throughput. For example, if write amplification is 50 and max disk throughput is 500 MB/s, your database can sustain 10 MB/s write rate. Decreasing write amplification will directly increase max write rate. High write amplification will also decrease flash lifetime. There are two ways in which you can observe your write amplification. First is to read through the output of `DB::GetProperty("rocksdb.stats", &stats)`. The second is to divide your
+disk write bandwidth (you can use `iostat`) by your DB write rate.
 
 **Read amplification** is the number of disk reads per query. If you need to read 5 pages to answer a query, we say that read amplification is 5.
 
@@ -38,7 +39,7 @@ Once you increase number of threads in thread pool, you can also  increase max n
 
 **block_size** -- RocksDB packs user data in blocks. When reading key-value pair from a table file, an entire block is loaded into memory. Block size is 4KB by default. Each table file contains an index that lists offsets of all blocks. Increasing block_size means that index contains less entries (since there are less blocks per file) and is thus smaller. Increasing block_size will decrease memory usage and space amplification, but will increase read amplification.
 
-## Sharing Env and cache
+## Sharing cache and thread pool
 Sometimes you may wish to run multiple RocksDB instances from the same process. RocksDB provides a way for those instances to share block cache and thread pool. To share block cache, just assign a single cache object to all instances:
 
     first_instance_options.block_cache = second_instance_options.block_cache = rocksdb::NewLRUCache(1GB)
@@ -94,7 +95,7 @@ RocksDB has extensive system to slow down writes when compaction can't keep up w
 **soft_rate_limit** and **hard_rate_limit** -- In level style compaction, each level has its compaction score. Once compaction score is bigger than 1, we trigger the compaction. In case the score for any level is bigger than soft_rate_limit, we will slow down writes. If score is bigger than hard_rate_limit, writes will be stopped until the compaction for that level reduces its score.
 
 ## Prefix databases
-TODO Explain what happens when prefix_extractor is set and how to take full advantage of prefix API.
+
 
 ## Custom memtable and table factories
 TODO
