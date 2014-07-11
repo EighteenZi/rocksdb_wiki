@@ -25,6 +25,28 @@ Once you increase number of threads in thread pool, you can also  increase max n
 
 **max_background_flushes** is the maximum number of concurrent flush operations. It is usually good enough to set this to 1.
 
+## General options
+**filter_policy** -- If you're doing point lookups you definitely want to turn bloom filters on. We use bloom filters to avoid unnecessary disk reads. You should set filter_policy to `rocksdb::NewBloomFilterPolicy(bits_per_key)`. Default bits_per_key is 10, which yields ~1% false positive rate. Bigger bits_per_key value will reduce false positive rate, but increase memory usage and space amplification.
+
+**block_cache** -- Usually you just want to set this to the result of the call `rocksdb::NewLRUCache(cache_capacity, shard_bits)`. Block cache caches uncompressed blocks. OS cache, on the other hand, caches compressed blocks (since that's the way they are stored in files). Thus, it makes sense to use both block_cache and OS cache. We need to lock accesses to block cache and sometimes we see RocksDB bottlenecked on block cache's mutex, especially when DB size is smaller than RAM. In that case, it makes sense to shard block cache by setting shard_bits to a bigger number. If shard_bits is 4, total number of shards will be 16.
+
+**allow_os_buffer** -- If false, we will not buffer files in OS cache. See comments above.
+
+**max_open_files** -- RocksDB keeps all file descriptors in a table cache. If number of file descriptors exceeds max_open_files, some files are evicted from table cache and their file descriptors closed. This means that every read has to go through the table cache to lookup the file needed. If you set max_open_files to -1 we will always keep all files opened which avoids expensive table cache calls.
+
+**table_cache_numshardbits** -- This option controls table cache sharding and it makes sense to increase it if you see that table cache mutex is contended.
+
+**block_size** -- RocksDB packs user data in blocks. When reading key-value pair from a table file, an entire block is loaded into memory. Block size is 4KB by default. Each table file contains an index that lists offsets of all blocks. Increasing block_size means that index contains less entries (since there are less blocks per file) and is thus smaller. Increasing block_size will decrease memory usage and space amplification, but will increase read amplification.
+
+## Sharing Env and cache
+Sometimes you may wish to run multiple RocksDB instances from the same process. RocksDB provides a way for those instances to share block cache and thread pool. To share block cache, just assign a single cache object to all instances:
+
+    first_instance_options.block_cache = second_instance_options.block_cache = rocksdb::NewLRUCache(1GB)
+
+will make both instances share single block cache of total size 1GB.
+
+Thread pool is associated with Env object. When you construct Options, options.env is set to `Env::Default()`, which is what you want to use in most cases. Since all Options use the same static object `Env::Default()`, thread pool is actually shared by default. See "Parallelism options" to learn how to set number of threads in the tread pool. This way, you can set maximum number of concurrent running compactions and flushes, even when running multiple RocksDB instances.
+
 ## Flushing options
 All writes to RocksDB are first inserted into an in-memory data structure called memtable. Once the **active memtable** is full, we create a new one and mark the old one read-only. We call read-only memtable **immutable**. At any point in time there is exactly one active memtable and zero or more immutable memtables. Immutable memtables are waiting to be flushed to storage. There are three options that control flushing behavior.
 
@@ -70,22 +92,6 @@ RocksDB has extensive system to slow down writes when compaction can't keep up w
 **level0_slowdown_writes_trigger** and **level0_stop_writes_trigger** -- When number of level0 files is bigger than slowdown limit, we stall writes. When the number is bigger than stop limit, we fully stop writes and wait until compaction is done.
 
 **soft_rate_limit** and **hard_rate_limit** -- In level style compaction, each level has its compaction score. Once compaction score is bigger than 1, we trigger the compaction. In case the score for any level is bigger than soft_rate_limit, we will slow down writes. If score is bigger than hard_rate_limit, writes will be stopped until the compaction for that level reduces its score.
-
-## Other options
-**filter_policy** -- If you're doing point lookups you definitely want to turn bloom filters on. We use bloom filters to avoid unnecessary disk reads. You should set filter_policy to `rocksdb::NewBloomFilterPolicy(bits_per_key)`. Default bits_per_key is 10, which yields ~1% false positive rate. Bigger bits_per_key value will reduce false positive rate, but increase memory usage and space amplification.
-
-**block_cache** -- Usually you just want to set this to the result of the call `rocksdb::NewLRUCache(cache_capacity, shard_bits)`. Block cache caches uncompressed blocks. OS cache, on the other hand, caches compressed blocks (since that's the way they are stored in files). Thus, it makes sense to use both block_cache and OS cache. We need to lock accesses to block cache and sometimes we see RocksDB bottlenecked on block cache's mutex, especially when DB size is smaller than RAM. In that case, it makes sense to shard block cache by setting shard_bits to a bigger number. If shard_bits is 4, total number of shards will be 16.
-
-**allow_os_buffer** -- If false, we will not buffer files in OS cache. See comments above.
-
-**max_open_files** -- RocksDB keeps all file descriptors in a table cache. If number of file descriptors exceeds max_open_files, some files are evicted from table cache and their file descriptors closed. This means that every read has to go through the table cache to lookup the file needed. If you set max_open_files to -1 we will always keep all files opened which avoids expensive table cache calls.
-
-**table_cache_numshardbits** -- This option controls table cache sharding and it makes sense to increase it if you see that table cache mutex is contended.
-
-**block_size** -- RocksDB packs user data in blocks. When reading key-value pair from a table file, an entire block is loaded into memory. Block size is 4KB by default. Each table file contains an index that lists offsets of all blocks. Increasing block_size means that index contains less entries (since there are less blocks per file) and is thus smaller. Increasing block_size will decrease memory usage and space amplification, but will increase read amplification.
-
-## Sharing Env and cache
-TODO describe how thread pool and cache can be shared between different RocksDB instances.
 
 ## Prefix databases
 TODO Explain what happens when prefix_extractor is set and how to take full advantage of prefix API.
