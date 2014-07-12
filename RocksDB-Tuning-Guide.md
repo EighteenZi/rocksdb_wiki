@@ -175,8 +175,6 @@ With memtable bloom filter, some accesses to the memtable can be avoided.
 
 Block cache is configured to be 512MB. (is it shared across the shards?)
 
-???filter policy?
-
 ### Total ordered database, flash storage
 This database performs both Get() and total order iteration. Shards????
 
