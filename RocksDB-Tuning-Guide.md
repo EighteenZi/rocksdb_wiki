@@ -201,22 +201,35 @@ We use level style compaction with high concurrency. Memtable size is 64MB and t
 TODO TODO
 
 ### In-memory prefix database
-In this example, database is mounted in tmpfs file system. We only support Get() and prefix range scans.
+In this example, database is mounted in tmpfs file system. We only support Get() and prefix range scans. Transational logs are stored on hard drive to avoid it to consume memory which is not used for query.
 
 Since this database is in-memory, we don't care about write amplification. We do, however, care a lot about read amplification and space amplification. This is an interesting example because we tune the compaction to an extreme so that usually only one SST table exists in the system. That way we decrease read/space amplification, while write amplification is extremely high.
 
 Since universal compaction is used, during compaction we will effectively double the space. This is very dangerous with in-memory database. For that reason, we shard the data into 400 of rocksdb instances. We allow only two concurrent compactions, which means that only two shards will be doubling the space at one time.
 
-    options.env->SetBackgroundThreads(1, rocksdb::Env::Priority::HIGH);
-    options.env->SetBackgroundThreads(2, rocksdb::Env::Priority::LOW);
-    options.table_factory = std::shared_ptr<rocksdb::TableFactory>(rocksdb::NewPlainTableFactory(0, 8, 0.85));
-    options.memtable_factory.reset(rocksdb::NewHashLinkListRepFactory(200000));
+In this case, prefix hash can be used to allow the system to use hash indexing instead of a binary one, as well as bloom filter for iterations when possible:
+
     options.prefix_extractor.reset(new CustomPrefixExtractor());
+
+Use the memory addressing table format built for low-latency access, which requires mmap read mode to be on: 
+
+    options.table_factory = std::shared_ptr<rocksdb::TableFactory>(rocksdb::NewPlainTableFactory(0, 8, 0.85));
+    options.no_block_cache = true;
+    options.allow_mmap_reads = true;
+    options.allow_mmap_writes = false;
+    options.compression = rocksdb::kNoCompression;
+
+Use hash link list memtable to change binary search to hash lookup in mem table:
+
+    options.memtable_factory.reset(rocksdb::NewHashLinkListRepFactory(200000));
+
+Enable bloom filter for hash table to reduce memory accesses (usually means CPU cache misses) when reading from mem table to one, for the case where key is not found in mem tables:
+
     options.memtable_prefix_bloom_bits = 10000000;
     options.memtable_prefix_bloom_probes = 6;
-    options.write_buffer_size = 32 << 20;
-    options.max_write_buffer_number = 2;
-    options.min_write_buffer_number_to_merge = 1;
+
+Tune compaction so that, a full compaction is to be kicked off as soon as we have two files. We hack the parameter of universal compaction for it:
+
     options.compaction_style = kUniversalCompaction;
     options.compaction_options_universal.size_ratio = 10;
     options.compaction_options_universal.min_merge_width = 2;
@@ -224,17 +237,32 @@ Since universal compaction is used, during compaction we will effectively double
     options.level0_file_num_compaction_trigger = 0;
     options.level0_slowdown_writes_trigger = 8;
     options.level0_stop_writes_trigger = 16;
-    options.allow_mmap_reads = true;
-    options.allow_mmap_writes = false;
-    options.allow_thread_local = true;
+
+Tune bloom filter to a mode that is to minimize memory accesses:
+
+    options.bloom_locality = 1;
+
+Use the mode where always all tables' reader objects are cached to avoid table cache access when reading:
+
     options.max_open_files = -1;
-    options.compression = rocksdb::kNoCompression;
-    options.no_block_cache = true;
+
+Use one mem table at one time. Its size is determined by full compaction interval we want to pay. We tune the compaction such that after every flush, a full compaction will be triggered, which would cost CPU. The larger the mem table size is, the longer the compaction interval will be, and at the same time, less memory efficiency, worse performance of query and longer recovery time when restarting the DB.
+
+    options.write_buffer_size = 32 << 20;
+    options.max_write_buffer_number = 2;
+    options.min_write_buffer_number_to_merge = 1;
+
+Multiple DBs sharing the same compaction pool of 2:
+
     options.max_background_compactions = 1;
     options.max_background_flushes = 1;
+    options.env->SetBackgroundThreads(1, rocksdb::Env::Priority::HIGH);
+    options.env->SetBackgroundThreads(2, rocksdb::Env::Priority::LOW);
+
+Settings for WAL logs:
+
     options.disableDataSync = 1;
     options.bytes_per_sync = 2 << 20;
-    options.bloom_locality = 1;
 
 ## Final thoughts
 Unfortunately, configuring RocksDB optimally is not trivial. Even we as RocksDB developers don't fully understand the effect of each configuration change. If you want to fully optimize RocksDB for your workload, we recommend experiments and benchmarking, while keeping an eye on the three amplification factors. Also, please don't hesitate to ask us for help.
