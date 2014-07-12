@@ -85,7 +85,13 @@ Let's dive into options that control level compaction. We will start with more i
 **num_levels** -- It is safe for num_levels to be bigger than expected number of levels in the database. Some higher levels might be empty, which will not impact performance in any way. You need to change this option only if you expect your number of levels will be bigger than 7 (default).
 
 ## Universal Compaction
-TODO
+Write amplification of a level style compaction might be high in some cases. This means that for write-heavy workloads you may be bottlenecked on disk throughput. To optimize for those workloads, RocksDB introduced a new style of compaction that we call universal compaction. The goal of universal compaction is to decrease write amplification. However, it might increase read amplification and it certainly increases space amplification. 
+
+With universal compaction, compaction process might temporarily increase size amplification by one. In other words, if you store 10GB in database, compaction process might consume additional 10GB (in addition to whatever else space amplification you get). However, there are techniques that can help with temporarily doubling space. If you're using universal compaction, we strongly recommend sharding your data and keeping it in multiple RocksDB instances. Let's assume you have S shards. Then, configure Env thread pool with only N compaction threads. Only N shards out of total S shards will have additional space amplification, thus bringing it down to `N/S` instead of 1. Let's assume your DB is 10GB and you configure it with 100 shards, each shard with 100MB of data. If you configure your thread pool with 20 concurrent compactions, you will only consume extra 2GB of data instead of 10GB. Also, compactions will execute in parallel, which will fully utilize your storage concurrency.
+
+**max_size_amplification_percent** -- Size amplification as defined by amount (in percentage) of additional storage needed to store a byte of data in the database. Default is 200, which means that a 100 byte database could require up to 300 bytes of storage. 100 bytes in that 300 bytes are temporary and happen only during the compaction. Increasing this limit will decrease write amplification, but (obviously) increase space amplification.
+
+**compression_size_percent** -- Percentage of data in the database that is compressed. Earlier data is compressed, while newer isn't. If set to -1 (default), all data is compressed. Reducing compression_size_percent will reduce CPU usage and increase space amplification.
 
 ## Write stalls
 RocksDB has extensive system to slow down writes when compaction can't keep up with incoming write rate. Without such system, short-lived write bursts would: 1) increase space amplification, which could lead to running out of disk space, 2) increase read amplification, which would significantly degrade read performance. The idea is to smooth out write bursts by slowing down writes. Options that control write stalls are:
@@ -116,68 +122,107 @@ Advanced users can also configure custom memtable and table format.
 2. HashSkipList -- it only makes sense with prefix_extractor. It keeps keys in buckets based on prefix of the key. Each bucket is a skip list.
 3. HashLinkedList -- it only makes sense with prefix_extractor.  It keeps keys in buckets based on prefix of the key. Each bucket is a linked list.
 
-**table_factory** -- Defines the table format and implementation. Here's the list of tables we support:
+**table_factory** -- Defines the table format. Here's the list of tables we support:
 
 1. Block based -- This is the default table. It is suited for storing data on disk and flash storage. It is addressed and loaded in block sized chunks (see block_size option). Thus the name block based.
 2. Plain Table -- Only makes sense with prefix_extractor. It is suited for storing data on memory (on tmpfs filesystem). It is byte-addressible.
 
 ## Example configurations
+In this section we will present some RocksDB configurations that we actually run in production.
 
-### An Example Setting for Flash Device
-This is a configuration for DB on flash, which only supports Get() or prefix hash iterating:
+### Prefix database on flash storage
+This service uses RocksDB to perform prefix range scans and point lookups. It is running on flash storage. TODO find out read/write ratio per box.
+
+     options.prefix_extractor.reset(new CustomPrefixExtractor());
+
+ Since the service doesn't need total order iterations (see "Prefix databases"), we define prefix extractor.
 
      rocksdb::BlockBasedTableOptions table_options;
      table_options.index_type = rocksdb::BlockBasedTableOptions::kHashSearch;
-     options.table_factory.reset(NewBlockBasedTableFactory(table_options));
-     options.prefix_extractor.reset(new CustomPrefixExtractor());
+options.table_factory.reset(NewBlockBasedTableFactory(table_options));
+
+We use hash index in table files to speed up prefix lookup, although increasing storage space and memory usage.
+
      options.compression = rocksdb::kLZ4Compression;
+
+LZ4 compression reduces CPU usage, although increasing storage space.
+
      options.max_open_files = -1;
-     options.write_buffer_size = 64 * 1024 * 1024;
-     options.block_size = 4 * 1024;
-     options.block_restart_interval = 16;
+
+This which avoids looking up files in table cache, thus speeding up all queries. This is always a good thing to set if your server has a big limit on open files.
+
      options.options.compaction_style = kCompactionStyleLevel;
      options.level0_file_num_compaction_trigger = 10;
      options.level0_slowdown_writes_trigger = 20;
      options.level0_stop_writes_trigger = 40;
-     options.table_cache_numshardbits = 8;
+     options.write_buffer_size = 64 * 1024 * 1024;
      options.target_file_size_base = 64 * 1024 * 1024;
      options.max_bytes_for_level_base = 512 * 1024 * 1024;
+
+We use level style compaction. Memtable size is 64MB and it is flushed periodically to Level 0. Compaction L0->L1 is triggered when there are 10 level 0 files, which means total 640MB. When L0 is 640MB, compaction is triggered into L1, whose max size is 512MB.
+Total DB size???
+
      options.max_background_compactions = 1
      options.max_background_flushes = 1
-     options.keep_log_file_num = 20;
-     options.max_log_file_size = 1 * 1024 * 1024;
+
+There can be only 1 concurrent compaction executing and 1 flush. However, there are multiple shards in the system so there are actually multiple compactions happening at different shards. Otherwise, storage wouldn't be saturated with only 2 threads writing to storage.
+
      options.memtable_prefix_bloom_bits = 1024 * 1024 * 8;
+
+With memtable bloom filter, some accesses to the memtable can be avoided.
+
      options.block_cache = rocksdb::NewLRUCache(512 * 1024 * 1024, 8);
 
-### An Example Setting for Flash Device
-This setting supports both of Get() and total order iterating:
+Block cache is configured to be 512MB. (is it shared across the shards?)
+
+???filter policy?
+
+### Total ordered database, flash storage
+This database performs both Get() and total order iteration. Shards????
 
     options.env->SetBackgroundThreads(4);
-    options.compression = rocksdb::kSnappyCompression;
+
+We first set total of 4 threads in the thread pool.
+
     options.options.compaction_style = kCompactionStyleLevel;
-    options.write_buffer_size = 67108864;
-    options.target_file_size_base = 67108864;
+    options.write_buffer_size = 67108864; // 64MB
     options.max_write_buffer_number = 3;
-    options.max_background_compactions = 8;
+    options.target_file_size_base = 67108864; // 64MB
+    options.max_background_compactions = 4;
     options.level0_file_num_compaction_trigger = 8;
     options.level0_slowdown_writes_trigger = 17;
     options.level0_stop_writes_trigger = 24;
     options.num_levels = 4;
-    options.max_bytes_for_level_base = 536870912;
-    options.delete_obsolete_files_period_micros = 60000000;
+    options.max_bytes_for_level_base = 536870912; // 512MB
     options.max_bytes_for_level_multiplier = 8;
 
+We use level style compaction with high concurrency. Memtable size is 64MB and total number of level 0 files is 8. This means that we trigger compaction when L0 size grows to 512MB. L1 size is 512MB and every level is 8 times bigger than the previous one. L2 is 4GB and L3 is 32GB.
 
-### An Example for tmpfs-based Setting
-In this use case, all data are stored in tmpfs and only Get() or prefix hash iterating is supported. We tune the compaction to an extreme so that usually only one SST table exists in the system, which also means temporarily memory usage will be doubled when compaction. So data is sharded into hundreds of shards, each storing in one DB but they share the same background thread pools. Here is the setting:
+### Universal compaction, flash storage
 
+TODO TODO
+
+### In-memory prefix database
+In this example, database is mounted in tmpfs file system. We only support Get() and prefix range scans.
+
+Since this database is in-memory, we don't care about write amplification. We do, however, care a lot about read amplification and space amplification. This is an interesting example because we tune the compaction to an extreme so that usually only one SST table exists in the system. That way we decrease read/space amplification, while write amplification is extremely high.
+
+Since universal compaction is used, during compaction we will effectively double the space. This is very dangerous with in-memory database. For that reason, we shard the data into 400 of rocksdb instances. We allow only two concurrent compactions, which means that only two shards will be doubling the space at one time.
+
+    options.env->SetBackgroundThreads(1, rocksdb::Env::Priority::HIGH);
+    options.env->SetBackgroundThreads(2, rocksdb::Env::Priority::LOW);
     options.table_factory = std::shared_ptr<rocksdb::TableFactory>(rocksdb::NewPlainTableFactory(0, 8, 0.85));
     options.memtable_factory.reset(rocksdb::NewHashLinkListRepFactory(200000));
+    options.prefix_extractor.reset(new CustomPrefixExtractor());
     options.memtable_prefix_bloom_bits = 10000000;
     options.memtable_prefix_bloom_probes = 6;
     options.write_buffer_size = 32 << 20;
     options.max_write_buffer_number = 2;
     options.min_write_buffer_number_to_merge = 1;
+    options.compaction_style = kUniversalCompaction;
+    options.compaction_options_universal.size_ratio = 10;
+    options.compaction_options_universal.min_merge_width = 2;
+    options.compaction_options_universal.max_size_amplification_percent = 50;
     options.level0_file_num_compaction_trigger = 0;
     options.level0_slowdown_writes_trigger = 8;
     options.level0_stop_writes_trigger = 16;
@@ -190,16 +235,8 @@ In this use case, all data are stored in tmpfs and only Get() or prefix hash ite
     options.max_background_compactions = 1;
     options.max_background_flushes = 1;
     options.disableDataSync = 1;
-    options.manifest_preallocation_size = 0;
     options.bytes_per_sync = 2 << 20;
     options.bloom_locality = 1;
-    options.delete_obsolete_files_period_micros = 24*60*60*1000*1000UL;
-    options.compaction_style = kUniversalCompaction;
-    options.compaction_options_universal.size_ratio = 10;
-    options.compaction_options_universal.min_merge_width = 2;
-    options.compaction_options_universal.max_size_amplification_percent = 50;
 
-Also, the global background queue size is set:
-
-    rocksdbEnv_->SetBackgroundThreads(1, rocksdb::Env::Priority::HIGH);
-    rocksdbEnv_->SetBackgroundThreads(2, rocksdb::Env::Priority::LOW);
+### Final thoughts
+Unfortunately, configuring RocksDB optimally is not trivial. Even we as RocksDB developers don't fully understand the effect of each configuration change. If you want to fully optimize RocksDB for your workload, we recommend experiments and benchmarking, while keeping an eye on the three amplification factors. Also, please don't hesitate to ask us for help.
