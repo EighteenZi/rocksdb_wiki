@@ -238,5 +238,5 @@ Since universal compaction is used, during compaction we will effectively double
     options.bytes_per_sync = 2 << 20;
     options.bloom_locality = 1;
 
-### Final thoughts
+## Final thoughts
 Unfortunately, configuring RocksDB optimally is not trivial. Even we as RocksDB developers don't fully understand the effect of each configuration change. If you want to fully optimize RocksDB for your workload, we recommend experiments and benchmarking, while keeping an eye on the three amplification factors. Also, please don't hesitate to ask us for help.
