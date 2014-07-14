@@ -16,7 +16,15 @@ If you want to learn more about the three amplification factors in context of di
 
 ## RocksDB Compaction stats
 
-    ** Compaction Stats [default] **
+There are two great tools that can help you debug RocksDB's performance:
+
+**statistics** -- Set this to `rocksdb::CreateDBStatistics()`.
+
+**stats_dump_period_sec** -- We will dump statistics to LOG file every stats_dump_period_sec seconds. This is 3600 by default, which means that stats will be dumped every 1 hour. You can get the same data in the application by calling `db->GetProperty("rocksdb.stats");`
+
+RocksDB outputs stats in this format:
+
+    ** Compaction Stats **
     Level Files Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(BG) Wnew(GB) RW-Amp W-Amp Rd(MB/s) Wr(MB/s)  Rn(cnt) Rnp1(cnt) Wnp1(cnt) Wnew(cnt)  Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       L0     5        8  33.3      0.0     0.0      0.0       0.6      0.6    0.0   0.0      0.0     24.9        0         0         0         0         23       345    0.067       0.00          0    0.00
@@ -41,6 +49,8 @@ If you want to learn more about the three amplification factors in context of di
     Amplification interval: 4.4 write, 7.8 compaction
     Stalls(secs): 0.000 level0_slowdown, 0.000 level0_numfiles, 0.000 memtable_compaction, 0.000 leveln_slowdown
     Stalls(count): 0 level0_slowdown, 0 level0_numfiles, 0 memtable_compaction, 0 leveln_slowdown
+
+
 
 ## Parallelism options
 In LSM architecture, there are two background processes: flush and compaction. Both of them can execute concurrently to take full advantage of storage technology concurrency. Flush threads are submitted to HIGH priority pool, while compaction threads are submitted to LOW priority pool. To increase number of threads in respective thread pools call:
