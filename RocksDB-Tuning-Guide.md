@@ -22,7 +22,7 @@ When debugging performance, there are some tools that can help you:
 
 **stats_dump_period_sec** -- We will dump statistics to LOG file every stats_dump_period_sec seconds. This is 3600 by default, which means that stats will be dumped every 1 hour. You can get the same data in the application by calling `db->GetProperty("rocksdb.stats");`
 
-RocksDB outputs stats in this format:
+Every **stats_dump_period_sec**, you'll find something like this in your LOG file:
 
     ** Compaction Stats **
     Level Files Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(GB) Wnew(GB) RW-Amp W-Amp Rd(MB/s) Wr(MB/s)  Rn(cnt) Rnp1(cnt) Wnp1(cnt) Wnew(cnt)  Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)
