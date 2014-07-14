@@ -16,7 +16,7 @@ If you want to learn more about the three amplification factors in context of di
 
 ## RocksDB Compaction stats
 
-There are two great tools that can help you debug RocksDB's performance:
+When debugging performance, there are some tools that can help you:
 
 **statistics** -- Set this to `rocksdb::CreateDBStatistics()`.
 
