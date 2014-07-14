@@ -198,7 +198,7 @@ Advanced users can also configure custom memtable and table format.
 In this section we will present some RocksDB configurations that we actually run in production.
 
 ### Prefix database on flash storage
-This service uses RocksDB to perform prefix range scans and point lookups. It is running on flash storage. TODO find out read/write ratio per box.
+This service uses RocksDB to perform prefix range scans and point lookups. It is running on flash storage.
 
      options.prefix_extractor.reset(new CustomPrefixExtractor());
 
@@ -262,10 +262,6 @@ We first set total of 4 threads in the thread pool.
     options.max_bytes_for_level_multiplier = 8;
 
 We use level style compaction with high concurrency. Memtable size is 64MB and total number of level 0 files is 8. This means that we trigger compaction when L0 size grows to 512MB. L1 size is 512MB and every level is 8 times bigger than the previous one. L2 is 4GB and L3 is 32GB.
-
-### Universal compaction, flash storage
-
-TODO TODO
 
 ### In-memory prefix database
 In this example, database is mounted in tmpfs file system. We only support Get() and prefix range scans. Transational logs are stored on hard drive to avoid it to consume memory which is not used for query.
