@@ -25,7 +25,7 @@ When debugging performance, there are some tools that can help you:
 RocksDB outputs stats in this format:
 
     ** Compaction Stats **
-    Level Files Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(BG) Wnew(GB) RW-Amp W-Amp Rd(MB/s) Wr(MB/s)  Rn(cnt) Rnp1(cnt) Wnp1(cnt) Wnew(cnt)  Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)
+    Level Files Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(GB) Wnew(GB) RW-Amp W-Amp Rd(MB/s) Wr(MB/s)  Rn(cnt) Rnp1(cnt) Wnp1(cnt) Wnew(cnt)  Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       L0     5        8  33.3      0.0     0.0      0.0       0.6      0.6    0.0   0.0      0.0     24.9        0         0         0         0         23       345    0.067       0.00          0    0.00
       L1    38        3  10.3      0.6     0.6      0.0       0.4      0.4    1.8   0.7     27.9     19.6      340       301      5939      5638         21        32    0.656       0.00          0    0.00
@@ -50,6 +50,21 @@ RocksDB outputs stats in this format:
     Stalls(secs): 0.000 level0_slowdown, 0.000 level0_numfiles, 0.000 memtable_compaction, 0.000 leveln_slowdown
     Stalls(count): 0 level0_slowdown, 0 level0_numfiles, 0 memtable_compaction, 0 leveln_slowdown
 
+Compaction stats for the compactions executed between levels N and N+1 are reported at level N+1 (compaction output). Here is the quick reference:
+* Score -- (current level size) / (max level sizE). 0-1 values are OK. Anything bigger than 1 means that level needs to be compacted. 
+* Read(GB) -- Total bytes read during compaction between levels N and N+1 (both from level N and N+1) 
+* Rn(GB) -- Bytes read from level N during compaction between levels N and N+1
+* Rnp1(GB) -- Bytes read from level N+1 during compaction between levels N and N+1
+* Write(GB) -- Total bytes written during compaction between levels N and N+1
+* Wnew(GB) -- New bytes written to level N+1, calculated as (total bytes written to N+1) - (bytes read from N+1 during compaction with N)
+* RW-Amp: (total written to N+1 + total read from N + total read from N+1) / (total read from N). Total read and write amplification from compactions between levels N and N+1. In other words, how much total reads and writes does a single byte on level N generate.
+* W-Amp: (total written to N+1) / (total read from N). Write amplification from compaction between levels N and N+1. How much writes to level N+1 were generated from a single byte of data in level N.
+* Rd(MB/s): Total bytes read during compaction between levels N and N+1 per second.
+* Wr(MB/s): Total bytes written to level N+1 per second.
+* Rn(cnt): Total files read from level N during compaction between levels N and N+1
+* Rnp1(cnt): Total files read from level N+1 during compaction between levels N and N+1
+* Wnp1(cnt): Total files written to level N+1 during compaction between levels N and N+1
+* Wnew(cnt): (Wnp1(cnt) - Rnp1(cnt)) -- 
 
 
 ## Parallelism options
