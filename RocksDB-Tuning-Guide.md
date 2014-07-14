@@ -14,7 +14,7 @@ disk write bandwidth (you can use `iostat`) by your DB write rate.
 
 If you want to learn more about the three amplification factors in context of different database algorithms we strongly recommend Mark Callaghan's talk at Highload -- http://vimeo.com/album/2920922/video/98428203.
 
-## RocksDB Compaction stats
+## RocksDB statistics
 
 When debugging performance, there are some tools that can help you:
 
