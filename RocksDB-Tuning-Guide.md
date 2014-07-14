@@ -64,8 +64,13 @@ Compaction stats for the compactions executed between levels N and N+1 are repor
 * Rn(cnt): Total files read from level N during compaction between levels N and N+1
 * Rnp1(cnt): Total files read from level N+1 during compaction between levels N and N+1
 * Wnp1(cnt): Total files written to level N+1 during compaction between levels N and N+1
-* Wnew(cnt): (Wnp1(cnt) - Rnp1(cnt)) -- 
-
+* Wnew(cnt): (Wnp1(cnt) - Rnp1(cnt)) -- Increase in file count as result of compaction between levels N and N+1
+* Comp(sec): Total time spent doing compactions between levels N and N+1
+* Comp(cnt): Total number of compactions between levels N and N+1
+* Avg(sec): Average time spent doing compaction between levels N and N+1
+* Stall(sec): Total time writes were stalled because level N was uncompacted (compaction score was high).
+* Stall(cnt): Total number of writes stalled because level N was uncompacted
+* Avg(ms): Average time a write stall on level N
 
 ## Parallelism options
 In LSM architecture, there are two background processes: flush and compaction. Both of them can execute concurrently to take full advantage of storage technology concurrency. Flush threads are submitted to HIGH priority pool, while compaction threads are submitted to LOW priority pool. To increase number of threads in respective thread pools call:
