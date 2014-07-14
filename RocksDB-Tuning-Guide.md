@@ -72,6 +72,15 @@ Compaction stats for the compactions executed between levels N and N+1 are repor
 * Stall(cnt): Total number of writes stalled because level N was uncompacted
 * Avg(ms): Average time a write stall on level N
 
+After the per-level Compaction Stats, we also output some general stats. General stats are reported for both **cumulative** and **interval**. Cumulative is total stats from the beginning of time. Interval are the same stats since the last stats output.
+* Uptime(secs): total -- total runtime of RocksDB instance. interval -- time since the last stats dump.
+* Writes: total -- number of writes, batches -- number of group commits, per batch -- average number of bytes in a single batch, ingest -- total bytes written into DB (not counting compactions).
+* WAL: Same as writes, but counts how many bytes were written to WALs. If you write all data to WAL, the numbers should be same as above.
+* Compaction IO (GB): new -- total new GB written to the DB, read -- total bytes read from disk as part of compaction, write -- total bytes written to disk as part of compaction, read+write -- self explanatory
+* Compaction IO (MB/s): same as above, but in terms of total speed
+* Amplification: write -- write amplification, ratio of total bytes written and bytes written to the DB (see "Amplification factors". Compaction amplification is ratio of (total bytes written + read) / (bytes written to the DB).
+* Stalls: total count and seconds of each stall type since beginning of time: level0_slowdown -- Stall because of `level0_slowdown_writes_trigger`. level0_numfiles -- Stall because of `level0_stop_writes_trigger`. `memtable_compaction` -- Stall because all memtables were full, flush process couldn't keep up. `leveln_slowdown` -- Stall because of `soft_rate_limit` and `hard_rate_limit`
+
 ## Parallelism options
 In LSM architecture, there are two background processes: flush and compaction. Both of them can execute concurrently to take full advantage of storage technology concurrency. Flush threads are submitted to HIGH priority pool, while compaction threads are submitted to LOW priority pool. To increase number of threads in respective thread pools call:
 
