@@ -37,17 +37,23 @@ To support universal compaction in the current level compaction, we need to enab
 * Allow cross-level compaction to be partitioned into multiple smaller compaction jobs to improve concurrency.
 * Allow number of levels to be dynamically increase or decrease, optionally without upper-bound limit.
 
-To allow compaction across multiple levels, we need to have a way to determine when to extend the current compaction to cover the next level, and here's my proposal, which basically search for the best output level for the current compaction based on the write amplification factor.
+To allow compaction across multiple levels, we need to have a way to determine when to extend the current compaction to cover the next level, and here's my proposal:
 
-Let `SM` denote the size multiplier between two consecutive levels, describing the size ratio between the target size of `Level N` and the target size of `Level N + 1` (in universal compaction, this number is configured to be 2.).  Consider a situation where we would like to determine whether to compaction a set `f_N`, where files in `f_N` can be any file in `level 0` to `level N`.  We use `|f_N|` to denote the size of all files in `f_N`, and use `F_N+1` to denote the set of files in `level N + 1` having overlapping key-range with `f_N`, and `|F_N + 1|` to denote the size of all files in `F_N + 1`.  Let `WAF(f_N) = min(f_N, |F_N+1|) / (|f_N| + |F_N+1)` be the write amplification factor.  Then consider the following two cases:
+Step 1. Pick the largest file in input_level that is not being compacted yet
+Step 2.  If all the overlapping files in input_level+1 are not being compacted, then create a new Compaction Instance encompassing all the files in input_level and input_level + 1
+Step 3. If the overlapping files in input_level+2 are not currently being compacted, then include those files from input_level+2 only when the following condition is true:
 
-* Case 1 --- `WAF(f_N) <= SM`: we have no-lower (no-worse) than average write amplification than average.  It is a good timing to compact `F` into `level N`.
-* Case 2 --- `WAF(f_N) > SM`: we have higher (worse) write amplification than average.  It is not a good timing to compact `F` into `level N`.  Should try to include more files in `F` or remove some files from `F` to improve write amplification.
+        MIN( the size of current compaction input files, the size of overlapping files in the next level)
+     --------------------------------------------------------------------------------- >=   1 / (size multiplier between consecutive levels) 
+           the size of current compaction input files + the size of overlapping files in the next level 
 
-Let `f_N+1` be the union of `f_N` and `F_N+1`, and we find the biggest `n >= N` such that `WAF(f_n) <= SM`.  If none of the possible `n` yields `WAF(f_n) <= SM`, then we pick the best `n` which yields minimal `WAF(f_n)`.
+Step 4: If we were able to add more files via N3, then repeat N3 with the next higher level
 
-### Example
-TBD
+Step 1 and 2 is the same as what we have in the current level compaction.  The different parts are step 3 and 4, where RocksDB expends the compaction to the next level when it observes a better-than-average write amplification.  This behavior is similar to what we have in universal compaction, which will minimize write amplification.
 
-### Partition one big compaction work into multiple sub-jobs
+The challenge part here is: how to partition this big compaction run into multiple smaller one to run them in parallel, and I will explain how to achieve it in the later section.
+
+To allow level compaction to do exactly the same as universal compaction, we can add an option where compactions can only be triggered when mem-table flush or adding files in L0.
+
+### Running one big compaction run in multiple threads
 TBD
