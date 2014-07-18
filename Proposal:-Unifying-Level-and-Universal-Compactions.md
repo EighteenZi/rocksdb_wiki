@@ -39,15 +39,15 @@ To support universal compaction in the current level compaction, we need to enab
 
 To allow compaction across multiple levels, we need to have a way to determine when to extend the current compaction to cover the next level, and here's my proposal:
 
-Step 1. Pick the largest file in input_level that is not being compacted yet
-Step 2.  If all the overlapping files in input_level+1 are not being compacted, then create a new Compaction Instance encompassing all the files in input_level and input_level + 1
-Step 3. If the overlapping files in input_level+2 are not currently being compacted, then include those files from input_level+2 only when the following condition is true:
+1. Pick the largest file in input_level that is not being compacted yet
+2. If all the overlapping files in input_level+1 are not being compacted, then create a new Compaction Instance encompassing all the files in input_level and input_level + 1
+3. If the overlapping files in input_level+2 are not currently being compacted, then include those files from input_level+2 only when the following condition is true:
 
         MIN( the size of current compaction input files, the size of overlapping files in the next level)
      --------------------------------------------------------------------------------- >=   1 / (size multiplier between consecutive levels) 
            the size of current compaction input files + the size of overlapping files in the next level 
 
-Step 4: If we were able to add more files via N3, then repeat N3 with the next higher level
+4. If we were able to add more files via N3, then repeat N3 with the next higher level
 
 Step 1 and 2 is the same as what we have in the current level compaction.  The different parts are step 3 and 4, where RocksDB expends the compaction to the next level when it observes a better-than-average write amplification.  This behavior is similar to what we have in universal compaction, which will minimize write amplification.
 
