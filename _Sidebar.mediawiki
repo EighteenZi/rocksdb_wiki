@@ -3,7 +3,6 @@
 * [[RocksDB-Basics | Overview]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
-** [[RocksDB-Tuning-Guide | Tuning Guide]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 ** [[PlainTable-Format | PlainTable Format]]
 ** [[Hash-based-memtable-implementations | Hash-Based Memtable]]
@@ -29,5 +28,6 @@
 ** [[Performance-Benchmarks | Performance on Flash Storage]]
 ** [[RocksDB-In-Memory-Workload-Performance-Benchmarks | In Memory Workload Performance]]
 ** [[Read-Modify-Write-Benchmarks | Read-Modify-Write Performance]]
+** [[RocksDB-Tuning-Guide | Tuning Guide]]
 * '''FAQ'''
 ** coming soon
