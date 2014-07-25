@@ -3,6 +3,7 @@
 * [[RocksDB-Basics | Overview]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
+** [[RocksDB-Tuning-Guide | Tuning Guide]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 ** [[PlainTable-Format | PlainTable Format]]
 ** [[Hash-based-memtable-implementations | Hash-Based Memtable]]
