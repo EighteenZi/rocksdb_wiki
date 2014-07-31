@@ -1,18 +1,23 @@
-The purpose of this guide is to provide you with enough information so you can tune RocksDB for your workload and your system configuration. RocksDB is very flexible, which is both good and bad. It is good because you can tune it for variety of workloads and storage technologies. Inside of Facebook we use the same code base for in-memory workload, flash devices and spinning disks. However, flexibility is not always user-friendly. We introduced a huge number of tuning options that are sometimes confusing and hard to understand. We hope that by reading this guide you will be able to squeeze the last drop of performance out of your system and fully utilize your resources.
+The purpose of this guide is to provide you with enough information so you can tune RocksDB for your workload and your system configuration. 
 
-We assume you have basic knowledge of how Log-structured merge-tree (LSM) works. There are already plenty of great resources on LSM, no need to write one more.
+RocksDB is very flexible, which is both good and bad. You can tune it for variety of workloads and storage technologies. Inside of Facebook we use the same code base for in-memory workload, flash devices and spinning disks. However, flexibility is not always user-friendly. We introduced a huge number of tuning options that may be confusing. We hope this guide will help you squeeze the last drop of performance out of your system and fully utilize your resources.
+
+We assume you have basic knowledge of how a Log-structured merge-tree (LSM) works. There are already plenty of great resources on LSM, no need to write one more.
 
 ## Amplification factors
-When we talk about tuning RocksDB, we often mean that we're trading off three amplification factors: write amplification, read amplification and space amplification. Let's define them here.
+Tuning RocksDB is often a trade off between three amplification factors: write amplification, read amplification and space amplification. 
 
-**Write amplification** is the ratio of bytes written to database and bytes written to storage. For example, if you are writing 10 MB/s to the database and you observe 30 MB/s disk write rate, your write amplification is 3. If write amplification is high the workload might be bottlenecked on disk throughput. For example, if write amplification is 50 and max disk throughput is 500 MB/s, your database can sustain 10 MB/s write rate. Decreasing write amplification will directly increase max write rate. High write amplification will also decrease flash lifetime. There are two ways in which you can observe your write amplification. First is to read through the output of `DB::GetProperty("rocksdb.stats", &stats)`. The second is to divide your
-disk write bandwidth (you can use `iostat`) by your DB write rate.
+**Write amplification** is the ratio of bytes written to database to bytes written to storage. 
 
-**Read amplification** is the number of disk reads per query. If you need to read 5 pages to answer a query, we say that read amplification is 5.
+For example, if you are writing 10 MB/s to the database and you observe 30 MB/s disk write rate, your write amplification is 3. If write amplification is high, the workload may be bottlenecked on disk throughput. For example, if write amplification is 50 and max disk throughput is 500 MB/s, your database can sustain a 10 MB/s write rate. In this case, decreasing write amplification will directly increase max write rate. 
 
-**Space amplification** is the ratio of the size of database files on disk and data size. If you store 10MB in the database and it stores 100MB on disk, this is space amplification of 10. Usually you will want to set hard limit on space amplification since you don't want to run out of disk space or memory.
+High write amplification will also decreases flash lifetime. There are two ways in which you can observe your write amplification. The first is to read through the output of `DB::GetProperty("rocksdb.stats", &stats)`. The second is to divide your disk write bandwidth (you can use `iostat`) by your DB write rate.
 
-If you want to learn more about the three amplification factors in context of different database algorithms we strongly recommend Mark Callaghan's talk at Highload -- http://vimeo.com/album/2920922/video/98428203.
+**Read amplification** is the number of disk reads per query. If you need to read 5 pages to answer a query, read amplification is 5.
+
+**Space amplification** is the ratio of the size of database files on disk to data size. If you store 10MB in the database and it stores 100MB on disk, this is space amplification of 10. You will usually want to set a hard limit on space amplification so you don't run out of disk space or memory.
+
+To learn more about the three amplification factors in context of different database algorithms, we strongly recommend [Mark Callaghan's talk at Highload](http://vimeo.com/album/2920922/video/98428203).
 
 ## RocksDB statistics
 
@@ -20,7 +25,7 @@ When debugging performance, there are some tools that can help you:
 
 **statistics** -- Set this to `rocksdb::CreateDBStatistics()`. You can get human-readable RocksDB statistics any time by calling `options.statistics.ToString()`.
 
-**stats_dump_period_sec** -- We will dump statistics to LOG file every stats_dump_period_sec seconds. This is 3600 by default, which means that stats will be dumped every 1 hour. You can get the same data in the application by calling `db->GetProperty("rocksdb.stats");`
+**stats_dump_period_sec** -- We dump statistics to LOG file every stats_dump_period_sec seconds. This is 3600 by default, which means that stats will be dumped every 1 hour. You can get the same data in the application by calling `db->GetProperty("rocksdb.stats");`
 
 Every **stats_dump_period_sec**, you'll find something like this in your LOG file:
 
@@ -50,15 +55,16 @@ Every **stats_dump_period_sec**, you'll find something like this in your LOG fil
     Stalls(secs): 0.000 level0_slowdown, 0.000 level0_numfiles, 0.000 memtable_compaction, 0.000 leveln_slowdown
     Stalls(count): 0 level0_slowdown, 0 level0_numfiles, 0 memtable_compaction, 0 leveln_slowdown
 
+### Compaction stats
 Compaction stats for the compactions executed between levels N and N+1 are reported at level N+1 (compaction output). Here is the quick reference:
-* Score -- (current level size) / (max level sizE). 0-1 values are OK. Anything bigger than 1 means that level needs to be compacted. 
-* Read(GB) -- Total bytes read during compaction between levels N and N+1 (both from level N and N+1) 
-* Rn(GB) -- Bytes read from level N during compaction between levels N and N+1
-* Rnp1(GB) -- Bytes read from level N+1 during compaction between levels N and N+1
-* Write(GB) -- Total bytes written during compaction between levels N and N+1
-* Wnew(GB) -- New bytes written to level N+1, calculated as (total bytes written to N+1) - (bytes read from N+1 during compaction with N)
-* RW-Amp: (total written to N+1 + total read from N + total read from N+1) / (total read from N). Total read and write amplification from compactions between levels N and N+1. In other words, how much total reads and writes does a single byte on level N generate.
-* W-Amp: (total written to N+1) / (total read from N). Write amplification from compaction between levels N and N+1. How much writes to level N+1 were generated from a single byte of data in level N.
+* Score: (current level size) / (max level size). Values of 0 or 1 are okay, but any value greater than 1 means that level needs to be compacted
+* Read(GB): Total bytes read during compaction between levels N and N+1 (both from level N and N+1) 
+* Rn(GB): Bytes read from level N during compaction between levels N and N+1
+* Rnp1(GB): Bytes read from level N+1 during compaction between levels N and N+1
+* Write(GB): Total bytes written during compaction between levels N and N+1
+* Wnew(GB):  New bytes written to level N+1, calculated as (total bytes written to N+1) - (bytes read from N+1 during compaction with N)
+* RW-Amp: ((total written to N+1) + (total read from N) + (total read from N+1)) / (total read from N). Total read and write amplification from compactions between levels N and N+1. In other words, the total number of reads and writes generated by a single byte on level N
+* W-Amp: (total written to N+1) / (total read from N). Write amplification from compaction between levels N and N+1. How much writes to level N+1 were generated from a single byte of data in level N
 * Rd(MB/s): Total bytes read during compaction between levels N and N+1 per second.
 * Wr(MB/s): Total bytes written to level N+1 per second.
 * Rn(cnt): Total files read from level N during compaction between levels N and N+1
@@ -68,120 +74,131 @@ Compaction stats for the compactions executed between levels N and N+1 are repor
 * Comp(sec): Total time spent doing compactions between levels N and N+1
 * Comp(cnt): Total number of compactions between levels N and N+1
 * Avg(sec): Average time spent doing compaction between levels N and N+1
-* Stall(sec): Total time writes were stalled because level N was uncompacted (compaction score was high).
+* Stall(sec): Total time writes were stalled because level N was uncompacted (compaction score was high)
 * Stall(cnt): Total number of writes stalled because level N was uncompacted
 * Avg(ms): Average time a write stall on level N
 
-After the per-level Compaction Stats, we also output some general stats. General stats are reported for both **cumulative** and **interval**. Cumulative is total stats from the beginning of time. Interval are the same stats since the last stats output.
+### General stats
+After the per-level compaction stats, we also output some general stats. General stats are reported for both **cumulative** and **interval**. Cumulative stats report total values from the beginning of time. Interval stats report values since the last stats output.
 * Uptime(secs): total -- total runtime of RocksDB instance. interval -- time since the last stats dump.
-* Writes: total -- number of writes, batches -- number of group commits, per batch -- average number of bytes in a single batch, ingest -- total bytes written into DB (not counting compactions).
+* Writes: total -- number of writes; batches -- number of group commits; per batch -- average number of bytes in a single batch; ingest -- total bytes written into DB (not counting compactions).
 * WAL: Same as writes, but counts how many bytes were written to WALs. If you write all data to WAL, the numbers should be same as above.
-* Compaction IO (GB): new -- total new GB written to the DB, read -- total bytes read from disk as part of compaction, write -- total bytes written to disk as part of compaction, read+write -- self explanatory
+* Compaction IO (GB): new -- total new GB written to the DB; read -- total bytes read from disk as part of compaction; write -- total bytes written to disk as part of compaction; read+write -- self explanatory
 * Compaction IO (MB/s): same as above, but in terms of total speed
 * Amplification: write -- write amplification, ratio of total bytes written and bytes written to the DB (see "Amplification factors". Compaction amplification is ratio of (total bytes written + read) / (bytes written to the DB).
 * Stalls: total count and seconds of each stall type since beginning of time: level0_slowdown -- Stall because of `level0_slowdown_writes_trigger`. level0_numfiles -- Stall because of `level0_stop_writes_trigger`. `memtable_compaction` -- Stall because all memtables were full, flush process couldn't keep up. `leveln_slowdown` -- Stall because of `soft_rate_limit` and `hard_rate_limit`
 
 ## Parallelism options
-In LSM architecture, there are two background processes: flush and compaction. Both of them can execute concurrently to take full advantage of storage technology concurrency. Flush threads are submitted to HIGH priority pool, while compaction threads are submitted to LOW priority pool. To increase number of threads in respective thread pools call:
+In LSM architecture, there are two background processes: flush and compaction. Both can execute concurrently to take full advantage of storage technology concurrency. Flush threads are submitted to HIGH priority pool, while compaction threads are submitted to LOW priority pool. To increase number of threads in respective thread pools, call:
 
      options.env->SetBackgroundThreads(num_threads, Env::Priority::HIGH);
      options.env->SetBackgroundThreads(num_threads, Env::Priority::LOW);
  
-Once you increase number of threads in thread pool, you can also  increase max number of parallel compactions and flushes:
+Once you increase number of threads in thread pool, you can also increase max number of parallel compactions and flushes:
 
 **max_background_compactions** is the maximum number of concurrent background compactions. Default is 1, but to fully utilize your CPU and storage you might want to increase this to approximately number of cores in the system.
 
 **max_background_flushes** is the maximum number of concurrent flush operations. It is usually good enough to set this to 1.
 
 ## General options
-**filter_policy** -- If you're doing point lookups you definitely want to turn bloom filters on. We use bloom filters to avoid unnecessary disk reads. You should set filter_policy to `rocksdb::NewBloomFilterPolicy(bits_per_key)`. Default bits_per_key is 10, which yields ~1% false positive rate. Bigger bits_per_key value will reduce false positive rate, but increase memory usage and space amplification.
+**filter_policy** -- If you're doing point lookups you definitely want to turn bloom filters on. We use bloom filters to avoid unnecessary disk reads. You should set filter_policy to `rocksdb::NewBloomFilterPolicy(bits_per_key)`. Default bits_per_key is 10, which yields ~1% false positive rate. Larger bits_per_key values will reduce false positive rate, but increase memory usage and space amplification.
 
-**block_cache** -- Usually you just want to set this to the result of the call `rocksdb::NewLRUCache(cache_capacity, shard_bits)`. Block cache caches uncompressed blocks. OS cache, on the other hand, caches compressed blocks (since that's the way they are stored in files). Thus, it makes sense to use both block_cache and OS cache. We need to lock accesses to block cache and sometimes we see RocksDB bottlenecked on block cache's mutex, especially when DB size is smaller than RAM. In that case, it makes sense to shard block cache by setting shard_bits to a bigger number. If shard_bits is 4, total number of shards will be 16.
+**block_cache** -- We usually recommend setting this to the result of the call `rocksdb::NewLRUCache(cache_capacity, shard_bits)`. Block cache caches uncompressed blocks. OS cache, on the other hand, caches compressed blocks (since that's the way they are stored in files). Thus, it makes sense to use both block_cache and OS cache. We need to lock accesses to block cache and sometimes we see RocksDB bottlenecked on block cache's mutex, especially when DB size is smaller than RAM. In that case, it makes sense to shard block cache by setting shard_bits to a bigger number. If shard_bits is 4, total number of shards will be 16.
 
 **allow_os_buffer** -- If false, we will not buffer files in OS cache. See comments above.
 
-**max_open_files** -- RocksDB keeps all file descriptors in a table cache. If number of file descriptors exceeds max_open_files, some files are evicted from table cache and their file descriptors closed. This means that every read has to go through the table cache to lookup the file needed. If you set max_open_files to -1 we will always keep all files opened which avoids expensive table cache calls.
+**max_open_files** -- RocksDB keeps all file descriptors in a table cache. If number of file descriptors exceeds max_open_files, some files are evicted from table cache and their file descriptors closed. This means that every read must go through the table cache to lookup the file needed. Set max_open_files to -1 to always keep all files open, which avoids expensive table cache calls.
 
-**table_cache_numshardbits** -- This option controls table cache sharding and it makes sense to increase it if you see that table cache mutex is contended.
+**table_cache_numshardbits** -- This option controls table cache sharding.  Increase it if table cache mutex is contended.
 
-**block_size** -- RocksDB packs user data in blocks. When reading key-value pair from a table file, an entire block is loaded into memory. Block size is 4KB by default. Each table file contains an index that lists offsets of all blocks. Increasing block_size means that index contains less entries (since there are less blocks per file) and is thus smaller. Increasing block_size will decrease memory usage and space amplification, but will increase read amplification.
+**block_size** -- RocksDB packs user data in blocks. When reading a key-value pair from a table file, an entire block is loaded into memory. Block size is 4KB by default. Each table file contains an index that lists offsets of all blocks. Increasing block_size means that the index contains fewer entries (since there are fewer blocks per file) and is thus smaller. Increasing block_size decreases memory usage and space amplification, but increases read amplification.
 
 ## Sharing cache and thread pool
-Sometimes you may wish to run multiple RocksDB instances from the same process. RocksDB provides a way for those instances to share block cache and thread pool. To share block cache, just assign a single cache object to all instances:
+Sometimes you may wish to run multiple RocksDB instances from the same process. RocksDB provides a way for those instances to share block cache and thread pool. To share block cache, assign a single cache object to all instances:
 
     first_instance_options.block_cache = second_instance_options.block_cache = rocksdb::NewLRUCache(1GB)
 
-will make both instances share single block cache of total size 1GB.
+This will make both instances share a single block cache of total size 1GB.
 
-Thread pool is associated with Env object. When you construct Options, options.env is set to `Env::Default()`, which is what you want to use in most cases. Since all Options use the same static object `Env::Default()`, thread pool is actually shared by default. See "Parallelism options" to learn how to set number of threads in the tread pool. This way, you can set maximum number of concurrent running compactions and flushes, even when running multiple RocksDB instances.
+Thread pool is associated with Env object. When you construct Options, options.env is set to `Env::Default()`, which is best in most cases. Since all Options use the same static object `Env::Default()`, thread pool is shared by default. See [Parallelism options](#parallelism-options) to learn how to set number of threads in the tread pool. This way, you can set the maximum number of concurrent running compactions and flushes, even when running multiple RocksDB instances.
 
 ## Flushing options
-All writes to RocksDB are first inserted into an in-memory data structure called memtable. Once the **active memtable** is full, we create a new one and mark the old one read-only. We call read-only memtable **immutable**. At any point in time there is exactly one active memtable and zero or more immutable memtables. Immutable memtables are waiting to be flushed to storage. There are three options that control flushing behavior.
+All writes to RocksDB are first inserted into an in-memory data structure called memtable. Once the **active memtable** is full, we create a new one and mark the old one read-only. We call the read-only memtable **immutable**. At any point in time there is exactly one active memtable and zero or more immutable memtables. Immutable memtables are waiting to be flushed to storage. There are three options that control flushing behavior.
 
-**write_buffer_size** is the size of a single memtable. Once memtable exceeds this size, we mark it immutable and create a new one.
+**write_buffer_size** sets the size of a single memtable. Once memtable exceeds this size, it is marked immutable and a new one is created.
 
-**max_write_buffer_number** is the maximum number of memtables, both active and immutable. If the active memtable fills up and the total number of memtables is bigger than max_write_buffer_number we stall further writes. This can happen if flush process is slower than the write rate.
+**max_write_buffer_number** sets the maximum number of memtables, both active and immutable. If the active memtable fills up and the total number of memtables is larger than max_write_buffer_number we stall further writes. This may happen if the flush process is slower than the write rate.
 
-**min_write_buffer_number_to_merge** is the minimum number of memtables that will be merged together before flushing to storage. For example, if this option is set to 2, we will not flush a single immutable memtable. We will only start flushing immutable memtables once there are two of them. If we merge multiple memtables together, we might also write less data to storage since we will merge two updates to a single key. However, every Get() needs to traverse all immutable memtables linearly to check if the key is there. If this option is set too high it might hurt read performance.
+**min_write_buffer_number_to_merge** is the minimum number of memtables to be merged before flushing to storage. For example, if this option is set to 2, immutable memtables are only flushed when there are two of them - a single immutable memtable will never be flushed. If multiple memtables are merged together, less data may be written to storage since two updates are merged to a single key. However, every Get() must traverse all immutable memtables linearly to check if the key is there. Setting this option too high may hurt read performance.
 
-Let's assume your options are:
+Example: options are:
   
     write_buffer_size = 512MB;
     max_write_buffer_number = 5;
     min_write_buffer_number_to_merge = 2;
 
-and your write rate is 16MB/s. New memtable will be created every 32 seconds and two memtables will be merged together and flushed every 64 seconds. Depending on the working set size, your flush size will be somewhere from 512MB to 1GB. In case flushing can't keep up with write rate, the memory used by memtables will be capped at 5*512MB = 2.5GB. Once we reach that, we will block any further writes until the flush finishes and frees memory used by the memtables. 
+with a write rate of 16MB/s. In this case, a new memtable will be created every 32 seconds, and two memtables will be merged together and flushed every 64 seconds. Depending on the working set size, flush size will be between 512MB and 1GB. To prevent flushing from failing to keep up with the write rate, the memory used by memtables is capped at 5*512MB = 2.5GB. When that is reached, any further writes are blocked until the flush finishes and frees memory used by the memtables. 
 
 ## Level Style Compaction
-In level style compaction, database files are organized into levels. Memtables are flushed to files in level 0, which contains the newest data. Higher levels contain older data with higher level containing oldest data. Files in level 0 can be overlapping, but files in level 1 and higher are non-overlapping. That means that Get() usually needs to check each file from level 0, but for each next level there can be no more than one file containing the key. Each level is 10 times bigger than the previous one (this multiplier is configurable). A compaction will take few files from level N and compact them with overlapping files from level N+1. Two compactions operating at different levels or at different key ranges are independent and can be executed concurrently. Speed of compaction is directly proportional to max write rate. If compaction can't keep up with the write rate, space used by the database will just keep increasing. It is important to configure RocksDB in such a way that compactions can be executed with high concurrency and fully utilize storage.
+In Level style compaction, database files are organized into levels. Memtables are flushed to files in level 0, which contains the newest data. Higher levels contain older data. Files in level 0 may overlap, but files in level 1 and higher are non-overlapping. As a result, Get() usually needs to check each file from level 0, but for each successive level, no more than one file may contain the key. Each level is 10 times larger than the previous one (this multiplier is configurable). 
 
-Compactions at levels 0 and 1 are tricky. Files at level 0 usually span the entire key space. When compacting L0->L1 (from level 0 to level 1), compaction includes all files from level 1. With all files from L1 getting compacted with L0, compaction L1->L2 can not proceed -- it has to wait for the L0->L1 compaction to finish. If L0->L1 compaction is slow, it will be the only compaction running in the system most of the time, since other compactions will have to wait for L0->L1 to finish. Also, L0->L1 compaction is single-threaded. It's hard to achieve good throughput with single-threaded compaction. You can check if that's the issue by checking disk utilization. If disk is not fully utilized, there might be an issue with compaction configuration. The advice we often give is to make L0->L1 as fast as possible by making **size of level 0 similar to size of level 1**.
+A compaction may take a few files from level N and compact them with overlapping files from level N+1. Two compactions operating at different levels or at different key ranges are independent and may be executed concurrently. Compaction speed is directly proportional to max write rate. If compaction can't keep up with the write rate, the amount space used by the database will continue to increase. **It is important** to configure RocksDB such way that compactions may be executed with high concurrency and fully utilize storage.
 
-Once you determine the size of level 1, you will need to decide the level multiplier. Let's assume your level 1 size is 512 MB, level multiplier is 10 and size of the database is 500GB. Level 2 size will then be 5GB, level 3 51GB and level 4 512GB. Since your database size is 500GB, levels 5 and higher will be empty. Size amplification is easy to calculate. It is `(512 MB + 512 MB + 5GB + 51GB + 512GB) / (500GB) = 1.14`. Here is how we would calculate write amplification: every byte first gets written out to level 0. Next, it needs to be compacted into level 1. Since level 1 size is the same as level 0, write amplification of L0->L1 compaction is 2. However, when a byte from level 1 needs to get compacted into level 2, we need to compact it with 10 bytes from level 2 (because level 2 is 10x bigger). The same is also true for L2->L3 and L3->L4 compactions. Total write amplification is then approximately `1 + 2 + 10 + 10 + 10 = 33`. Point lookups need to consult all files in level 0 and at most one file from each other levels. However, bloom filters help and greatly reduce read amplification. Short-lived range scans are a bit more expensive, however. Bloom filters are not useful for range scans, so the read amplification is `number_of_level0_files + number_of_non_empty_levels`.
+Compactions at levels 0 and 1 are tricky. Files at level 0 usually span the entire key space. When compacting L0->L1 (from level 0 to level 1), compaction includes all files from level 1. With all files from L1 getting compacted with L0, compaction L1->L2 cannot proceed; it must wait for the L0->L1 compaction to finish. If L0->L1 compaction is slow, it will be the only compaction running in the system most of the time, since other compactions must wait for it to finish. 
+
+L0->L1 compaction is also single-threaded. It is hard to achieve good throughput with single-threaded compaction. To see if this is causing issues, check disk utilization. If disk is not fully utilized, there might be an issue with compaction configuration. We usually reommend making L0->L1 as fast as possible by making **the size of level 0 similar to size of level 1**.
+
+Once you determine the appropriate size of level 1, you must decide the level multiplier. Let's assume your level 1 size is 512 MB, level multiplier is 10 and size of the database is 500GB. Level 2 size will then be 5GB, level 3 51GB and level 4 512GB. Since your database size is 500GB, levels 5 and higher will be empty. 
+
+Size amplification is easy to calculate. It is `(512 MB + 512 MB + 5GB + 51GB + 512GB) / (500GB) = 1.14`. Here is how we would calculate write amplification: every byte is first written out to level 0. It is then compacted into level 1. Since level 1 size is the same as level 0, write amplification of L0->L1 compaction is 2. However, when a byte from level 1 is compacted into level 2, it is compacted with 10 bytes from level 2 (because level 2 is 10x bigger). The same is also true for L2->L3 and L3->L4 compactions. 
+
+Total write amplification is therefore approximately `1 + 2 + 10 + 10 + 10 = 33`. Point lookups must consult all files in level 0 and at most one file from each other levels. However, bloom filters help by greatly reducing read amplification. Short-lived range scans are a bit more expensive, however. Bloom filters are not useful for range scans, so the read amplification is `number_of_level0_files + number_of_non_empty_levels`.
 
 Let's dive into options that control level compaction. We will start with more important ones and follow with less important ones.
 
-**level0_file_num_compaction_trigger** -- Once level 0 reaches that many files, L0->L1 compaction will be triggered. This means that we can estimate level 0 size in stable state as `write_buffer_size * min_write_buffer_number_to_merge * level0_file_num_compaction_trigger`.
+**level0_file_num_compaction_trigger** -- Once level 0 reaches this number of files, L0->L1 compaction is triggered. We can therefore estimate level 0 size in stable state as `write_buffer_size * min_write_buffer_number_to_merge * level0_file_num_compaction_trigger`.
 
-**max_bytes_for_level_base** and **max_bytes_for_level_multiplier** -- max_bytes_for_level_base is total size of level 1. As recommended, this should be similar to size of level 0. Each next level is max_bytes_for_level_multiplier bigger than previous one. The default is 10 and we don't recommend changing that.
+**max_bytes_for_level_base** and **max_bytes_for_level_multiplier** -- max_bytes_for_level_base is total size of level 1. As mentioned, we recommend that this be around the size of level 0. Each subsequent level is max_bytes_for_level_multiplier larger than previous one. The default is 10 and we do not recommend changing that.
 
 **target_file_size_base** and **target_file_size_multiplier** -- Files in level 1 will have target_file_size_base bytes. Each next level's file size will be target_file_size_multiplier bigger than previous one. However, by default target_file_size_multiplier is 1, so files in all L1..Lmax levels are equal. Increasing target_file_size_base will reduce total number of database files, which is generally a good thing. We recommend setting target_file_size_base to be `max_bytes_for_level_base / 10`, so that there are 10 files in level 1.
 
-**compression_per_level** -- You can use this option to set different compressions for different levels. It usually makes sense to avoid compressing levels 0 and 1 and only compress data in higher levels. You can even set slower compression in highest level and faster compression in lower levels (by highest we mean Lmax).
+**compression_per_level** -- Use this option to set different compressions for different levels. It usually makes sense to avoid compressing levels 0 and 1 and to compress data only in higher levels. You can even set slower compression in highest level and faster compression in lower levels (by highest we mean Lmax).
 
-**num_levels** -- It is safe for num_levels to be bigger than expected number of levels in the database. Some higher levels might be empty, which will not impact performance in any way. You need to change this option only if you expect your number of levels will be bigger than 7 (default).
+**num_levels** -- It is safe for num_levels to be bigger than expected number of levels in the database. Some higher levels may be empty, but this will not impact performance in any way. Only change this option if you expect your number of levels will be greater than 7 (default).
 
 ## Universal Compaction
-Write amplification of a level style compaction might be high in some cases. This means that for write-heavy workloads you may be bottlenecked on disk throughput. To optimize for those workloads, RocksDB introduced a new style of compaction that we call universal compaction. The goal of universal compaction is to decrease write amplification. However, it might increase read amplification and it certainly increases space amplification. 
+Write amplification of a level style compaction may be high in some cases. For write-heavy workloads, you may be bottlenecked on disk throughput. To optimize for those workloads, RocksDB introduced a new style of compaction that we call universal compaction, intended to decrease write amplification. However, it may increase read amplification and always increases space amplification. 
 
-With universal compaction, compaction process might temporarily increase size amplification by one. In other words, if you store 10GB in database, compaction process might consume additional 10GB (in addition to whatever else space amplification you get). However, there are techniques that can help with temporarily doubling space. If you're using universal compaction, we strongly recommend sharding your data and keeping it in multiple RocksDB instances. Let's assume you have S shards. Then, configure Env thread pool with only N compaction threads. Only N shards out of total S shards will have additional space amplification, thus bringing it down to `N/S` instead of 1. Let's assume your DB is 10GB and you configure it with 100 shards, each shard with 100MB of data. If you configure your thread pool with 20 concurrent compactions, you will only consume extra 2GB of data instead of 10GB. Also, compactions will execute in parallel, which will fully utilize your storage concurrency.
+With universal compaction, a compaction process may temporarily increase size amplification by a factor of two. In other words, if you store 10GB in database, the compaction process may consume additional 10GB, in addition to space amplification. 
 
-**max_size_amplification_percent** -- Size amplification as defined by amount (in percentage) of additional storage needed to store a byte of data in the database. Default is 200, which means that a 100 byte database could require up to 300 bytes of storage. 100 bytes in that 300 bytes are temporary and happen only during the compaction. Increasing this limit will decrease write amplification, but (obviously) increase space amplification.
+However, there are techniques to help reduce the temporary space doubling. If you use universal compaction, we strongly recommend sharding your data and keeping it in multiple RocksDB instances. Let's assume you have S shards. Then, configure Env thread pool with only N compaction threads. Only N shards out of total S shards will have additional space amplification, thus bringing it down to `N/S` instead of 1. For example, if your DB is 10GB and you configure it with 100 shards, each shard will hold 100MB of data. If you configure your thread pool with 20 concurrent compactions, you will only consume extra 2GB of data instead of 10GB. Also, compactions will execute in parallel, which will fully utilize your storage concurrency.
 
-**compression_size_percent** -- Percentage of data in the database that is compressed. Earlier data is compressed, while newer isn't. If set to -1 (default), all data is compressed. Reducing compression_size_percent will reduce CPU usage and increase space amplification.
+**max_size_amplification_percent** -- Size amplification as defined by amount of additional storage needed (in percentage) to store a byte of data in the database. Default is 200, which means that a 100 byte database could require up to 300 bytes of storage. 100 bytes of that 300 bytes are temporary and are used only during compaction. Increasing this limit decreases write amplification, but (obviously) increases space amplification.
+
+**compression_size_percent** -- Percentage of data in the database that is compressed. Older data is compressed, newer data is not compressed. If set to -1 (default), all data is compressed. Reducing compression_size_percent will reduce CPU usage and increase space amplification.
 
 ## Write stalls
-RocksDB has extensive system to slow down writes when compaction can't keep up with incoming write rate. Without such system, short-lived write bursts would: 1) increase space amplification, which could lead to running out of disk space, 2) increase read amplification, which would significantly degrade read performance. The idea is to smooth out write bursts by slowing down writes. Options that control write stalls are:
+RocksDB has extensive system to slow down writes when compaction can't keep up with the incoming write rate. Without such a system, short-lived write bursts would: 1) increase space amplification, which could lead to running out of disk space, and 2) increase read amplification, significantly degrading read performance. The idea is to smooth out write bursts by slowing down writes. Options that control write stalls are:
 
-**level0_slowdown_writes_trigger** and **level0_stop_writes_trigger** -- When number of level0 files is bigger than slowdown limit, we stall writes. When the number is bigger than stop limit, we fully stop writes and wait until compaction is done.
+**level0_slowdown_writes_trigger** and **level0_stop_writes_trigger** -- When the number of level 0 files is greater than the slowdown limit, writes are stalled. When the number is greater than stop limit, writes are fully stopped until compaction is done.
 
-**soft_rate_limit** and **hard_rate_limit** -- In level style compaction, each level has its compaction score. Once compaction score is bigger than 1, we trigger the compaction. In case the score for any level is bigger than soft_rate_limit, we will slow down writes. If score is bigger than hard_rate_limit, writes will be stopped until the compaction for that level reduces its score.
+**soft_rate_limit** and **hard_rate_limit** -- In level style compaction, each level has a compaction score. When a compaction score is greater than 1, compaction is triggered. If the score for any level exceeds the soft_rate_limit, writes are slowed down. If a score exceeds hard_rate_limit, writes are stopped until compaction for that level reduces its score.
 
 ## Prefix databases
-RocksDB keeps all data sorted and supports ordered iteration. However, some applications don't need the keys fully sorted. They are only interested about ordering keys with common prefix.
+RocksDB keeps all data sorted and supports ordered iteration. However, some applications don't need the keys to be fully sorted. They are only interested in ordering keys with a common prefix.
 
 Those applications can benefit of configuring prefix_extractor for the database.
 
 **prefix_extractor** -- A SliceTransform object that defines key prefixes. Key prefixes are then used to perform some interesting optimizations:
 
-1. Define prefix bloom filters, which can reduce read amplification of prefix range queries (give me all keys that start with prefix `XXX`). Make sure to also define **Options::filter_policy**.
-2. Use hash map based memtables to avoid costs of binary search in memtables.
-3. Add hash index to table files to avoid costs of binary search in table files.
-For more details on (2) and (3), see "Custom memtable and table factories".
+1. Define prefix bloom filters, which can reduce read amplification of prefix range queries (e.g., give me all keys that start with prefix `XXX`). Be sure to define **Options::filter_policy**.
+2. Use hash-map-based memtables to avoid binary search costs in memtables.
+3. Add hash index to table files to avoid binary search costs in table files.
+For more details on (2) and (3), see [Custom memtable and table factories](https://github.com/facebook/rocksdb/wiki/Basic-Operations#memtable-and-table-factories).
 Make sure to check comments about prefix_extractor in `include/rocksdb/options.h`.
 
 ## Custom memtable and table format
-Advanced users can also configure custom memtable and table format.
+Advanced users may configure custom memtable and table format.
 
 **memtable_factory** -- Defines the memtable. Here's the list of memtables we support:
 
@@ -198,25 +215,25 @@ Advanced users can also configure custom memtable and table format.
 In this section we will present some RocksDB configurations that we actually run in production.
 
 ### Prefix database on flash storage
-This service uses RocksDB to perform prefix range scans and point lookups. It is running on flash storage.
+This service uses RocksDB to perform prefix range scans and point lookups. It is running on Flash storage.
 
      options.prefix_extractor.reset(new CustomPrefixExtractor());
 
- Since the service doesn't need total order iterations (see "Prefix databases"), we define prefix extractor.
+Since the service doesn't need total order iterations (see [Prefix databases](#prefix-databases)), we define prefix extractor.
 
      rocksdb::BlockBasedTableOptions table_options;
      table_options.index_type = rocksdb::BlockBasedTableOptions::kHashSearch;
 options.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-We use hash index in table files to speed up prefix lookup, although increasing storage space and memory usage.
+We use a hash index in table files to speed up prefix lookup, but it increases storage space and memory usage.
 
      options.compression = rocksdb::kLZ4Compression;
 
-LZ4 compression reduces CPU usage, although increasing storage space.
+LZ4 compression reduces CPU usage, but increases storage space.
 
      options.max_open_files = -1;
 
-This which avoids looking up files in table cache, thus speeding up all queries. This is always a good thing to set if your server has a big limit on open files.
+This setting disables looking up files in table cache, thus speeding up all queries. This is always a good thing to set if your server has a big limit on open files.
 
      options.options.compaction_style = kCompactionStyleLevel;
      options.level0_file_num_compaction_trigger = 10;
@@ -226,13 +243,13 @@ This which avoids looking up files in table cache, thus speeding up all queries.
      options.target_file_size_base = 64 * 1024 * 1024;
      options.max_bytes_for_level_base = 512 * 1024 * 1024;
 
-We use level style compaction. Memtable size is 64MB and it is flushed periodically to Level 0. Compaction L0->L1 is triggered when there are 10 level 0 files, which means total 640MB. When L0 is 640MB, compaction is triggered into L1, whose max size is 512MB.
+We use level style compaction. Memtable size is 64MB and is flushed periodically to Level 0. Compaction L0->L1 is triggered when there are 10 level 0 files (total 640MB). When L0 is 640MB, compaction is triggered into L1, the max size of which is 512MB.
 Total DB size???
 
      options.max_background_compactions = 1
      options.max_background_flushes = 1
 
-There can be only 1 concurrent compaction executing and 1 flush. However, there are multiple shards in the system so there are actually multiple compactions happening at different shards. Otherwise, storage wouldn't be saturated with only 2 threads writing to storage.
+There can be only 1 concurrent compaction and 1 flush executing at any given time. However, there are multiple shards in the system, so multiple compactions occur on different shards. Otherwise, storage wouldn't be saturated with only 2 threads writing to storage.
 
      options.memtable_prefix_bloom_bits = 1024 * 1024 * 8;
 
@@ -247,7 +264,7 @@ This database performs both Get() and total order iteration. Shards????
 
     options.env->SetBackgroundThreads(4);
 
-We first set total of 4 threads in the thread pool.
+We first set a total of 4 threads in the thread pool.
 
     options.options.compaction_style = kCompactionStyleLevel;
     options.write_buffer_size = 67108864; // 64MB
@@ -261,14 +278,14 @@ We first set total of 4 threads in the thread pool.
     options.max_bytes_for_level_base = 536870912; // 512MB
     options.max_bytes_for_level_multiplier = 8;
 
-We use level style compaction with high concurrency. Memtable size is 64MB and total number of level 0 files is 8. This means that we trigger compaction when L0 size grows to 512MB. L1 size is 512MB and every level is 8 times bigger than the previous one. L2 is 4GB and L3 is 32GB.
+We use level style compaction with high concurrency. Memtable size is 64MB and the total number of level 0 files is 8. This means compaction is triggered when L0 size grows to 512MB. L1 size is 512MB and every level is 8 times larger than the previous one. L2 is 4GB and L3 is 32GB.
 
 ### In-memory prefix database
-In this example, database is mounted in tmpfs file system. We only support Get() and prefix range scans. Transational logs are stored on hard drive to avoid it to consume memory which is not used for query.
+In this example, database is mounted in tmpfs file system. We support only Get() and prefix range scans. Transational logs are stored on hard drive to avoid consuming memory not used for querying.
 
-Since this database is in-memory, we don't care about write amplification. We do, however, care a lot about read amplification and space amplification. This is an interesting example because we tune the compaction to an extreme so that usually only one SST table exists in the system. That way we decrease read/space amplification, while write amplification is extremely high.
+Since this database is in-memory, we don't care about write amplification. We do, however, care a lot about read amplification and space amplification. This is an interesting example because we tune the compaction to an extreme so that usually only one SST table exists in the system. We therefore decrease read and space amplification, while write amplification is extremely high.
 
-Since universal compaction is used, during compaction we will effectively double the space. This is very dangerous with in-memory database. For that reason, we shard the data into 400 of rocksdb instances. We allow only two concurrent compactions, which means that only two shards will be doubling the space at one time.
+Since universal compaction is used, we will effectively double our space usage during compaction. This is very dangerous with in-memory database. We therefore shard the data into 400 RocksDB instances. We allow only two concurrent compactions, so only two shards may double space use at any one time.
 
 In this case, prefix hash can be used to allow the system to use hash indexing instead of a binary one, as well as bloom filter for iterations when possible:
 
@@ -291,7 +308,7 @@ Enable bloom filter for hash table to reduce memory accesses (usually means CPU 
     options.memtable_prefix_bloom_bits = 10000000;
     options.memtable_prefix_bloom_probes = 6;
 
-Tune compaction so that, a full compaction is to be kicked off as soon as we have two files. We hack the parameter of universal compaction for it:
+Tune compaction so that, a full compaction is kicked off as soon as we have two files. We hack the parameter of universal compaction:
 
     options.compaction_style = kUniversalCompaction;
     options.compaction_options_universal.size_ratio = 10;
@@ -301,15 +318,15 @@ Tune compaction so that, a full compaction is to be kicked off as soon as we hav
     options.level0_slowdown_writes_trigger = 8;
     options.level0_stop_writes_trigger = 16;
 
-Tune bloom filter to a mode that is to minimize memory accesses:
+Tune bloom filter to minimize memory accesses:
 
     options.bloom_locality = 1;
 
-Use the mode where always all tables' reader objects are cached to avoid table cache access when reading:
+Reader objects for all tables are always cached, avoiding table cache access when reading:
 
     options.max_open_files = -1;
 
-Use one mem table at one time. Its size is determined by full compaction interval we want to pay. We tune the compaction such that after every flush, a full compaction will be triggered, which would cost CPU. The larger the mem table size is, the longer the compaction interval will be, and at the same time, less memory efficiency, worse performance of query and longer recovery time when restarting the DB.
+Use one mem table at one time. Its size is determined by the full compaction interval we want to pay. We tune compaction such that after every flush, a full compaction will be triggered, which costs CPU. The larger the mem table size, the longer the compaction interval will be, and at the same time, we see less memory efficiency, worse query performance and longer recovery time when restarting the DB.
 
     options.write_buffer_size = 32 << 20;
     options.max_write_buffer_number = 2;
@@ -328,4 +345,4 @@ Settings for WAL logs:
     options.bytes_per_sync = 2 << 20;
 
 ## Final thoughts
-Unfortunately, configuring RocksDB optimally is not trivial. Even we as RocksDB developers don't fully understand the effect of each configuration change. If you want to fully optimize RocksDB for your workload, we recommend experiments and benchmarking, while keeping an eye on the three amplification factors. Also, please don't hesitate to ask us for help.
+Unfortunately, configuring RocksDB optimally is not trivial. Even we as RocksDB developers don't fully understand the effect of each configuration change. If you want to fully optimize RocksDB for your workload, we recommend experiments and benchmarking, while keeping an eye on the three amplification factors. Also, please don't hesitate to ask us for help on the [RocksDB Developer's Discussion Group](https://www.facebook.com/groups/rocksdb.dev/).
