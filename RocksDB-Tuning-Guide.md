@@ -344,5 +344,14 @@ Settings for WAL logs:
     options.disableDataSync = 1;
     options.bytes_per_sync = 2 << 20;
 
+### Suggestion for in memory block table
+**hash_index:** In the new version, hash index is enabled for block based table. It would use 5% more storage space but speed up the random read by 50% compared to normal binary search index.
+
+    table_options.index_type = rocksdb::BlockBasedTableOptions::kHashSearch;
+
+**block_size:** By default, this value is set to be 4k. If compression is enabled, a smaller block size would lead to higher random read speed because decompression overhead is reduced. But the block size cannot be too small to make compression useless. It is recommended to set it to be 1k.
+
+**verify_checksum:** As we are storing data in tmpfs and care read performance a lot, checksum could be disabled.
+
 ## Final thoughts
 Unfortunately, configuring RocksDB optimally is not trivial. Even we as RocksDB developers don't fully understand the effect of each configuration change. If you want to fully optimize RocksDB for your workload, we recommend experiments and benchmarking, while keeping an eye on the three amplification factors. Also, please don't hesitate to ask us for help on the [RocksDB Developer's Discussion Group](https://www.facebook.com/groups/rocksdb.dev/).
