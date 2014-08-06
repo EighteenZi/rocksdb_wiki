@@ -1,3 +1,6 @@
+### 2014.08.05 Flash Memory Summit
+* [RocksDB](https://github.com/facebook/rocksdb/raw/gh-pages/talks/2014-08-05-Flash-Memory-Summit-Siying-RocksDB.pdf) (Siying Dong @ Facebook)
+
 ### 2014.03.27 1st RocksDB Meetup
 * [Supporting a 1PB In-Memory Workload](https://github.com/facebook/rocksdb/raw/gh-pages/talks/2014-03-27-RocksDB-Meetup-Haobo-RocksDB-In-Memory.pdf) (Haobo Xu @ Facebook)
 * [Column Families in RocksDB](https://github.com/facebook/rocksdb/raw/gh-pages/talks/2014-03-27-RocksDB-Meetup-Igor-Column-Families.pdf) (Igor Canadi @ Facebook)
