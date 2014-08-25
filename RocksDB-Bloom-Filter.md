@@ -38,6 +38,15 @@ The default value is 4K. When building a SST file, key-value pairs are added in 
 We are also working on a new bloom filter for block based table that contains a filter for all keys in SST file. It could improve RocksDB read performance but requires storing hashes of all the keys when building it. Details could be found in next section.
 
 #### New bloom filter format
+[Original](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format#filter-meta-block) bloom filter creates filter for each "data block", thus requires little memory when building it. 
+
+We are working on a new bloom filter that contains a filter for all keys in the SST file. This could improve reading performance because it avoids traveling in complicated SST format. But it takes more memory when building because all keys in SST file is required. We have optimization to store hashes of keys in memory. But users still needs to think twice when using it for large SST files.
+
+Users could specify which kind of bloom filter to use in
+
+    tableOptions::FilterBlockType
+
+It use the original bloom filter by default.
 
 
 
