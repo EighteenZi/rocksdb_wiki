@@ -5,6 +5,7 @@
 ** [[Basic-Operations | Basic Operations]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 ** [[PlainTable-Format | PlainTable Format]]
+** [[Rocksdb-Bloom-Filter | Bloom Filter]]
 ** [[Hash-based-memtable-implementations | Hash-Based Memtable]]
 ** [[Prefix-Seek-API-Changes | Prefix seek]]
 ** [[Merge-Operator | Read-Modify-Write Operator]]
