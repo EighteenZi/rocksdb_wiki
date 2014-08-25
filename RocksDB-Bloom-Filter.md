@@ -40,13 +40,24 @@ We are also working on a new bloom filter for block based table that contains a 
 #### New bloom filter format
 [Original](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format#filter-meta-block) bloom filter creates filter for each "data block", thus requires little memory when building it. 
 
-We are working on a new bloom filter that contains a filter for all keys in the SST file. This could improve reading performance because it avoids traveling in complicated SST format. But it takes more memory when building because all keys in SST file is required. We have optimization to store hashes of keys in memory. But users still needs to think twice when using it for large SST files.
+We are working on a new bloom filter(called full filter) that contains a filter for all keys in the SST file. This could improve reading performance because it avoids traveling in complicated SST format. But it takes more memory when building because all keys in SST file is required. We have optimization to store hashes of keys in memory. But users still needs to think twice when using it for large SST files.
 
 Users could specify which kind of bloom filter to use in
 
     tableOptions::FilterBlockType
 
 It use the original bloom filter by default.
+
+The full filter block is formatted as follows:
+
+    [filter]
+    [num probes]        : 1 byte
+    [num blocks]        : 4 bytes
+
+The filter is a big bits array that could be used to check for all keys in SST file. 
+num probes is the number of hash functions used to create bloom filter. In original bloom filter format, it is attached at the end of each filter. (Actually it is the same with full filter)
+num blocks is a parameter used inside of filter's algorithm. It has no relation to blocks in SST file.
+
 
 
 
