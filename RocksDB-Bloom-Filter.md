@@ -13,11 +13,15 @@ In RocksDB, each SST file has a bloom filter, which is created as soon as the fi
 There is no operation to combine bloom filters. Bloom filters can only be created from a set of keys. When we combine two SST files, new bloom filter is created from keys of new file.
 
 When we open a SST file, the bloom filter is opened and loaded in memory. If 
+
     options:: allow_mmap_reads=true
+
 The bloom filter is memory mapped.
 
 When the SST file is closed, the bloom filter is removed from memory. But if
+
     BlockBasedTableOptions::cache_index_and_filter_blocks=true,  
+
 the bloom filter may be cached in block cache.
 
 #### Memory Usage
@@ -26,7 +30,9 @@ The bloom filter needs all keys to fit in memory to build it. It seems at first 
 Details for format of block based table’s filter could be found [here](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format#filter-meta-block).
 
 The block size is defined in 
+
     Options::block_size
+
 The default value is 4K. When building a SST file, key-value pairs are added in a sequence, when there is enough k-v pairs ( < 4K), RocksDB would create bloom filter for them and write it to file. So only a very small fraction of keys is stored in memory to build the bloom filter.
 
 We are also working on a new bloom filter for block based table that contains a filter for all keys in SST file. It could improve RocksDB read performance but requires storing hashes of all the keys when building it. Details could be found in next section.
