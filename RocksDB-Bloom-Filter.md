@@ -8,15 +8,11 @@ Say that there is a set of keys, an algorithm could be applied to create a bit a
 In RocksDB, every SST file contains a bloom filter. It is used to decide if we need to go into the file to find the exact key.
 
 #### Life Cycle
-In RocksDB, each SST file has a bloom filter, which is created as soon as the file is written. This bloom filter is stored as a part of SST file. There is no difference when building bloom filter for files in different levels.
+In RocksDB, each SST file has a bloom filter, it is created when writing SST file to storage. This bloom filter is stored as a part of SST file. There is no difference when building bloom filter for files in different levels.
 
 There is no operation to combine bloom filters. Bloom filters can only be created from a set of keys. When we combine two SST files, new bloom filter is created from keys of new file.
 
-When we open a SST file, the bloom filter is opened and loaded in memory. If 
-
-    options:: allow_mmap_reads=true
-
-The bloom filter is memory mapped.
+When we open a SST file, the bloom filter is opened and loaded in memory. 
 
 When the SST file is closed, the bloom filter is removed from memory. But if
 
