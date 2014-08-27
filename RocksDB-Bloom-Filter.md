@@ -48,13 +48,10 @@ The full filter block is formatted as follows:
 
     [filter]
     [num probes]        : 1 byte
-    [num blocks]        : 4 bytes
 
 (1) The filter is a big bits array that could be used to check for all keys in SST file. 
 
 (2) num probes is the number of hash functions used to create bloom filter. In original bloom filter format, it is attached at the end of each filter. (Actually it is the same with full filter)
-
-(3) num blocks is a parameter used inside of filter's algorithm. It has no relation to blocks in SST file.
 
 ####Optimization for New Filter Format
 (1) Store hashes of keys in memory to reduce memory consumption. But users still needs to think twice when using it for large SST files.
