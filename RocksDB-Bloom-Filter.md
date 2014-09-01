@@ -47,7 +47,6 @@ It use the original bloom filter by default.
 The full filter block is formatted as follows:
 
     [filter]
-    [num probes]        : 1 byte
 
 (1) The filter is a big bits array that could be used to check for all keys in SST file. 
 
