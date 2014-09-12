@@ -47,12 +47,8 @@ The full filter block is formatted as follows:
 
 ####Usage of New Bloom Filter
 By default, the bloom filter remains the original format. To enable new filter format, you just need to add a parameter when creating FilterPolicy like:
- 
-<code>
 
-NewBloomFilterPolicy(10, false).
-
-</code>
+    NewBloomFilterPolicy(10, false).
  
 The second parameter means "not use original filter format".
  
@@ -60,13 +56,9 @@ When reading filter block, RocksDB could tell the filter format and create the a
 
 ####Customize your own FilterPolicy
 Original filter policy interface is too fixed and not suitable for new filter format and optimization. We define two more interfaces in filter policy (include/rocksdb/filter_policy.h) :
- 
-<code>
 
-FilterBitsBuilder* GetFilterBitsBuilder()
-FilterBitsReader* GetFilterBitsReader(const Slice& contents)
-
-</code>
+    FilterBitsBuilder* GetFilterBitsBuilder()
+    FilterBitsReader* GetFilterBitsReader(const Slice& contents)
  
 In this way, the new filter policy would function as a factory for FilterBitsBuilder and FilterBitsReader. FilterBitsBuilder provides interface for key storage and filter generation and FilterBitsReader provides interface to check if a key may exist in filter.
 
