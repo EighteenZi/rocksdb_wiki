@@ -3,12 +3,22 @@ When options.prefix_extractor for your DB or column family is specified, RocksDB
 
 ```cpp
 Options options;
+
+// Enable prefix bloom for mem tables
 options.prefix_extractor.reset(NewFixedPrefixTransform(3));
 options.memtable_prefix_bloom_bits = 100000000;
 options.memtable_prefix_bloom_probes = 6;
+
+// Enable prefix bloom for SST files
+BlockBasedTableOptions table_options;
+table_options.filter_policy.reset(NewBloomFilterPolicy(10, true));
+options.table_factory.reset(NewBlockBasedTableFactory(table_options));
+
 DB* db;
 Status s = DB::Open(options, "/tmp/rocksdb",  &db);
+
 ......
+
 auto iter = db->NewIterator(ReadOptions());
 iter->Seek("foobar"); // Seek inside prefix "foo"
 ```
