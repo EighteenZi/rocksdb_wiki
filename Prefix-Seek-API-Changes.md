@@ -1,5 +1,5 @@
 # Prefix Seek API
-When options.prefix_extractor for your DB or column family is specified, RocksDB is in a "prefix seek" mode, explained below. Example:
+When options.prefix_extractor for your DB or column family is specified, RocksDB is in a "prefix seek" mode, explained below. Example of how to use it:
 
 ```cpp
 Options options;
