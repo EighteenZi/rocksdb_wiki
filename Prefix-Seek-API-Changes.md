@@ -37,6 +37,10 @@ Status s = DB::Open(options, "/tmp/rocksdb",  &db);
 
 ......
 
+auto iter = db->NewIterator(ReadOptions());
+iter->Seek("foobar"); // Seek inside prefix "foo"
+
+```
 When prefix seek mode is enabled, RocksDB will freely organize the data or build look-up data structures that can identify prefixes or rule out non-existing prefixes more quickly, e.g. a bloom filter of prefixes, or a hash table from prefixes. Here are some optimizations we do for prefix seek mode: prefix bloom for block based tables and mem tables, [hash-based mem tables](https://github.com/facebook/rocksdb/wiki/Hash-based-memtable-implementations), as well as [PlainTable](https://github.com/facebook/rocksdb/wiki/PlainTable-Format) format.
 
 From release 3.5, we support a read option to allow RocksDB to use total order even if options.prefix_extractor is given. To enable the feature set ReadOption.total_order_mode=true to the read option passed when doing NewIterator(), example:
