@@ -1,4 +1,18 @@
-# Before the Change
+# Prefix Seek API
+When options.prefix_extractor for your DB or column family is specified, RocksDB is in a "prefix seek" mode, explained below.
+
+options.prefix_extractor is a SliceTransform class. By calling SliceTransform.Transform(), we extract a Slice representing a substring of the Slice. In this wiki page, we use "prefix" to prefer to output of options.prefix_extractor.Transform() of a key. You can use fixed length prefix transformer, by calling NewFixedPrefixTransform(prefix_len), or you can implement your own prefix transformer in the way you want and pass it to options.prefix_extractor.
+
+When options.prefix_extractor is not null, iterators are not guaranteed a total order of all keys, but only keys for the same prefix. When doing Iterator.Seek(lookup_key), RocksDB will extract the prefix of lookup_key. If there is one or more keys in the database that matches prefix of lookup_key, RocksDB will place the iterator to the correct location, as for total ordering mode. If after calling one or more Next(), we finish all keys for the prefix, we might return Valid()=false, or any key in the DB that is larger than the previous key.  If prefix of lookup_key doesn't match prefix of any key in the DB, you may see Iterator.Valid()=false, or another key larger than the look-up key in the DB, depending on specific implementation of prefix seek.
+
+When prefix seek mode is enabled, RocksDB will freely build and use indexes that can quickly identify prefixes or filters that rule out non-existing prefixes, to improve the performance of look-up. Here are some optimizations we do for prefix seek mode: prefix bloom for block based tables and mem tables, hash-based mem tables, as well as PlainTable format.
+
+From release 3.5, we support a read option to allow RocksDB to use total order even if options.prefix_extractor is given. To enable the feature set ReadOption.total_seed_mode=true to the read option passed when doing NewIterator(). Performance might be worse in this mode. Please aware not all the implementation of prefix seek supports this option. For example, some implementation of PlainTable doesn't support it and you'll see an error in  status code when you try to use it. Hash-based mem tables might do a very expensive online sorting if you use it. This mode is supported in prefix bloom and hash index of block based tables.
+
+# API change from 2.8 -> 3.0
+In this section, we explained the API as of 2.8 release and the change in 3.0.
+
+## Before the Change
 
 As of RocksDB 2.8, there are 3 seek modes:
 
@@ -40,7 +54,7 @@ iter->Seek(key);
 
 Same as ReadOptions.prefix, Options.prefix_extractor is a prerequisite.
 
-# What's Changed
+## What's Changed
 It becomes obvious that 3 modes of seek are confusing:
 * One mode would require another option to be set (e.g. `Options.prefix_extractor`);
 * It is not obvious to our users which mode of the last two is preferred under different circumstances
@@ -53,7 +67,7 @@ Slice key = "foo_bar";
 iter->Seek(key);
 ```
 
-# Transition to the New Usage
+## Transition to the New Usage
 Transition to the new style should be simple: remove the assignment to `Options.prefix` or `Options.prefix_seek`, since they are deprecated. Now, seek directly with your target key or prefix. Since
 `Next()` can go across the boundary to a different prefix, you will need to check the end condition:
 
