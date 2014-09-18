@@ -1,5 +1,17 @@
 # Prefix Seek API
-When options.prefix_extractor for your DB or column family is specified, RocksDB is in a "prefix seek" mode, explained below.
+When options.prefix_extractor for your DB or column family is specified, RocksDB is in a "prefix seek" mode, explained below. Example:
+
+```cpp
+Options options;
+options.prefix_extractor.reset(NewFixedPrefixTransform(3));
+options.memtable_prefix_bloom_bits = 100000000;
+options.memtable_prefix_bloom_probes = 6;
+DB* db;
+Status s = DB::Open(options, "/tmp/rocksdb",  &db);
+......
+auto iter = db->NewIterator(ReadOptions());
+iter->Seek("foobar"); // Seek inside prefix "foo"
+```
 
 options.prefix_extractor is a SliceTransform class. By calling SliceTransform.Transform(), we extract a Slice representing a substring of the Slice, usually the prefix part. In this wiki page, we use "prefix" to prefer to output of options.prefix_extractor.Transform() of a key. You can use fixed length prefix transformer, by calling NewFixedPrefixTransform(prefix_len), or you can implement your own prefix transformer in the way you want and pass it to options.prefix_extractor.
 
@@ -7,7 +19,17 @@ When options.prefix_extractor is not null, iterators are not guaranteed a total 
 
 When prefix seek mode is enabled, RocksDB will freely organize the data or build look-up data structures that can identify prefixes or rule out non-existing prefixes more quickly, e.g. a bloom filter of prefixes, or a hash table from prefixes. Here are some optimizations we do for prefix seek mode: prefix bloom for block based tables and mem tables, hash-based mem tables, as well as PlainTable format.
 
-From release 3.5, we support a read option to allow RocksDB to use total order even if options.prefix_extractor is given. To enable the feature set ReadOption.total_seed_mode=true to the read option passed when doing NewIterator(). Performance might be worse in this mode. Please aware not all the implementation of prefix seek supports this option. For example, some implementation of PlainTable doesn't support it and you'll see an error in  status code when you try to use it. Hash-based mem tables might do a very expensive online sorting if you use it. This mode is supported in prefix bloom and hash index of block based tables.
+From release 3.5, we support a read option to allow RocksDB to use total order even if options.prefix_extractor is given. To enable the feature set ReadOption.total_order_mode=true to the read option passed when doing NewIterator(), example:
+
+```cpp
+ReadOptions read_options;
+read_options.total_order_mode = true;
+auto iter = db->NewIterator(read_options);
+Slice key = "foobar";
+iter->Seek(key);  // Seek "foobar" in total order
+```
+
+Performance might be worse in this mode. Please aware not all the implementation of prefix seek supports this option. For example, some implementation of PlainTable doesn't support it and you'll see an error in status code when you try to use it. Hash-based mem tables might do a very expensive online sorting if you use it. This mode is supported in prefix bloom and hash index of block based tables.
 
 # API change from 2.8 -> 3.0
 In this section, we explained the API as of 2.8 release and the change in 3.0.
