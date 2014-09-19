@@ -28,4 +28,19 @@ Please note, size of Fn-1 is not included, which means 0 is the perfect size amp
 
 The reason we estimate size amplification in this way: in a stable sized DB, incoming rate of deletion should be similar to rate of insertion, which means for any of the files except Fn should include similar number of insertion and deletion. After applying F1, F2 ... Fn-1, to Fn, the size effects of them will cancel each other, so the output should also be size of Fn, which is the size of live data, which is used as the base of size amplification.
 
+#### 2. Compaction Triggered by Individual Size Ratio
+We calculated a value of _size ratio trigger_ as
+
+```
+     size_ratio_trigger = 1 + options.compaction_options_universal.size_ratio / 100
+```
+Usually options.compaction_options_universal.size_ratio is close to 0 so _size ratio trigger_ is close to 1.
+
+We start from F1, if size(F2) / size(F1) < _size ratio trigger_, then (F1, F2) are qualified to be compacted together. We continue from here to determine whether F3 can be added too. If size(F1 + F2) / size(F3) < _size ratio trigger_, we would include (F1, F2, F3). Then we do the same for F4. We keep comparing total existing size to the next file until the _size ratio trigger_ condition doesn't hold any more.
+
+Compaction is only triggered when number of input files would be at least options.compaction_options_universal.min_merge_width and number of files as inputs will be capped as no more than  options.compaction_options_universal.max_merge_width.
+
+#### 3. Compaction Triggered by number of files
+
+
 This wiki page is not completed.
