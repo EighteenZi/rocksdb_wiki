@@ -12,7 +12,7 @@ RocksDB features highly flexible configuration settings that may be tuned to run
 
 
 ## Getting Started
-For a complete Table of Contents, see the sidebar to the left. Most readers will want to start with the [Overview](https://github.com/barnaby0101/sandbox/wiki/Overview) and the [Basic Operations](https://github.com/barnaby0101/sandbox/wiki/RocksDB-Introduction) section of the Developer's Guide. 
+For a complete Table of Contents, see the sidebar to the left. Most readers will want to start with the [Overview](https://github.com/facebook/rocksdb/wiki/RocksDB-Basics) and the [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations) section of the Developer's Guide. 
 
 
 ## News 
