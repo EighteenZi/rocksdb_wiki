@@ -41,6 +41,12 @@ We start from F1, if size(F2) / size(F1) < _size ratio trigger_, then (F1, F2) a
 Compaction is only triggered when number of input files would be at least options.compaction_options_universal.min_merge_width and number of files as inputs will be capped as no more than  options.compaction_options_universal.max_merge_width.
 
 #### 3. Compaction Triggered by number of files
+If for every time we try to schedule a compaction, neither of 1 and 2 are triggered, we will try to compaction whatever files from F1, F2, so that after the compaction the total number of files is not greater than options.level0_file_num_compaction_trigger + 1. If we need to compact more than options.compaction_options_universal.max_merge_width number of files, we cap it to options.compaction_options_universal.max_merge_width.
+
+"Try to schedule" I mentioned below will happen when after flushing a memtable, finished a compaction. Sometimes duplicated attempts are scheduled.
 
 
+Parallel compactions are possible if options.max_background_compactions > 1. Same as all other compaction styles, parallel compactions will not work on the same file.
+
+ 
 This wiki page is not completed.
