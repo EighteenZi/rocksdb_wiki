@@ -177,6 +177,8 @@ However, there are techniques to help reduce the temporary space doubling. If yo
 
 **compression_size_percent** -- Percentage of data in the database that is compressed. Older data is compressed, newer data is not compressed. If set to -1 (default), all data is compressed. Reducing compression_size_percent will reduce CPU usage and increase space amplification.
 
+See [Universal Compaction](https://github.com/facebook/rocksdb/wiki/Universal-Compaction) page for more information on universal compaction.
+
 ## Write stalls
 RocksDB has extensive system to slow down writes when compaction can't keep up with the incoming write rate. Without such a system, short-lived write bursts would: 1) increase space amplification, which could lead to running out of disk space, and 2) increase read amplification, significantly degrading read performance. The idea is to smooth out write bursts by slowing down writes. Options that control write stalls are:
 
