@@ -10,11 +10,12 @@ Assuming we have file
 ```
 where F1 containing the newest data and Fn containing the oldest.
 
-Here are how a compaction is triggered:
+How is all compactions are picked up:
 
-* Precondition: n >= options.level0_file_num_compaction_trigger
+#### 0. Precondition: n >= options.level0_file_num_compaction_trigger
+Unless number of files reaches this threshold, no compaction will be triggered at all.
 
-There are three conditions, each of them can trigger a compaction:
+If pre-condition is satisfied, there are three conditions. Each of them can trigger a compaction:
 
 #### 1. Compaction Triggered by Space Amplification
 If the estimated _size amplification ratio_ is larger than options.compaction_options_universal.max_size_amplification_percent / 100, all files will be compacted to one single file.
