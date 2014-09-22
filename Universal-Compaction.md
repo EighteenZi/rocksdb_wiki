@@ -28,6 +28,61 @@ Please note, size of Fn is not included, which means 0 is the perfect size ampli
 
 The reason we estimate size amplification in this way: in a stable sized DB, incoming rate of deletion should be similar to rate of insertion, which means for any of the files except Fn should include similar number of insertion and deletion. After applying F1, F2 ... Fn-1, to Fn, the size effects of them will cancel each other, so the output should also be size of Fn, which is the size of live data, which is used as the base of size amplification.
 
+If options.compaction_options_universal.max_size_amplification_percent = 25, which means we will keep total space of DB less than 125% of total size of live data. Let's use this value in an example. Assuming compaction is only triggered by space amplification, options.level0_file_num_compaction_trigger = 1, file size after each mem table flush is always 1, and compacted size always equals to total input sizes. After two flushes, we have two files size of 1, while 1/1 > 25% so we'll need to do a full compaction:
+
+```
+1 1  =>  2
+```
+
+After another mem table flush we have
+
+```
+1 2   =>  3
+```
+
+Which again triggers a full compaction becasue 1/2 > 25%. And in the same way:
+
+```
+1 3  =>  4
+```
+
+But after another flush, the compaction is not triggered:
+
+```
+1 4
+```
+
+Because 1/4 <= 25%. Another mem table flush will trigger another compaction:
+
+```
+1 1 4  =>  6
+```
+
+Because (1+1) / 4 > 25%.
+
+And it keeps going like this:
+
+```
+1
+1 1  =>  2
+1 2  =>  3
+1 3  =>  4
+1 4
+1 1 4  =>  6
+1 6
+1 1 6  =>  8
+1 8
+1 1 8
+1 1 1 8  =>  11
+1 11
+1 1 11
+1 1 1 11  =>  14
+1 14
+1 1 14
+1 1 1 14
+1 1 1 1 14  =>  18
+```
+
 #### 2. Compaction Triggered by Individual Size Ratio
 We calculated a value of _size ratio trigger_ as
 
@@ -38,7 +93,7 @@ Usually options.compaction_options_universal.size_ratio is close to 0 so _size r
 
 We start from F1, if size(F2) / size(F1) < _size ratio trigger_, then (F1, F2) are qualified to be compacted together. We continue from here to determine whether F3 can be added too. If size(F1 + F2) / size(F3) < _size ratio trigger_, we would include (F1, F2, F3). Then we do the same for F4. We keep comparing total existing size to the next file until the _size ratio trigger_ condition doesn't hold any more.
 
-Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, and total mem table flush size is always 1 and compacted size always equals to total input sizes. Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction:
+Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, and total mem table flush size is always 1, compacted size always equals to total input sizes, and compaction is only triggered by space amplification and options.level0_file_num_compaction_trigger = 1. Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction:
 
 ```
 1 1  =>  2
