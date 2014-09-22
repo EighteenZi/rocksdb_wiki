@@ -13,6 +13,7 @@
 ** [[Time-to-Live | Time to Live (TTL) Support]]
 ** [[Allocating-Some-Indexes-and-Bloom-Filters-using-Huge-Page-TLB | Huge Page TLB Support]]
 ** [[Column-Families | Column Families]]
+** [[Universal-Compaction | Universal compaction style]]
 ** [[FIFO-compaction-style | FIFO compaction style]]
 * '''Tools / Utilities'''
 ** [[Ldb-Tool | Administration and Data Access Tool]]
