@@ -38,6 +38,48 @@ Usually options.compaction_options_universal.size_ratio is close to 0 so _size r
 
 We start from F1, if size(F2) / size(F1) < _size ratio trigger_, then (F1, F2) are qualified to be compacted together. We continue from here to determine whether F3 can be added too. If size(F1 + F2) / size(F3) < _size ratio trigger_, we would include (F1, F2, F3). Then we do the same for F4. We keep comparing total existing size to the next file until the _size ratio trigger_ condition doesn't hold any more.
 
+Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, and total mem table flush size is always 1 and compacted size always equals to total input sizes. Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction:
+
+```
+1 1  =>  2
+```
+
+After another mem table flush,
+
+```
+1 2  (no compaction triggered)
+```
+
+which doesn't qualify a flush because 1/2 < 1. But another mem table flush will trigger a compaction of all the files:
+
+```
+1 1 2  =>  4
+```
+
+This is because 1/1 >=1 and (1+1) / 2 >= 1.
+
+The compaction will keep working like this:
+
+```
+1 1  =>  2
+1 2  (no compaction triggered)
+1 1 2  =>  4
+1 4  (no compaction triggered)
+1 1 4  =>  2 4
+1 2 4  (no compaction triggered)
+1 1 2 4 => 8
+1 8  (no compaction triggered)
+1 1 8  =>  2 8
+1 2 8  (no compaction triggered)
+1 1 2 8  =>  4 8
+1 4 8  (no compaction triggered)
+1 1 4 8  =>  2 4 8
+1 2 4 8  (no compaction triggered)
+1 1 2 4 8  =>  16
+1 16  (no compaction triggered)
+......
+```
+
 Compaction is only triggered when number of input files would be at least options.compaction_options_universal.min_merge_width and number of files as inputs will be capped as no more than  options.compaction_options_universal.max_merge_width.
 
 #### 3. Compaction Triggered by number of files
