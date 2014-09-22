@@ -8,7 +8,7 @@ Assuming we have file
 ```
     F1, F2, F3, ..., Fn
 ```
-where F1 containing the newest data and Fn containing the oldest.
+where F1 containing most recent updates to the DB and Fn containing the oldest updates of the DB.
 
 How is all compactions are picked up:
 
