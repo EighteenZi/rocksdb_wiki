@@ -8,7 +8,7 @@ Assuming we have file
 ```
     F1, F2, F3, ..., Fn
 ```
-where F1 containing most recent updates to the DB and Fn containing the oldest updates of the DB.
+where F1 containing data of most recent updates to the DB and Fn containing the data of oldest updates of the DB. Note it is sorted by age of the data inside the file, not the file itself. According to this sorting order, after compaction, the output file is always placed into the place where the inputs were.
 
 How is all compactions are picked up:
 
