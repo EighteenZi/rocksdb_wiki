@@ -12,7 +12,7 @@ where F1 containing the newest data and Fn containing the oldest.
 
 How is all compactions are picked up:
 
-#### 0. Precondition: n >= options.level0_file_num_compaction_trigger
+#### Precondition: n >= options.level0_file_num_compaction_trigger
 Unless number of files reaches this threshold, no compaction will be triggered at all.
 
 If pre-condition is satisfied, there are three conditions. Each of them can trigger a compaction:
