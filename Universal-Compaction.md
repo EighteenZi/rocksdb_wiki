@@ -94,7 +94,7 @@ Usually options.compaction_options_universal.size_ratio is close to 0 so _size r
 
 We start from F1, if size(F2) / size(F1) < _size ratio trigger_, then (F1, F2) are qualified to be compacted together. We continue from here to determine whether F3 can be added too. If size(F1 + F2) / size(F3) < _size ratio trigger_, we would include (F1, F2, F3). Then we do the same for F4. We keep comparing total existing size to the next file until the _size ratio trigger_ condition doesn't hold any more.
 
-Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, and total mem table flush size is always 1, compacted size always equals to total input sizes, and compaction is only triggered by space amplification and options.level0_file_num_compaction_trigger = 1. Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction:
+Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, total mem table flush size is always 1, compacted size always equals to total input sizes, compaction is only triggered by space amplification and options.level0_file_num_compaction_trigger = 1. Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction:
 
 ```
 1 1  =>  2
