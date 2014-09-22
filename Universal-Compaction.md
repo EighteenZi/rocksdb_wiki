@@ -14,7 +14,7 @@ Here are how a compaction is triggered:
 
 * Precondition: n >= options.level0_file_num_compaction_trigger
 
-There are three conditions, each of them can trigger a condition:
+There are three conditions, each of them can trigger a compaction:
 
 #### 1. Compaction Triggered by Space Amplification
 If the estimated _size amplification ratio_ is larger than options.compaction_options_universal.max_size_amplification_percent / 100, all files will be compacted to one single file.
