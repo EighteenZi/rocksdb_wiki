@@ -1,5 +1,5 @@
 ## Overview
-Universal Compaction Style is a compaction style, targeting the use case that requires lower write amplification, trading off read amplification and space amplification.
+Universal Compaction Style is a compaction style, targeting the use cases requiring lower write amplification, trading off read amplification and space amplification.
 
 When using this compaction style, all the SST files are put in L0. Data generated during a time range is stored in one SST file. Different SST files never overlap on their time ranges. Compaction can only happen among two or more files of adjacent time ranges. The output is a single file whose time range is the combination of input files. After any compaction, the condition that SST files never overlap on their time ranges still holds. 
 
