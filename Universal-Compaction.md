@@ -3,6 +3,13 @@ Universal Compaction Style is a compaction style, targeting the use cases requir
 
 When using this compaction style, all the SST files are put in L0. Data generated during a time range is stored in one SST file. Different SST files never overlap on their time ranges. Compaction can only happen among two or more files of adjacent time ranges. The output is a single file whose time range is the combination of input files. After any compaction, the condition that SST files never overlap on their time ranges still holds. 
 
+## Limitations
+### DB (Column Family) Size
+When using Universal Compaction, all data of the DB (or Column Family to be precise) is sometimes compacted to one single SST file. There is a limitation of size of one single SST file. In RocksDB, a block cannot exceed 4GB (to allow size to be uint32). The index block can exceed the limit if the single SST file is too big. The size of index block depends on your data. In one of our use cases, we would observe the DB to reach the limitation when the DB grows to about 250GB, using 4K data block size.
+
+### Double Size Issue
+In universal style compaction, sometimes full compaction is needed. In this case, output data size is similar to input size. During compaction, both of input files and the output file need to be kept, so the DB will be temporarily double the disk space usage. Be sure to keep enough free space for full compaction.
+
 ## Compaction Picking Algorithm
 Assuming we have file
 ```
