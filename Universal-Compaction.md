@@ -143,7 +143,7 @@ If for every time we try to schedule a compaction, neither of 1 and 2 are trigge
 
 "Try to schedule" I mentioned below will happen when after flushing a memtable, finished a compaction. Sometimes duplicated attempts are scheduled.
 
-See [Universal Style Compaction Example](https://github.com/facebook/rocksdb/wiki/Universal-Style-Compaction Example) as an example of how output file sizes look like for a common setting.
+See [Universal Style Compaction Example](https://github.com/facebook/rocksdb/wiki/Universal-Style-Compaction-Example) as an example of how output file sizes look like for a common setting.
 
 Parallel compactions are possible if options.max_background_compactions > 1. Same as all other compaction styles, parallel compactions will not work on the same file.
 
