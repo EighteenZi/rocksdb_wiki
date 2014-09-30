@@ -3,6 +3,7 @@
 * [[RocksDB-Basics | Overview]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
+** [[Known-Issues | Known Issues]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 ** [[PlainTable-Format | PlainTable Format]]
 ** [[Rocksdb-Bloom-Filter | Bloom Filter]]
