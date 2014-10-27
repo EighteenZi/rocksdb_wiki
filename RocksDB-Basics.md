@@ -76,7 +76,7 @@ A database may be opened in ReadOnly mode, in which the database guarantees that
 RocksDB writes detailed logs to a file named LOG*. These are mostly used for debugging and analyzing a running system. This LOG may be configured to roll at a specified periodicity.
 
 #### Data Compression
-RocksDB supports snappy, zlib and bzip2 compression. RocksDB may be configured to support different compression algorithms at different levels of data. Typically, `90%` of data in the Lmax level. A typical installation might configure no-compression for levels L0-L2, snappy compression for the mid levels and zlip compression for Lmax.
+RocksDB supports snappy, zlib and bzip2 compression. RocksDB may be configured to support different compression algorithms at different levels of data. Typically, `90%` of data in the Lmax level. A typical installation might configure no-compression for levels L0-L2, snappy compression for the mid levels and zlib compression for Lmax.
 
 #### Transaction Logs 
 RocksDB stores transactions into _logfile_ to protect against system crashes. On restart, it re-processes all the transactions that were recorded in the _logfile_. The _logfile_ can be configured to be stored in a directory different from the directory where the _sstfile_s are stored. This is necessary for those cases in which you might want to store all data files in non-persistent fast storage. At the same time, you can ensure no data loss by putting all transaction logs on slower but persistent storage.
