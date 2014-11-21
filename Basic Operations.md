@@ -25,6 +25,18 @@ If you want to raise an error if the database already exists, add the following 
   options.error_if_exists = true;
 ```
 
+If you are porting code from <code>leveldb</code> to <code>rocksdb</code>, you can convert your <code>leveldb::Options</code> object to a <code>rocksdb::Options</code> object using <code>rocksdb::LevelDBOptions</code>, which has the same functionality as <code>leveldb::Options</code>:
+
+```cpp
+  #include "rocksdb/utilities/leveldb_options.h"
+
+  rocksdb::LevelDBOptions leveldb_options;
+  leveldb_options.option1 = value1;
+  leveldb_options.option2 = value2;
+  ...
+  rocksdb::Options options = rocksdb::ConvertOptions(leveldb_options);
+```
+
 
 ## Status
 
