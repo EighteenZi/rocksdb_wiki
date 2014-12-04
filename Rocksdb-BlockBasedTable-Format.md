@@ -25,7 +25,7 @@ The file contains internal pointers, called `BlockHandles`, containing the follo
 
 See [this document](https://developers.google.com/protocol-buffers/docs/encoding#varints) for an explanation of varint64 format.
 
-(1) The sequence of key/value pairs in the file are stored in sorted order and partitioned into a sequence of data blocks. These blocks come one after another at the beginning of the file. Each data block is formatted according to the code in `block_builder.cc`, and then optionally compressed.
+(1) The sequence of key/value pairs in the file are stored in sorted order and partitioned into a sequence of data blocks. These blocks come one after another at the beginning of the file. Each data block is formatted according to the code in `block_builder.cc` (see code comments in the file), and then optionally compressed.
 
 (2) After the data blocks, we store a bunch of meta blocks. The supported meta block types are described below. More meta block types may be added in the future. Each meta block is again formatted using `block_builder.cc` and then optionally compressed.
 
