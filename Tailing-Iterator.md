@@ -5,6 +5,8 @@ Its key features are:
 
 To enable it, set `ReadOptions::tailing` to `true` when creating a new iterator. Note that tailing iterator currently supports only moving in the forward direction (in other words, `Prev()` and `SeekToLast()` are not supported).
 
+Not all new data is guaranteed to be available to a tailing iterator. Seek() or SeekToFirst() on a tailing iterator can be thought of as creating an implicit snapshot -- anything written after it may, but is not guaranteed to be seen.
+
 ### Implementation details
 
 A tailing iterator provides a merged view of two internal iterators:
