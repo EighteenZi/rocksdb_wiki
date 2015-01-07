@@ -1,7 +1,7 @@
 ## Rocksdb can be opened with Time to Live(TTL) support
 
 ### USE-CASES
-This API should be used to open the db when key-values inserted are meant to be removed from the db in a non-strict 'ttl' amount of time therefore, this guarantees that key-values inserted will remain in the db for >= ttl amount of time and the db will make efforts to remove the key-values as soon as possible after ttl seconds of their insertion.
+This API should be used to open the db when key-values inserted are meant to be removed from the db in a non-strict 'ttl' amount of time therefore, this guarantees that key-values inserted will remain in the db for at least ttl amount of time and the db will make efforts to remove the key-values as soon as possible after ttl seconds of their insertion.
 
 ### BEHAVIOUR
 * TTL is accepted in seconds
