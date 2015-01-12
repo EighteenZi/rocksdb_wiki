@@ -15,14 +15,8 @@ RocksDB features highly flexible configuration settings that may be tuned to run
 For a complete Table of Contents, see the sidebar to the left. Most readers will want to start with the [Overview](https://github.com/facebook/rocksdb/wiki/RocksDB-Basics) and the [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations) section of the Developer's Guide. 
 
 
-## News 
-* [RocksDB v3.3 released](https://github.com/facebook/rocksdb/releases/tag/rocksdb-3.3) (July, 2014)
-* [RocksDB v3.2 Released](http://rocksdb.org/blog/647/rocksdb-3-2-release/) (June, 2014)
-* [RocksDB v3.1 Released](http://rocksdb.org/blog/575/rocksdb-3-1-release/) (May, 2014)
-* [RocksJava in development](https://github.com/facebook/rocksdb/wiki/RocksJava-Basics) (May, 2014)
-* [RocksDB MeetUp](http://rocksdb.org/blog/323/the-1st-rocksdb-local-meetup-held-on-march-27-2014/) (March, 2014)
-
-
+## Blog 
+* Check out our blog at [rocksdb.org/blog](http://rocksdb.org/blog)
 
 ## Project History
 * [The History of RocksDB](http://rocksdb.blogspot.com/2013/11/the-history-of-rocksdb.html)
