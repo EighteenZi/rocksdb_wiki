@@ -40,3 +40,4 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 
 3. Implement ARM (Automatic Resource Management) e.g. `try-with-resources` Java 7 use via `Closeable`/`AutoCloseable` for iterators, db, write batches etc.
 
+4. Consider converting callbacks to lambda expressions
