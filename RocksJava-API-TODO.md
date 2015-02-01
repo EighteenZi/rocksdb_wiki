@@ -9,7 +9,7 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 
   2. Use the Slice class in other Java classes where `byte[]` was previously used, so that we better align with C++ API, e.g. `RocksIterator`.
 
-2. Rework WBWIIterator to use both `Slice` and `DirectSlice` (see above).
+2. Rework `WBWIIterator` to use both `Slice` and `DirectSlice` (see above).
 
 3. Implement ARM (Automatic Resource Management) e.g. `try-with-resources` Java 7 use via `Closeable`/`AutoCloseable` for iterators, db, write batches etc.
 
