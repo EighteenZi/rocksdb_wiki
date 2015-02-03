@@ -410,7 +410,7 @@ Advanced applications may provide a filter policy that does not use a bloom filt
 
 <ul>
 <li> 
-<code>ReadOptions::verify_checksums</code> may be set to true to force checksum verification of all data that is read from the file system on behalf of a particular read. By default, no such verification is done.
+<code>ReadOptions::verify_checksums</code> forces checksum verification of all data that is read from the file system on behalf of a particular read. This is on by default.
 
 <li> <code>Options::paranoid_checks</code> may be set to true before opening a database to make the database implementation raise an error as soon as it detects an internal corruption. Depending on which portion of the database has been corrupted, the error may be raised when the database is opened, or later by another database operation. By default, paranoid checking is off so that the database can be used even if parts of its persistent storage have been corrupted.
 
