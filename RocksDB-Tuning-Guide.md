@@ -15,7 +15,7 @@ High write amplification also decreases flash lifetime. There are two ways in wh
 
 **Read amplification** is the number of disk reads per query. If you need to read 5 pages to answer a query, read amplification is 5. Logical reads are those that get data from cache, either the RocksDB block cache or the OS filesystem cache. Physical reads are handled by the storage device, flash or disk. Logical reads are much cheaper than physical read but still impose a CPU cost. You might be able to estimate the physical read rate from `iostat` output but that include reads done for queries and for compaction.
 
-**Space amplification** is the ratio of the size of database files on disk to data size. If you store 10MB in the database and it stores 100MB on disk, this is space amplification of 10. You will usually want to set a hard limit on space amplification so you don't run out of disk space or memory.
+**Space amplification** is the ratio of the size of database files on disk to data size. If you Put 10MB in the database and it uses 100MB on disk, then the space amplification is 10. You will usually want to set a hard limit on space amplification so you don't run out of disk space or memory.
 
 To learn more about the three amplification factors in context of different database algorithms, we strongly recommend [Mark Callaghan's talk at Highload](http://vimeo.com/album/2920922/video/98428203).
 
