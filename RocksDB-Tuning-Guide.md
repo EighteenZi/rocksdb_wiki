@@ -7,7 +7,7 @@ We assume you have basic knowledge of how a Log-structured merge-tree (LSM) work
 ## Amplification factors
 Tuning RocksDB is often a trade off between three amplification factors: write amplification, read amplification and space amplification. 
 
-**Write amplification** is the ratio of bytes written to database to bytes written to storage. 
+**Write amplification** is the ratio of bytes written to storage versus bytes written to the database. 
 
 For example, if you are writing 10 MB/s to the database and you observe 30 MB/s disk write rate, your write amplification is 3. If write amplification is high, the workload may be bottlenecked on disk throughput. For example, if write amplification is 50 and max disk throughput is 500 MB/s, your database can sustain a 10 MB/s write rate. In this case, decreasing write amplification will directly increase max write rate. 
 
