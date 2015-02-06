@@ -29,38 +29,23 @@ When debugging performance, there are some tools that can help you:
 
 Every **stats_dump_period_sec**, you'll find something like this in your LOG file:
 
-** DB Stats **
+    Level   Files   Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(GB) Wnew(GB) Moved(GB) W-Amp Rd(MB/s) Wr(MB/s) Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)     RecordIn   RecordDrop
+    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    L0     2/0         15   0.5      0.0     0.0      0.0      32.8     32.8       0.0   0.0      0.0     23.0    1457      4346    0.335       0.00          0    0.00            0        0
+    L1    22/0        125   1.0    163.7    32.8    130.9     165.5     34.6       0.0   5.1     25.6     25.9    6549      1086    6.031       0.00          0    0.00   1287667342       0
+    L2   227/0       1276   1.0    262.7    34.4    228.4     262.7     34.3       0.1   7.6     26.0     26.0   10344      4137    2.500       0.00          0    0.00   1023585700        0
+    Sum  3704/0      29342   0.0    690.1   100.8    589.3     718.7    129.4      14.8  21.9     22.5     23.5   31338     13533    2.316       0.00          0    0.00   3530878399    0
+    Int     0/0          0   0.0      2.1     0.3      1.8       2.2      0.4       0.0  24.3     24.0     24.9      91        42    2.164       0.00          0    0.00     11718977       0
+    Flush(GB): accumulative 32.786, interval 0.091
+    Stalls(secs): 0.000 level0_slowdown, 0.000 level0_numfiles, 0.000 memtable_compaction, 0.000 leveln_slowdown_soft, 0.000 leveln_slowdown_hard
+    Stalls(count): 0 level0_slowdown, 0 level0_numfiles, 0 memtable_compaction, 0 leveln_slowdown_soft, 0 leveln_slowdown_hard
+
+    DB Stats
     Uptime(secs): 128748.3 total, 300.1 interval
     Cumulative writes: 1288457363 writes, 14173030838 keys, 357293118 batches, 3.6 writes per batch, 3055.92 GB user ingest, stall micros: 7067721262
     Cumulative WAL: 1251702527 writes, 357293117 syncs, 3.50 writes per sync, 3055.92 GB written
     Interval writes: 3621943 writes, 39841373 keys, 1013611 batches, 3.6 writes per batch, 8797.4 MB user ingest, stall micros: 112418835
     Interval WAL: 3511027 writes, 1013611 syncs, 3.46 writes per sync, 8.59 MB written
-
-    ** Compaction Stats **
-    Level Files Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(GB) Wnew(GB) RW-Amp W-Amp Rd(MB/s) Wr(MB/s)  Rn(cnt) Rnp1(cnt) Wnp1(cnt) Wnew(cnt)  Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      L0     5        8  33.3      0.0     0.0      0.0       0.6      0.6    0.0   0.0      0.0     24.9        0         0         0         0         23       345    0.067       0.00          0    0.00
-      L1    38        3  10.3      0.6     0.6      0.0       0.4      0.4    1.8   0.7     27.9     19.6      340       301      5939      5638         21        32    0.656       0.00          0    0.00
-      L2   111        5  10.4      0.2     0.1      0.0       0.1      0.1    2.6   1.2     26.9     24.0     1642      1279      2803      1524          6      1166    0.005       0.00          0    0.00
-      L3   189       10  10.4      0.2     0.2      0.1       0.2      0.1    3.0   1.4     28.4     24.1     2383      2073      4091      2018          9      1712    0.005       0.00          0    0.00
-      L4   156        7   3.7      0.4     0.2      0.2       0.3      0.1    3.3   1.5     28.9     23.8     3171      3246      5568      2322         13      2311    0.005       0.00          0    0.00
-      L5   291       14   3.5      0.4     0.2      0.2       0.3      0.1    3.7   1.6     30.2     23.2     3238      4324      6072      1748         14      2516    0.006       0.00          0    0.00
-      L6   440       22   2.8      0.3     0.1      0.2       0.2      0.0    4.5   1.8     28.5     19.1     1912      3858      4176       318         12      1689    0.007       0.00          0    0.00
-     Sum  1230       70   0.0      2.1     1.3      0.7       2.1      1.4    3.2   1.6     21.8     22.5    12686     15081     28649     13568         97      9771    0.010       0.00          0    0.00
-
-    Uptime(secs): 120.4 total, 60.0 interval
-    Writes cumulative: 24114147 total, 1968736 batches, 12.2 per batch, 0.63 ingest GB
-    WAL cumulative: 24114147 WAL writes, 1968736 WAL syncs, 12.25 writes per sync, 0.63 GB written
-    Compaction IO cumulative (GB): 0.63 new, 2.07 read, 2.14 write, 4.21 read+write
-    Compaction IO cumulative (MB/sec): 5.3 new, 17.6 read, 18.2 write, 35.8 read+write
-    Amplification cumulative: 4.4 write, 7.7 compaction
-    Writes interval: 11585032 total, 951217 batches, 12.2 per batch, 309.2 ingest MB
-    WAL interval: 11585032 WAL writes, 951217 WAL syncs, 12.18 writes per sync, 0.30 MB written
-    Compaction IO interval (MB): 309.20 new, 1057.45 read, 1056.73 write, 2114.18 read+write
-    Compaction IO interval (MB/sec): 5.2 new, 17.6 read, 17.6 write, 35.2 read+write
-    Amplification interval: 4.4 write, 7.8 compaction
-    Stalls(secs): 0.000 level0_slowdown, 0.000 level0_numfiles, 0.000 memtable_compaction, 0.000 leveln_slowdown
-    Stalls(count): 0 level0_slowdown, 0 level0_numfiles, 0 memtable_compaction, 0 leveln_slowdown
 
 ### Compaction stats
 Compaction stats for the compactions executed between levels N and N+1 are reported at level N+1 (compaction output). Here is the quick reference:
