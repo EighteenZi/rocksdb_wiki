@@ -35,8 +35,8 @@ Every **stats_dump_period_sec**, you'll find something like this in your LOG fil
     L0      2/0        15   0.5     0.0     0.0      0.0      32.8     32.8       0.0   0.0      0.0     23.0    1457      4346    0.335       0.00          0    0.00             0        0
     L1     22/0       125   1.0   163.7    32.8    130.9     165.5     34.6       0.0   5.1     25.6     25.9    6549      1086    6.031       0.00          0    0.00    1287667342        0
     L2    227/0      1276   1.0   262.7    34.4    228.4     262.7     34.3       0.1   7.6     26.0     26.0   10344      4137    2.500       0.00          0    0.00    1023585700        0
-    L3   1634/0     12794   1.0   259.7    31.7    228.1     254.1     26.1       1.5   8.0     20.8     20.4     12787       3758    3.403       0.00          0    0.00   1128138363         0
-    L4   1819/0     15132   0.1     3.9     2.0      2.0       3.6      1.6      13.1   1.8     20.1     18.4       201         206    0.974       0.00          0    0.00     91486994           0
+    L3   1634/0     12794   1.0   259.7    31.7    228.1     254.1     26.1       1.5   8.0     20.8     20.4   12787      3758    3.403       0.00          0    0.00    1128138363        0
+    L4   1819/0     15132   0.1     3.9     2.0      2.0       3.6      1.6      13.1   1.8     20.1     18.4     201       206    0.974       0.00          0    0.00      91486994        0
     Sum  3704/0     29342   0.0   690.1   100.8    589.3     718.7    129.4      14.8  21.9     22.5     23.5   31338     13533    2.316       0.00          0    0.00    3530878399        0
     Int     0/0         0   0.0     2.1     0.3      1.8       2.2      0.4       0.0  24.3     24.0     24.9      91        42    2.164       0.00          0    0.00      11718977        0
     Flush(GB): accumulative 32.786, interval 0.091
@@ -60,29 +60,28 @@ Compaction stats for the compactions executed between levels N and N+1 are repor
 * Rnp1(GB): Bytes read from level N+1 during compaction between levels N and N+1
 * Write(GB): Total bytes written during compaction between levels N and N+1
 * Wnew(GB):  New bytes written to level N+1, calculated as (total bytes written to N+1) - (bytes read from N+1 during compaction with level N)
-* Moved(GB): Bytes moved to level N during compaction. In this case there is no IO other than updating the manifest to indicate that a file which used to be in level X is now in level Y
+* Moved(GB): Bytes moved to level N+1 during compaction. In this case there is no IO other than updating the manifest to indicate that a file which used to be in level X is now in level Y
 * W-Amp: (total bytes written to level N+1) / (total bytes read from level N). This is the write amplification from compaction between levels N and N+1
-* Rd(MB/s): The rate at which data is read during compaction between levels N and N+1
-* Wr(MB/s): The rate at which data is written during compaction
+* Rd(MB/s): The rate at which data is read during compaction between levels N and N+1. This is (Read(GB) * 1024) / duration where duration is the time for which compactions are in progress from level N to N+1.
+* Wr(MB/s): The rate at which data is written during compaction. See Rd(MB/s).
 * Rn(cnt): Total files read from level N during compaction between levels N and N+1
 * Rnp1(cnt): Total files read from level N+1 during compaction between levels N and N+1
 * Wnp1(cnt): Total files written to level N+1 during compaction between levels N and N+1
 * Wnew(cnt): (Wnp1(cnt) - Rnp1(cnt)) -- Increase in file count as result of compaction between levels N and N+1
 * Comp(sec): Total time spent doing compactions between levels N and N+1
 * Comp(cnt): Total number of compactions between levels N and N+1
-* Avg(sec): Average time spent doing compaction between levels N and N+1
-* Stall(sec): Total time writes were stalled because level N was uncompacted (compaction score was high)
-* Stall(cnt): Total number of writes stalled because level N was uncompacted
-* Avg(ms): Average time a write stall on level N
+* Avg(sec): Average time per compaction between levels N and N+1
+* Stall(sec): Total time writes were stalled because level N+1 was uncompacted (compaction score was high)
+* Stall(cnt): Total number of writes stalled because level N+1 was uncompacted
+* Avg(ms): Average time in milliseconds a write was stalled because level N+1 was uncompacted
+* RecordIn: number of records compared during compaction
+* RecordDrop: number of records dropped (not written out) during compaction
 
 ### General stats
-After the per-level compaction stats, we also output some general stats. General stats are reported for both **cumulative** and **interval**. Cumulative stats report total values from the beginning of time. Interval stats report values since the last stats output.
-* Uptime(secs): total -- total runtime of RocksDB instance. interval -- time since the last stats dump.
-* Writes: total -- number of writes; batches -- number of group commits; per batch -- average number of bytes in a single batch; ingest -- total bytes written into DB (not counting compactions).
-* WAL: Same as writes, but counts how many bytes were written to WALs. If you write all data to WAL, the numbers should be same as above.
-* Compaction IO (GB): new -- total new GB written to the DB; read -- total bytes read from disk as part of compaction; write -- total bytes written to disk as part of compaction; read+write -- self explanatory
-* Compaction IO (MB/s): same as above, but in terms of total speed
-* Amplification: write -- write amplification, ratio of total bytes written and bytes written to the DB (see "Amplification factors". Compaction amplification is ratio of (total bytes written + read) / (bytes written to the DB).
+After the per-level compaction stats, we also output some general stats. General stats are reported for both **cumulative** and **interval**. Cumulative stats report total values from RocksDB instance start. Interval stats report values since the last stats output.
+* Uptime(secs): total -- number of seconds this instance has been running, interval -- number of seconds since the last stats dump.
+* Cumulative/Interval Writes: total -- number of Put calls; keys -- number of entries in the WriteBatches from the Put calls; batches -- number of group commits where each group commit makes persistent one or more Put calls (with concurrency there can be more than 1 Put call made persistent at one point in time); per batch -- average number of bytes in a single batch; ingest -- total bytes written into DB (not counting compactions); stall micros - number of microseconds writes have been stalled when compaction gets behind
+* WAL: writes -- number of writes logged in the WAL; syncs - number of times fsync or fdatasync has been used; writes per sync - ratio of writes to syncs; GB written - number of GB written to the WAL 
 * Stalls: total count and seconds of each stall type since beginning of time: level0_slowdown -- Stall because of `level0_slowdown_writes_trigger`. level0_numfiles -- Stall because of `level0_stop_writes_trigger`. `memtable_compaction` -- Stall because all memtables were full, flush process couldn't keep up. `leveln_slowdown` -- Stall because of `soft_rate_limit` and `hard_rate_limit`
 
 ## Parallelism options
