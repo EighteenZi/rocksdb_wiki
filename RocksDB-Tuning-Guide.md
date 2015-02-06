@@ -29,35 +29,12 @@ When debugging performance, there are some tools that can help you:
 
 Every **stats_dump_period_sec**, you'll find something like this in your LOG file:
 
->** Compaction Stats **
->Level   Files   Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(GB) Wnew(GB) Moved(GB) W-Amp Rd(MB/s) Wr(MB/s) Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)     RecordIn   Record
-Drop
->----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-----
->  L0     2/0         15   0.5      0.0     0.0      0.0      32.8     32.8       0.0   0.0      0.0     23.0      1457      4346    0.335       0.00          0    0.00            0          
-  0
->  L1    22/0        125   1.0    163.7    32.8    130.9     165.5     34.6       0.0   5.1     25.6     25.9      6549      1086    6.031       0.00          0    0.00   1287667342          
-  0
->  L2   227/0       1276   1.0    262.7    34.4    228.4     262.7     34.3       0.1   7.6     26.0     26.0     10344      4137    2.500       0.00          0    0.00   1023585700          
-  0
->  L3  1634/0      12794   1.0    259.7    31.7    228.1     254.1     26.1       1.5   8.0     20.8     20.4     12787      3758    3.403       0.00          0    0.00   1128138363          
-  0
->  L4  1819/0      15132   0.1      3.9     2.0      2.0       3.6      1.6      13.1   1.8     20.1     18.4       201       206    0.974       0.00          0    0.00     91486994          
-  0
-> Sum  3704/0      29342   0.0    690.1   100.8    589.3     718.7    129.4      14.8  21.9     22.5     23.5     31338     13533    2.316       0.00          0    0.00   3530878399          
-  0
-> Int     0/0          0   0.0      2.1     0.3      1.8       2.2      0.4       0.0  24.3     24.0     24.9        91        42    2.164       0.00          0    0.00     11718977          
-  0
->Flush(GB): accumulative 32.786, interval 0.091
->Stalls(secs): 0.000 level0_slowdown, 0.000 level0_numfiles, 0.000 memtable_compaction, 0.000 leveln_slowdown_soft, 0.000 leveln_slowdown_hard
->Stalls(count): 0 level0_slowdown, 0 level0_numfiles, 0 memtable_compaction, 0 leveln_slowdown_soft, 0 leveln_slowdown_hard
-
 ** DB Stats **
->Uptime(secs): 128748.3 total, 300.1 interval
->Cumulative writes: 1288457363 writes, 14173030838 keys, 357293118 batches, 3.6 writes per batch, 3055.92 GB user ingest, stall micros: 7067721262
->Cumulative WAL: 1251702527 writes, 357293117 syncs, 3.50 writes per sync, 3055.92 GB written
->Interval writes: 3621943 writes, 39841373 keys, 1013611 batches, 3.6 writes per batch, 8797.4 MB user ingest, stall micros: 112418835
->Interval WAL: 3511027 writes, 1013611 syncs, 3.46 writes per sync, 8.59 MB written
+Uptime(secs): 128748.3 total, 300.1 interval
+Cumulative writes: 1288457363 writes, 14173030838 keys, 357293118 batches, 3.6 writes per batch, 3055.92 GB user ingest, stall micros: 7067721262
+Cumulative WAL: 1251702527 writes, 357293117 syncs, 3.50 writes per sync, 3055.92 GB written
+Interval writes: 3621943 writes, 39841373 keys, 1013611 batches, 3.6 writes per batch, 8797.4 MB user ingest, stall micros: 112418835
+Interval WAL: 3511027 writes, 1013611 syncs, 3.46 writes per sync, 8.59 MB written
 
     ** Compaction Stats **
     Level Files Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(GB) Wnew(GB) RW-Amp W-Amp Rd(MB/s) Wr(MB/s)  Rn(cnt) Rnp1(cnt) Wnp1(cnt) Wnew(cnt)  Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)
