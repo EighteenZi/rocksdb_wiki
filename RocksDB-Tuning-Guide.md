@@ -85,14 +85,14 @@ After the per-level compaction stats, we also output some general stats. General
 * Stalls: total count and seconds of each stall type since beginning of time: level0_slowdown -- Stall because of `level0_slowdown_writes_trigger`. level0_numfiles -- Stall because of `level0_stop_writes_trigger`. `memtable_compaction` -- Stall because all memtables were full, flush process couldn't keep up. `leveln_slowdown` -- Stall because of `soft_rate_limit` and `hard_rate_limit`
 
 ## Parallelism options
-In LSM architecture, there are two background processes: flush and compaction. Both can execute concurrently to take full advantage of storage technology concurrency. Flush threads are submitted to HIGH priority pool, while compaction threads are submitted to LOW priority pool. To increase number of threads in respective thread pools, call:
+In LSM architecture, there are two background processes: flush and compaction. Both can execute concurrently via threads to take advantage of storage technology concurrency. Flush threads are in the HIGH priority pool, while compaction threads are in the LOW priority pool. To increase the number of threads in each pool call:
 
      options.env->SetBackgroundThreads(num_threads, Env::Priority::HIGH);
      options.env->SetBackgroundThreads(num_threads, Env::Priority::LOW);
  
-Once you increase number of threads in thread pool, you can also increase max number of parallel compactions and flushes:
+To benefit from more threads you might need to set these options to change the max number of concurrent compactions and flushes:
 
-**max_background_compactions** is the maximum number of concurrent background compactions. Default is 1, but to fully utilize your CPU and storage you might want to increase this to approximately number of cores in the system.
+**max_background_compactions** is the maximum number of concurrent background compactions. The default is 1, but to fully utilize your CPU and storage you might want to increase this to approximately number of cores in the system.
 
 **max_background_flushes** is the maximum number of concurrent flush operations. It is usually good enough to set this to 1.
 
