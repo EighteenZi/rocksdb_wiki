@@ -30,11 +30,11 @@ When debugging performance, there are some tools that can help you:
 Every **stats_dump_period_sec**, you'll find something like this in your LOG file:
 
 ** DB Stats **
-> Uptime(secs): 128748.3 total, 300.1 interval
-> Cumulative writes: 1288457363 writes, 14173030838 keys, 357293118 batches, 3.6 writes per batch, 3055.92 GB user ingest, stall micros: 7067721262
-> Cumulative WAL: 1251702527 writes, 357293117 syncs, 3.50 writes per sync, 3055.92 GB written
-> Interval writes: 3621943 writes, 39841373 keys, 1013611 batches, 3.6 writes per batch, 8797.4 MB user ingest, stall micros: 112418835
-> Interval WAL: 3511027 writes, 1013611 syncs, 3.46 writes per sync, 8.59 MB written
+    Uptime(secs): 128748.3 total, 300.1 interval
+    Cumulative writes: 1288457363 writes, 14173030838 keys, 357293118 batches, 3.6 writes per batch, 3055.92 GB user ingest, stall micros: 7067721262
+    Cumulative WAL: 1251702527 writes, 357293117 syncs, 3.50 writes per sync, 3055.92 GB written
+    Interval writes: 3621943 writes, 39841373 keys, 1013611 batches, 3.6 writes per batch, 8797.4 MB user ingest, stall micros: 112418835
+    Interval WAL: 3511027 writes, 1013611 syncs, 3.46 writes per sync, 8.59 MB written
 
     ** Compaction Stats **
     Level Files Size(MB) Score Read(GB)  Rn(GB) Rnp1(GB) Write(GB) Wnew(GB) RW-Amp W-Amp Rd(MB/s) Wr(MB/s)  Rn(cnt) Rnp1(cnt) Wnp1(cnt) Wnew(cnt)  Comp(sec) Comp(cnt) Avg(sec) Stall(sec) Stall(cnt) Avg(ms)
