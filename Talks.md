@@ -1,3 +1,8 @@
+### 2014.12 2nd RocksDB Meetup
+* [Talks from Facebook RocksDB Team](https://www.youtube.com/watch?v=NJ6QgMH2KPU)
+* [Building queues that are Rocks solid](https://www.youtube.com/watch?v=HTjt6oj-RL4)
+* [RocksDB usage at LinkedIn](https://www.youtube.com/watch?v=plqVp_OnSzg)
+
 ### 2014.08.05 Flash Memory Summit
 * [RocksDB](https://github.com/facebook/rocksdb/raw/gh-pages/talks/2014-08-05-Flash-Memory-Summit-Siying-RocksDB.pdf) (Siying Dong @ Facebook)
 
