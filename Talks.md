@@ -1,5 +1,5 @@
 ### 2014.12 2nd RocksDB Meetup
-* [Talks from Facebook RocksDB Team](https://www.youtube.com/watch?v=NJ6QgMH2KPU)
+* [Talks from Facebook RocksDB Team](https://www.youtube.com/watch?v=NJ6QgMH2KPU) (Igor Canadi, Yueh-Hsuan Chiang and Siying Dong @ Facebook)
 * [Building queues that are Rocks solid](https://www.youtube.com/watch?v=HTjt6oj-RL4) (Reed Allman @ Iron.io)
 * [RocksDB usage at LinkedIn](https://www.youtube.com/watch?v=plqVp_OnSzg) (Ankit Gupta and Naveen Somasundaram @ LinkedIn)
 
