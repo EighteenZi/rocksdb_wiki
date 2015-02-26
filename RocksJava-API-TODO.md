@@ -11,8 +11,7 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 
 2. Rework `WBWIIterator` to use both `Slice` and `DirectSlice` (see above).
 
-3. Introduce `final` on variables/members everywhere they are immutable.
-**[@adamretter](https://github.com/adamretter)**
+3. ~~Introduce `final` on variables/members everywhere they are immutable.~~
 
 4. Implement `ldb` for Java. For example, the ability to specify the Comparator which implemented in Java.
 **[@adamretter](https://github.com/adamretter)**
