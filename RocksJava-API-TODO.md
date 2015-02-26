@@ -25,7 +25,7 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 7. Port remaining functionality in `db.h` to RocksJava.
 **[@fyrz](https://github.com/fyrz)**
 
-8. Update Statistics/HistogramData to 3.10
+8. ~~Update Statistics/HistogramData to 3.10~~
 **[@fyrz](https://github.com/fyrz)**
 
 9. Build isolation. Building Java API should not require building RocksDB. You should be able to use a Java API build with a separate existing RocksDB installation. The Java API native aspect will instead indirectly depend on a shared or static RocksDB lib.
