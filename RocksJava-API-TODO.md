@@ -37,6 +37,6 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 
 2. Restructure the package layout within the Java part.
 
-3. Implement ARM (Automatic Resource Management) e.g. `try-with-resources` Java 7 use via `Closeable`/`AutoCloseable` for iterators, db, write batches etc.
+3. Implement ARM (Automatic Resource Management) e.g. `try-with-resources` Java 7 use via `Closeable`/`AutoCloseable` for iterators, db, write batches etc. Along with this change we will remove the auto-cleanup for c++ resources using `finalize`. Instead we will throw an exception if a C++ resource is going to be finalized without freeing the native handle first.
 
 4. Consider converting callbacks to lambda expressions
