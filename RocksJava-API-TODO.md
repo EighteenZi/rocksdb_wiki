@@ -2,12 +2,12 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 
 ## Upcoming changes to the Java API
 
-1. Fix locking issues with `Slice`/`DirectSlice` from `Comparator`. Move to thread-local storage of cached slice objects rather than single `Slice` locking with mutex.
-**[@adamretter](https://github.com/adamretter)**
-
-  1. Perhaps decide weather to use only `Slice` or `DirectSlice` to simplify overall API implementation, probably `DirectSlice` is more memory efficient.
-
-  2. Use the Slice class in other Java classes where `byte[]` was previously used, so that we better align with C++ API, e.g. `RocksIterator`.
+1. Adjust RocksJava Comparator implementation - We analyzed the current implementation and noticed a significant loss of performance using the current implementation. So we decided to do the following steps in order
+  1. Analyze which one of the comparator implementations is performing better either `DirectComparator` or `Comparator`
+  2. Outline a proper way to use Custom-C++-Comparators with RocksJava.
+  3. Remove everything but one Comparator implementation. Depending on the analysis listed above.
+  4. Document the Performance penalties in related JavaDoc.
+  5. `FindShortestSeparator`and `FindShortSuccessor` shall only do something if the Java method is implemented. What`s currently not the case.
 
 2. Rework `WBWIIterator` to use both `Slice` and `DirectSlice` (see above).
 
