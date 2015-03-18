@@ -19,8 +19,8 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 5. Custom merge operator for Java. At the moment it is only possible to use merge operators which are available in C++ but not implementing custom functionality solely in Java.
 **[@fyrz](https://github.com/fyrz)**
 
-6. Expose an AbstractLogger. RocksDB C++ api allows to provide a custom Logger. This shall also be possible from Java side and allows to attach RocksDB logging to application logging facilities.
-**[@fyrz](https://github.com/fyrz)** See: https://github.com/facebook/rocksdb/pull/529
+6. ~~Expose an AbstractLogger. RocksDB C++ api allows to provide a custom Logger. This shall also be possible from Java side and allows to attach RocksDB logging to application logging facilities.~~
+  1. Document the performance penalties if log level is too verbose. **[@fyrz](https://github.com/fyrz)**
 
 7. Port remaining functionality in `db.h` to RocksJava.
 **[@fyrz](https://github.com/fyrz)**
