@@ -6,7 +6,7 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
   1. Analyze which one of the comparator implementations is performing better either `DirectComparator` or `Comparator`
   2. Outline a proper way to use Custom-C++-Comparators with RocksJava.
   3. Remove everything but one Comparator implementation. Depending on the analysis listed above.
-  4. Document the Performance penalties in related JavaDoc.
+  4. Document the performance penalties in related JavaDoc.
   5. `FindShortestSeparator`and `FindShortSuccessor` shall only do something if the Java method is implemented. What`s currently not the case.
 
 2. Rework `WBWIIterator` to use both `Slice` and `DirectSlice` (see above).
