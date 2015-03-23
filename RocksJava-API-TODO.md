@@ -20,7 +20,7 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 **[@fyrz](https://github.com/fyrz)**
 
 6. ~~Expose an AbstractLogger. RocksDB C++ api allows to provide a custom Logger. This shall also be possible from Java side and allows to attach RocksDB logging to application logging facilities.~~
-  1. Document the performance penalties if log level is too verbose. **[@fyrz](https://github.com/fyrz)**
+  1. ~~Document the performance penalties if log level is too verbose.~~
 
 7. Port remaining functionality in `db.h` to RocksJava.
 **[@fyrz](https://github.com/fyrz)**
