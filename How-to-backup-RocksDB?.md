@@ -8,7 +8,9 @@ In RocksDB, we have implemented an easy way to backup your DB. Here is a simple 
     DB* db;
     DB::Open(Options(), "/tmp/rocksdb", &db);
     db->Put(...); // do your thing 
-    BackupEngine* backup_engine = BackupEngine::NewBackupEngine(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"));
+    BackupEngine* backup_engine;
+    Status s = BackupEngine::Open(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"), &backup_engine);
+    assert(s.ok());
     backup_engine->CreateNewBackup(db);
     delete db;
     delete backup_engine;
@@ -19,7 +21,9 @@ This simple example will create a backup of your DB in "/tmp/rocksdb_backup".
 Restoring is also easy:
 
 ```cpp
-    BackupEngine* backup_engine = BackupEngine::NewBackupEngine(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"));
+    BackupEngine* backup_engine;
+    Status s = BackupEngineReadOnly::Open(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"), &backup_engine);
+    assert(s.ok());
     backup_engine->RestoreDBFromLatestBackup("/tmp/rocksdb", "/tmp/rocksdb");
     delete backup_engine;
 ```
