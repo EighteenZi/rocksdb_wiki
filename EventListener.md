@@ -34,6 +34,5 @@ To listen to multiple column families of a rocksdb instance, one can either use 
     }
 
 
-Note that call-back functions should not run for an extended period of time before the function returns, otherwise RocksDB may be blocked.  For example, it is not suggested to do DB::CompactFiles() (as it may run for a long while) or issue many of DB::Put() (as Put may be blocked in certain cases) in the same thread in the EventListener callback.  However, doing DB::CompactFiles() and DB::Put() in another thread is considered safe.
 
-[Threading] All EventListener callback will be called using the actual thread that involves in that specific event.   For example, it is the RocksDB background flush thread that does the actual flush to call EventListener::OnFlushCompleted().
+Note that call-back functions should not run for an extended period of time before the function returns, otherwise RocksDB may be blocked.  For example, it is not suggested to do DB::CompactFiles() (as it may run for a long while) or issue many of DB::Put() (as Put may be blocked in certain cases) in the same thread in the EventListener callback.  However, doing DB::CompactFiles() and DB::Put() in another thread is considered safe.
