@@ -20,12 +20,14 @@ To listening to a rocksdb instance or a column family of a rocksdb instance, it 
     ...
     cf_options.listeners.emplace_back(new MyListener());
 
-To listen to multiple column families of a rocksdb instance, one can either use a separate Listener instance for each column family, or use same Listener instance for all column families:
+To listen to multiple column families of a rocksdb instance, one can either use a separate Listener instance for each column family:
 
     // one listener for each column family
     for (size_t i = 0; i < cf_options.size(); ++i) {
       cf_options[i].listeners.emplace_back(new MyListener());
     }
+
+ or use same Listener instance for all column families:
 
     // one same listener for all column families.
     EventListener my_listener = new MyListener();
