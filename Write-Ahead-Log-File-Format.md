@@ -4,7 +4,7 @@ Write ahead log (WAL) serializes memtable operations to persistent medium as log
 
 ## WAL Manager
 
-WAL file are generated with increasing sequence number in the WAL directory. In order to reconstruct the state of the database, these files are read in the order of sequence number. WAL manager provides the abstraction for reading the WAL files as a single unit. Internally, it opens and reads the files using Reader or Writer abstraction.
+WAL files are generated with increasing sequence number in the WAL directory. In order to reconstruct the state of the database, these files are read in the order of sequence number. WAL manager provides the abstraction for reading the WAL files as a single unit. Internally, it opens and reads the files using Reader or Writer abstraction.
 
 ## Reader/Writer
 
