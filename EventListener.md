@@ -10,11 +10,6 @@ In ColumnFamilyOptions, there's a variable called `listeners`, which allows deve
 
 To listening to a rocksdb instance or a column family of a rocksdb instance, it can be done by simply adding a custom EventListener to `ColumnFamilyOptions::listeners` and use that options to open a DB:
 
-    // listen to a rocksdb instance
-    Options options;
-    ...
-    options.listeners.emplace_back(new MyListener());
-
     // listen to a column family of a rocksdb instance
     ColumnFamilyOptions cf_options;
     ...
