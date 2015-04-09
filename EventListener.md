@@ -32,6 +32,8 @@ or use same Listener instance for all column families:
 
 Note that in either case, unless specially specified in the documentation, all EventListener call-backs must be implemented in a thread-safe way even when an EventListener only listens to a single column family (For example, imagine the case where `OnCompactionCompeted()` could be called by multiple threads at the same time as a single column family might complete more than one compaction jobs at the same time.
 
+## Threading
+All EventListener callback will be called using the actual thread that involves in that specific event.  For example, it is the RocksDB background flush thread that does the actual flush to call `EventListener::OnFlushCompleted()`.  This allows developers to collect thread-dependent stats from the EventListener callback such as via thread local variable.
 
-## Developers Note
-Note that call-back functions should not run for an extended period of time before the function returns, otherwise RocksDB may be blocked.  For example, it is not suggested to do `DB::CompactFiles()` (as it may run for a long while) or issue many of `DB::Put()` (as Put may be blocked in certain cases) in the same thread in the EventListener callback.  However, doing `DB::CompactFiles()` and `DB::Put()` in another thread is considered safe.
+## Mutex and EventListener callback life-cycle
+All EventListener callbacks are designed to be called without the current thread holding any DB mutex.  This is to prevent potential deadlock and performance issue when using EventListener callback in a complex way.  However, that call-back functions should not run for an extended period of time before the function returns, otherwise RocksDB may be blocked.  For example, it is not suggested to do `DB::CompactFiles()` (as it may run for a long while) or issue many of `DB::Put()` (as Put may be blocked in certain cases) in the same thread in the EventListener callback.  However, doing `DB::CompactFiles()` and `DB::Put()` in another thread is considered safe.
