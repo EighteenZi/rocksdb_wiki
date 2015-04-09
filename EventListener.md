@@ -33,7 +33,7 @@ or use same Listener instance for all column families:
 Note that in either case, unless specially specified in the documentation, all EventListener call-backs must be implemented in a thread-safe way even when an EventListener only listens to a single column family (For example, imagine the case where `OnCompactionCompeted()` could be called by multiple threads at the same time as a single column family might complete more than one compaction jobs at the same time.
 
 ## Listen to a specific event
-The default behavior of all EventListener callbacks is no-op.  This allows developers to only focus the event they're interested in.  For example, the following EventListener counts the number of flush job completed since DB open:
+The default behavior of all EventListener callbacks is no-op.  This allows developers to only focus the event they're interested in.  To listen to a specific event, it is as simple as implementing its related call-back.  For example, the following EventListener counts the number of flush job completed since DB open by implementing `OnFlushCompleted()`:
 
     class FlushCountListener : public EventListener {
      public:
