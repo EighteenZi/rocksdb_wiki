@@ -32,6 +32,23 @@ or use same Listener instance for all column families:
 
 Note that in either case, unless specially specified in the documentation, all EventListener call-backs must be implemented in a thread-safe way even when an EventListener only listens to a single column family (For example, imagine the case where `OnCompactionCompeted()` could be called by multiple threads at the same time as a single column family might complete more than one compaction jobs at the same time.
 
+## Listen to a specific event
+The default behavior of all EventListener callbacks is no-op.  This allows developers to only focus the event they're interested in.  For example, the following EventListener counts the number of flush job completed since DB open:
+
+    class FlushCountListener : public EventListener {
+     public:
+      FlushCountListener() : flush_count_(0) {}
+      void OnFlushCompleted(
+          DB* db, const std::string& name,
+          const std::string& file_path,
+          bool triggered_writes_slowdown,
+          bool triggered_writes_stop) override {
+        flush_count_++;
+      }
+     private:
+      std::atomic_int flush_count_;
+    }; 
+
 ## Threading
 All EventListener callback will be called using the actual thread that involves in that specific event.  For example, it is the RocksDB background flush thread that does the actual flush to call `EventListener::OnFlushCompleted()`.  This allows developers to collect thread-dependent stats from the EventListener callback such as via thread local variable.
 
