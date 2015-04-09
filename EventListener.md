@@ -1,5 +1,5 @@
 # EventListener
-EventListener class contains a set of call-back functions that will be called when specific RocksDB event happens such as flush.  It can be used as a building block for developing custom features such as stats-collector or external compaction algorithm.
+EventListener class contains a set of call-back functions that will be called when specific RocksDB event happens such as flush.  It can be used as a building block for developing custom features such as stats-collector or external compaction algorithm.  Available EventListener callbacks can be found in [include/rocksdb/listener.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/listener.h).
 
 ## How to use it?
 In ColumnFamilyOptions, there's a variable called `listeners`, which allows developers to add custom EventListener to listen to the events of a specific rocksdb instance or a column family of a rocksdb instance.
