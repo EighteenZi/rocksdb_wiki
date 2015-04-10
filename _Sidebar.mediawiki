@@ -28,6 +28,7 @@
 ** [[How-we-keep-track-of-live-SST-files | How we keep track of live SST files]]
 ** [[Indexing-SST-Files-for-Better-Lookup-Performance | How we index SST]]
 ** [[Merge-Operator-Implementation | Merge Operator Implementation]]
+** [[RocksDB Repairer | RocksDB Repairer]]
 * '''RocksJava'''
 ** [[RocksJava-Basics | RocksJava Basics]]
 ** [[RocksJava-Performance-on-Flash-Storage | RocksJava Performance on Flash Storage]]
