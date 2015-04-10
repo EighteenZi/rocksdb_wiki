@@ -25,7 +25,7 @@ https://github.com/facebook/rocksdb/blob/master/examples/column_families_example
 Options, ColumnFamilyOptions, DBOptions
 ```
 
-Defined in `include/rocksdb/options.h`, `Options` structures define how RocksDB behaves and performs. Before, every option was defined in a single `Options` struct. Going forward, options specific to a single Column Family will be defined in `ColumnFamilyOptions` and options specific to the whole RocksDB instance will be defined in `DBOptions`. Options struct is inheriting both ColumnFamilyOptions and DBOptions, which means you can still use it to define all the options for a DB instance with a single (default) column family.
+Defined in [include/rocksdb/options.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h), `Options` structures define how RocksDB behaves and performs. Before, every option was defined in a single `Options` struct. Going forward, options specific to a single Column Family will be defined in `ColumnFamilyOptions` and options specific to the whole RocksDB instance will be defined in `DBOptions`. Options struct is inheriting both ColumnFamilyOptions and DBOptions, which means you can still use it to define all the options for a DB instance with a single (default) column family.
 
 ```cpp
 ColumnFamilyHandle
