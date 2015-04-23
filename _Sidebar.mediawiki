@@ -38,5 +38,7 @@
 ** [[RocksDB-In-Memory-Workload-Performance-Benchmarks | In Memory Workload Performance]]
 ** [[Read-Modify-Write-Benchmarks | Read-Modify-Write Performance]]
 ** [[RocksDB-Tuning-Guide | Tuning Guide]]
+* '''Misc'''
+** [[Open-Projects | Open Projects]]
 * '''FAQ'''
 ** coming soon
