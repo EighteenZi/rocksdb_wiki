@@ -2,6 +2,10 @@
 
 Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 
+## Getting Started
+[Migrating from LevelDB to RocksDB](http://rocksdb.org/blog/1811/migrating-from-leveldb-to-rocksdb-2/) by Leonidas Galanis. 16th January 2015.
+
+
 ## Internals
 [State of RocksDB](https://www.youtube.com/watch?v=NJ6QgMH2KPU) by Igor Canadi. 4th December 2014.
 
