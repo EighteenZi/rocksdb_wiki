@@ -11,6 +11,8 @@ Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 
 
 ## Showcases
+[How RocksDB is used in osquery](https://code.facebook.com/posts/1411870269134471/) by Mike Arpaia and Ted Reed. 30th April 2015.
+
 [MongoDB + RocksDB at Parse](http://blog.parse.com/announcements/mongodb-rocksdb-parse/) by Charity Majors. 22nd April 2015.
 
 [Stream Processing with Samza @ LinkedIn](https://www.youtube.com/watch?v=plqVp_OnSzg) by Naveen Somasundaram. 4th December 2014.
