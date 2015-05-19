@@ -41,5 +41,3 @@
 * '''Misc'''
 ** [[Open-Projects | Open Projects]]
 ** [[ Articles-about-Rocks | Articles about Rocks]]
-* '''FAQ'''
-** coming soon
