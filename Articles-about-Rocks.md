@@ -11,6 +11,8 @@ Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 
 [Geo-spatial Features in RocksDB](https://www.youtube.com/watch?v=T1jWsDMONM8) by Igor Canadi and Yin Wang. 12th November 2014.
 
+["Lockless" Get() in RocksDB? Scale with CPU Cores](https://github.com/facebook/rocksdb/raw/gh-pages/talks/2014-03-27-RocksDB-Meetup-Lei-Lockless-Get.pdf) by Lei Jin. 27th March 2014.
+
 [Under the Hood: Building and open-sourcing RocksDB](https://www.facebook.com/notes/facebook-engineering/under-the-hood-building-and-open-sourcing-rocksdb/10151822347683920) by Dhruba Borthakur. 21st November 2013.
 
 
