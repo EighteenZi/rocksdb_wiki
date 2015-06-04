@@ -16,8 +16,7 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 4. Implement `ldb` for Java. For example, the ability to specify the Comparator which implemented in Java.
 **[@adamretter](https://github.com/adamretter)**
 
-5. Custom merge operator for Java. At the moment it is only possible to use merge operators which are available in C++ but not implementing custom functionality solely in Java.
-**[@fyrz](https://github.com/fyrz)**
+5. ~~Custom merge operator for Java. At the moment it is only possible to use merge operators which are available in C++ but not implementing custom functionality solely in Java.~~ Decision: will not be implemented.
 
 6. ~~Expose an AbstractLogger. RocksDB C++ api allows to provide a custom Logger. This shall also be possible from Java side and allows to attach RocksDB logging to application logging facilities.~~
   1. ~~Document the performance penalties if log level is too verbose.~~
@@ -30,6 +29,9 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 
 9. Build isolation. Building Java API should not require building RocksDB. You should be able to use a Java API build with a separate existing RocksDB installation. The Java API native aspect will instead indirectly depend on a shared or static RocksDB lib.
 **[@adamretter](https://github.com/adamretter)**
+
+10. Expose optimistic locking
+**[@fyrz](https://github.com/fyrz)**
 
 ## Planned changes for 4.x
 
