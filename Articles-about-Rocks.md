@@ -5,7 +5,7 @@ Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 ## Getting Started
 [Migrating from LevelDB to RocksDB](http://rocksdb.org/blog/1811/migrating-from-leveldb-to-rocksdb-2/) by Leonidas Galanis. 16th January 2015.
 
-## Working with RocksDB
+## Working with RocksDB
 [Integrating RocksDB with MongoDB](http://rocksdb.org/blog/author/icanadi/) by Igor Canadi. 22nd April 2015.
 
 [WriteBatchWithIndex: Utility for Implementing Read-Your-Own-Writes](http://rocksdb.org/blog/1901/write-batch-with-index/) by Siying Dong. 27th February 2015.
