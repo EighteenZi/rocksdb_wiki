@@ -12,7 +12,7 @@ Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 
 [How to persist in-memory RocksDB database?](http://rocksdb.org/blog/245/how-to-persist-in-memory-rocksdb-database/) by Igor Canadi. 27th March 2014.
 
-[Reading RocksDB options from a file](http://rocksdb.org/blog/1883/reading-rocksdb-options-from-a-file/) by Leonidas Galanis. 24 February 2015.
+[Reading RocksDB options from a file](http://rocksdb.org/blog/1883/reading-rocksdb-options-from-a-file/) by Leonidas Galanis. 24th February 2015.
 
 [How to backup RocksDB?](http://rocksdb.org/blog/191/how-to-backup-rocksdb/) by Igor Canadi. 27th March 2014.
 
@@ -27,6 +27,8 @@ Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 
 
 ## Showcases
+[how innodb lost its advantage](http://dom.as/2015/04/09/how-innodb-lost-its-advantage/) by Domas Mituzas. 9th April 2015.
+
 [How RocksDB is used in osquery](https://code.facebook.com/posts/1411870269134471/) by Mike Arpaia and Ted Reed. 30th April 2015.
 
 [MongoDB + RocksDB at Parse](http://blog.parse.com/announcements/mongodb-rocksdb-parse/) by Charity Majors. 22nd April 2015.
