@@ -38,6 +38,9 @@ Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 [Rock Solid Queues @ Iron.io](https://www.youtube.com/watch?v=HTjt6oj-RL4) by Reed Allman. 4th December 2014.
 
 ## Benchmarks
+[RocksDB & ForestDB via the ForestDB benchmark, part 1](http://smalldatum.blogspot.com/2015/06/rocksdb-forestdb-via-forestdb-benchmark.html) by Mark Callaghan. 8th June 2015.
+See also:  http://smalldatum.blogspot.com/2015/06/rocksdb-forestdb-via-forestdb-benchmark_8.html http://smalldatum.blogspot.com/2015/06/rocksdb-forestdb-via-forestdb-benchmark_73.html http://smalldatum.blogspot.com/2015/06/rocksdb-forestdb-via-forestdb-benchmark_9.html
+
 [Comparing LevelDB and RocksDB, take 2](http://smalldatum.blogspot.co.uk/2015/04/comparing-leveldb-and-rocksdb-take-2.html) by Mark Callaghan. April 27th 2015.
 
 [Benchmarking the leveldb family](http://smalldatum.blogspot.co.uk/2014/07/benchmarking-leveldb-family.html) by Mark Callaghan. July 7th 2014.
