@@ -4,7 +4,7 @@ This is the list of RocksDB bindings for other languages developed by third part
 * Python - http://pyrocksdb.readthedocs.org/en/latest/
 * Perl - https://metacpan.org/pod/RocksDB
 * Node.js - https://npmjs.org/package/rocksdb
-* Go - https://github.com/alberts/gorocks
+* Go - https://github.com/tecbot/gorocksdb
 * Ruby - http://rubygems.org/gems/rocksdb-ruby
 * Haskell - https://hackage.haskell.org/package/rocksdb-haskell
 * PHP - https://github.com/Photonios/rocksdb-php
