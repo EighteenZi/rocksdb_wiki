@@ -10,3 +10,4 @@
 * Snappy compression for WAL writes. Maybe this is only done for large writes and maybe we add a field to WriteOptions so a user can request it.
 * Row cache for RocksDB
 * Parallel L0->L1 compaction
+* Improve performance of statistics by making use of thread local storage
