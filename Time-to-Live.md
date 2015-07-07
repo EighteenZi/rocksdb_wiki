@@ -21,5 +21,7 @@ Not specifying/passing or non-positive TTL behaves like TTL = infinity
 * Be careful when passing ttl with a small positive value because the whole database may be deleted in a small amount of time
     
 ### API
-static Status OpenTtlDB(const Options& options, const std::string& name, StackableDB** dbptr, 
-                        int32_t ttl = 0, bool read_only = false);
+Defined in header <rocksdb/utilities/db_ttl.h>
+
+    static Status DBWithTTL::Open(const Options& options, const std::string& name, StackableDB** dbptr, 
+                                  int32_t ttl = 0, bool read_only = false);
