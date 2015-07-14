@@ -10,4 +10,4 @@ In this page, we summarize some unknown issues and limitations that RocksDB user
 
 * If you use prefix iterating and you are changing iterating order, Seek()->Prev() or Next()->Prev(), you may not get correct results.
 
-* Atomicity is not guaranteed after DB recovery for multiple column families and WAL is disabled.
+* Atomicity is not guaranteed after DB recovery for more than one multiple column families and WAL is disabled.
