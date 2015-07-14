@@ -7,3 +7,7 @@ In this page, we summarize some unknown issues and limitations that RocksDB user
 * Some features are not supported in RocksJava, See [RocksJava Basics](https://github.com/facebook/rocksdb/wiki/RocksJava-Basics)
 
 * If you use prefix iterating and iterates out of the prefix range, by running Prev() will not recover from the previous key and the results are undefined. 
+
+* If you use prefix iterating and you are changing iterating order, Seek()->Prev() or Next()->Prev(), you may not get correct results.
+
+* Atomicity is not guaranteed after DB recovery for multiple column families and WAL is disabled.
