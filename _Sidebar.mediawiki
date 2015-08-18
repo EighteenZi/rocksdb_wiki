@@ -39,6 +39,6 @@
 ** [[Read-Modify-Write-Benchmarks | Read-Modify-Write Performance]]
 ** [[RocksDB-Tuning-Guide | Tuning Guide]]
 * '''Misc'''
-* [[Talks | Talks]]
 ** [[Open-Projects | Open Projects]]
+** [[ Talks | Talks ]]
 ** [[ Articles-about-Rocks | Articles about Rocks]]
