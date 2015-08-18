@@ -1,6 +1,7 @@
 '''Contents'''
 * [[Home | RocksDB Wiki]]
 * [[RocksDB-Basics | Overview]]
+* [[Talks | Talks]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
 ** [[Known-Issues | Known Issues]]
