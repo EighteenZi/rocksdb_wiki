@@ -1,3 +1,5 @@
+### 2015.05.20 XLDB
+* [Lightning Talk "MySQL + RocksDB for better storage efficiency than InnoDB"](https://www.youtube.com/watch?v=Wbq6E71l97A) (Siying Dong @ Facebook)
 ### 2014.12 2nd RocksDB Meetup
 * [Talks from Facebook RocksDB Team](https://www.youtube.com/watch?v=NJ6QgMH2KPU) (Igor Canadi, Yueh-Hsuan Chiang and Siying Dong @ Facebook)
 * [Building queues that are Rocks solid](https://www.youtube.com/watch?v=HTjt6oj-RL4) (Reed Allman @ Iron.io)
