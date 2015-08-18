@@ -1,7 +1,6 @@
 '''Contents'''
 * [[Home | RocksDB Wiki]]
 * [[RocksDB-Basics | Overview]]
-* [[Talks | Talks]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
 ** [[Known-Issues | Known Issues]]
@@ -40,5 +39,6 @@
 ** [[Read-Modify-Write-Benchmarks | Read-Modify-Write Performance]]
 ** [[RocksDB-Tuning-Guide | Tuning Guide]]
 * '''Misc'''
+* [[Talks | Talks]]
 ** [[Open-Projects | Open Projects]]
 ** [[ Articles-about-Rocks | Articles about Rocks]]
