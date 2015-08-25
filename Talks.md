@@ -1,3 +1,6 @@
+### 2015.07.02 3rd RocksDB Meetup
+* [Transactions on RocksDB](https://github.com/facebook/rocksdb/blob/gh-pages/talks/2015-07-02-RocksDB-Meetup-Anthony-Transactions.pdf) (Anthony @ Facebok)
+
 ### 2015.05.20 XLDB
 * [Lightning Talk "MySQL + RocksDB for better storage efficiency than InnoDB"](https://www.youtube.com/watch?v=Wbq6E71l97A) (Siying Dong @ Facebook)
 
