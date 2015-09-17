@@ -312,20 +312,19 @@ Each block is individually compressed before being written to persistent storage
 
 ## Cache
 
-The contents of the database are stored in a set of files in the filesystem and each file stores a sequence of compressed blocks. If <code>options.block_cache</code> is non-NULL, it is used to cache frequently used uncompressed block contents. If <code>options.block_cache_compressed</code> is non-NULL, it is used to cache frequently used compressed blocks. Compressed cache is an alternative to OS cache, which also caches compressed blocks. If compressed cache is used, the OS cache will be disabled automatically by setting <code>options.allow_os_buffer</code> to false.
+The contents of the database are stored in a set of files in the filesystem and each file stores a sequence of compressed blocks. If <code>options.block_cache</code> is non-NULL, it is used to cache frequently used uncompressed block contents. We use operating systems file cache to cache our raw data, which is compressed. So file cache acts as a cache for compressed data.
 
 ```cpp
   #include "rocksdb/cache.h"
+  rocksdb::BlockBasedTableOptions table_options;
+  table_options.block_cache = rocksdb::NewLRUCache(100 * 1048576); // 100MB uncompressed cache
 
   rocksdb::Options options;
-  options.block_cache = rocksdb::NewLRUCache(100 * 1048576); // 100MB uncompressed cache
-  options.block_cache_compressed = rocksdb::NewLRUCache(100 * 1048576); // 100MB compressed cache
+  options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
   rocksdb::DB* db;
   rocksdb::DB::Open(options, name, &db);
   ... use the db ...
   delete db
-  delete options.block_cache;
-  delete options.block_cache_compressed;
 ```
 
 When performing a bulk read, the application may wish to disable caching so that the data processed by the bulk read does not end up displacing most of the cached contents. A per-iterator option can be used to achieve this:
