@@ -1,3 +1,6 @@
+### 2015.09.23 Percona Live Europe
+* [RocksDB storage engine for MySQL and MongoDB](http://www.slideshare.net/IgorCanadi/rocksdb-storage-engine-for-mysql-and-mongodb) (Igor Canadi @ Facebook)
+
 ### 2015.07.02 4th RocksDB Meetup
 * [Transactions on RocksDB](https://github.com/facebook/rocksdb/blob/gh-pages/talks/2015-07-02-RocksDB-Meetup-Anthony-Transactions.pdf) (Anthony @ Facebok)
 
