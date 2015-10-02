@@ -8,7 +8,7 @@ While iterating keys, a user can create an iterator and seek to `<queue_id, targ
 ### Old Item Deletion Problem
 Since the oldest items are deleted, there can be a large amount of "tombstones" in the beginning of each `queue_id`. As a result, the two query might be exceptionally slow:
 * Seek(<queue_id, 0>)
-* While you are in the last sequence ID of a queue_id and try to call Next()
+* While you are in the last sequence ID of a `queue_id` and try to call Next()
 To mitigate a problem, you can remember the first and last sequence ID of each queue_id, and never iterate over the range.
 
 As another way to solve the second problem, you can set an end key of your iterate when you iterate inside a queue_id, by letting `ReadOptions.iterate_upper_bound` point to `<queue_id + 1>`. We encourage you always set it no matter whether you see the slowness problem caused by deletions.
