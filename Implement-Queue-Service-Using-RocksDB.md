@@ -15,4 +15,4 @@ As another way to solve the second problem, you can set an end key of your itera
 ### Checking new sequence IDs of a queue_id
 If a user finishes processing the last sequence_id of a queue_id, and keep polling new item to be created, just Seek(`<queue_id, last_processed_id>`) and call Next() and see whether the next key is still for the same `<queue_id>`. Make sure `ReadOptions.iterate_upper_bound` points to <queue_id + 1> to avoid slowness for the item deletion problem.
 
-If you want to further optimize this use case, to avoid binary search of the whole LSM tree each time, consider to use `ForwardIterator` (https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h#L1235-L1241).
+If you want to further optimize this use case, to avoid binary search of the whole LSM tree each time, consider to use `TailingIterator`(or `ForwardIterator` called in some parts of the codes) (https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h#L1235-L1241).
