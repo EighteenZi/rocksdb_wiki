@@ -12,7 +12,7 @@ Since the oldest items are deleted, there can be a large amount of "tombstones" 
 
 To mitigate a problem, you can remember the first and last sequence ID of each queue_id, and never iterate over the range.
 
-As another way to solve the second problem, you can set an end key of your iterate when you iterate inside a queue_id, by letting `ReadOptions.iterate_upper_bound` point to `<queue_id + 1>`. We encourage you always set it no matter whether you see the slowness problem caused by deletions.
+As another way to solve the second problem, you can set an end key of your iterate when you iterate inside a queue_id, by letting `ReadOptions.iterate_upper_bound` point to `<queue_id, max_int>` `<queue_id + 1>`. We encourage you always set it no matter whether you see the slowness problem caused by deletions.
 
 ### Checking new sequence IDs of a queue_id
 If a user finishes processing the last `sequence_id` of a `queue_id`, and keep polling new item to be created, just Seek(`<queue_id, last_processed_id>`) and call Next() and see whether the next key is still for the same `<queue_id>`. Make sure `ReadOptions.iterate_upper_bound` points to `<queue_id + 1>` to avoid slowness for the item deletion problem.
