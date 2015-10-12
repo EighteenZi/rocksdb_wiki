@@ -38,6 +38,7 @@
 ** [[RocksDB-In-Memory-Workload-Performance-Benchmarks | In Memory Workload Performance]]
 ** [[Read-Modify-Write-Benchmarks | Read-Modify-Write Performance]]
 ** [[RocksDB-Tuning-Guide | Tuning Guide]]
+** [[Memory-usage-in-RocksDB | Memory usage in RocksDB]]
 ** [[Implement-Queue-Service-Using-RocksDB | Implement Queue Service Using RocksDB]]
 * '''Misc'''
 ** [[Open-Projects | Open Projects]]
