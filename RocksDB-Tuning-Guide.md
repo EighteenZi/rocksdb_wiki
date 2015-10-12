@@ -220,6 +220,9 @@ Advanced users may configure custom memtable and table format.
 1. Block based -- This is the default table. It is suited for storing data on disk and flash storage. It is addressed and loaded in block sized chunks (see block_size option). Thus the name block based.
 2. Plain Table -- Only makes sense with prefix_extractor. It is suited for storing data on memory (on tmpfs filesystem). It is byte-addressible.
 
+## Memory usage
+To learn more about how RocksDB uses memory, check out this wiki page: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB
+
 ## Example configurations
 In this section we will present some RocksDB configurations that we actually run in production.
 
