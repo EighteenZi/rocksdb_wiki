@@ -61,3 +61,9 @@ To get the current memtable size, you can use:
 In MongoRocks, the equivalent call is
 
     > db.serverStatus()["rocksdb"]["cur-size-all-mem-tables"]
+
+## Blocks pinned by iterators
+
+Blocks pinned by iterators usually don't contribute much to the overall memory usage. However, in some cases, when you have 100k read transactions happening simultaneously, it might put a strain on memory. Memory usage for pinned blocks is easy to calculate. Each iterator pins exactly one data block for each level in the database. So the total memory usage from pinned blocks is approximately `num_iterators * block_size * num_levels`. To get the statistics about this memory usage, call GetPinnedUsage() on block cache object:
+
+        table_options.block_cache->GetPinnedUsage();
