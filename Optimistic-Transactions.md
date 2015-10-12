@@ -1,8 +1,6 @@
 
 Optimistic Transactions provide light-weight optimistic concurrency control for workloads that do not expect high contention/interference between multiple transactions.  
 
-**Optimistic Transactions are present in the Master branch and will be in the next RocksDB release.  Please let us know if you have any feedback.**
-
 Optimistic Transactions do not take any locks when preparing writes.  Instead, they rely on doing conflict-detection at commit time to validate that no other writers have modified the keys being written by the current transaction.  If there is a conflict with another write (or it cannot be determined), the commit will return an error and no keys will be written.
 
 Note that RocksDB provides Atomicity by default when writing multiple keys via WriteBatch.  Optimistic Transactions provide a way to guarantee that a batch of writes will only be written if there are no conflicts.  Similar to a WriteBatch, no other threads can see the changes in a transaction until it has been written (committed).
