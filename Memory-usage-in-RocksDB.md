@@ -22,6 +22,10 @@ To learn how much memory is block cache using, you can call a function GetUsage(
 
     table_options.block_cache->GetUsage();
 
+In MongoRocks, you can get the size of block cache by calling
+
+    > db.serverStatus()["rocksdb"]["block-cache-usage"]
+
 ## Indexes and filter blocks
 
 Indexes and filter blocks can be big memory users and by default they don't count in memory you allocate for block cache. This can sometimes cause confusion for users: you allocate 10GB for block cache, but RocksDB is using 15GB of memory. The difference is usually explained by index and bloom filter blocks.
@@ -36,3 +40,24 @@ There are two options that configure how much index and filter blocks we fit in 
 1. If you set `cache_index_and_filter_blocks` to true, index and filter blocks will be stored in block cache, together with all other data blocks. This also means they can be paged out. If your access pattern is very local (i.e. you have some very cold key ranges), this setting might make sense. However, in most cases it will hurt your performance, since you need to have index and filter to access a certain file.
 2. If `cache_index_and_filter_blocks` is false (which is default), the number of index/filter blocks is controlled by option `max_open_files`. If you are certain that your ulimit will always be bigger than number of files in the database, we recommend setting `max_open_files` to -1, which means infinity. This option will preload all filter and index blocks and will not need to maintain LRU of files. Setting `max_open_files` to -1 will get you the best possible performance.
 
+To learn how much memory is being used by index and filter blocks, you can use RocksDB's GetProperty() API:
+
+    std::string out;
+    db->GetProperty("rocksdb.estimate-table-readers-mem", &out);
+
+In MongoRocks, just call this API from the mongo shell:
+
+    > db.serverStatus()["rocksdb"]["estimate-table-readers-mem"]
+
+## Memtable
+
+You can think of memtables as in-memory write buffers. Each new key-value pair is first written to the memtable. Memtable size is controlled by the option `write_buffer_size`. It's usually not a big memory consumer. However, memtable size is inversely proportional to write amplification -- the more memory you give to the memtable, the less the write amplification is. If you increase your memtable size, be sure to also increase your L1 size! L1 size is controlled by the option `max_bytes_for_level_base`.
+
+To get the current memtable size, you can use:
+
+    std::string out;
+    db->GetProperty("rocksdb.cur-size-all-mem-tables", &out);
+
+In MongoRocks, the equivalent call is
+
+    > db.serverStatus()["rocksdb"]["cur-size-all-mem-tables"]
