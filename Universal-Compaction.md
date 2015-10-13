@@ -14,6 +14,7 @@ When using Universal Compaction, if num_levels = 1, all data of the DB (or Colum
 This problem is mitigated if users set num_levels to be much larger than 1. In that case, larger "files" will be put in larger "levels" with files divided into smaller files (more explanation below). L0->L0 compaction can still happen for parallel compactions, but most likely files in L0 are much smaller.
 
 ## Data Layout and Placement
+### Sorted Runs
 As mentioned above, data is organized as sorted runs. A sorted runs are laid out by updated time of the data in it and stored as either files in L0 or a whole "level".
 
 Here is an example of a typical file layout:
@@ -25,6 +26,26 @@ Level 3: (empty)
 Level 4: File4_0, File4_1, File4_2, File4_3
 Level 5: File5_0, File5_1, File5_2, File5_3, File5_4, File5_5, File5_6, File5_7
 ```
+Levels with a larger number contain older sorted run than levels of smaller numbers. In this example, there are 5 sorted runs: three files in level 0, level 4 and 5. Level 5 is the oldest sorted run, level 4 is newer, and the level 0 files are the newest.
+
+### Placement of Compaction Outputs
+Compaction is always scheduled for sorted runs with consecutive time ranges and the outputs are always another sorted run. We always place compaction outputs to the highest possible level, following the rule of older data on levels with larger numbers.
+
+Use the same example shown above. We have following sorted runs:
+```
+File0_0
+File0_1
+File0_2
+Level 4
+Level 5
+```
+If we compact all the data, the output sorted run will be placed in level 5.
+If we compact File0_0, File0_1, File0_2 and Level 4, the output sorted run will be placed in level 4
+If we compact File0_0, File0_1 and File0_2, the output sorted run will be placed in level 3. 
+If we compact File0_0 and File0_1, the output sorted run will still be placed in level 0.
+
+### Special case options.num_levels=1
+If options.num_levels=1, we still follow the same placement rule. It means all the files will be placed under level 0 and each file is a sorted run. The behavior will be the same as initial universal compaction, so it can be used as a backward compatible mode.
 
 ## Compaction Picking Algorithm
 Assuming we have sorted runs
