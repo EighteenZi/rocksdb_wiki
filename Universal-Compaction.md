@@ -1,7 +1,7 @@
 ## Overview
 Universal Compaction Style is a compaction style, targeting the use cases requiring lower write amplification, trading off read amplification and space amplification.
 
-When using this compaction style, all the SST files are put in L0. Data generated during a time range is stored in one SST file. Different SST files never overlap on their time ranges. Compaction can only happen among two or more files of adjacent time ranges. The output is a single file whose time range is the combination of input files. After any compaction, the condition that SST files never overlap on their time ranges still holds. 
+When using this compaction style, all the SST files are organized as sorted runs covering the whole key ranges. One sorted run covers data generated during a time range. Different sorted runs never overlap on their time ranges. Compaction can only happen among two or more sorted runs of adjacent time ranges. The output is a single sorted run whose time range is the combination of input sorted runs. After any compaction, the condition that sorted runs never overlap on their time ranges still holds. A sorted run can be implemented as an L0 file, or a "level" in which data is stored as key range partitioned files.
 
 ## Limitations
 
