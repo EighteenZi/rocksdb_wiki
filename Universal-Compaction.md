@@ -17,9 +17,14 @@ This problem is mitigated if users set num_levels to be much larger than 1. In t
 As mentioned above, data is organized as sorted runs. A sorted runs are laid out by updated time of the data in it and stored as either files in L0 or a whole "level".
 
 Here is an example of a typical file layout:
-
-(TBD)
-
+```
+Level 0: File0_0, File0_1, File0_2
+Level 1: (empty)
+Level 2: (empty)
+Level 3: (empty)
+Level 4: File4_0, File4_1, File4_2, File4_3
+Level 5: File5_0, File5_1, File5_2, File5_3, File5_4, File5_5, File5_6, File5_7
+```
 
 ## Compaction Picking Algorithm
 Assuming we have sorted runs
