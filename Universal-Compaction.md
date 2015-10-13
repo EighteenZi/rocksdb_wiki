@@ -26,6 +26,8 @@ How is all compactions are picked up:
 #### Precondition: n >= options.level0_file_num_compaction_trigger
 Unless number of sorted runs reaches this threshold, no compaction will be triggered at all.
 
+(Note although the option name uses word "file", the trigger is for "sorted run" for historical reason. For the names of all options mentioned below, "file" also means sorted run for the same reason.)
+
 If pre-condition is satisfied, there are three conditions. Each of them can trigger a compaction:
 
 #### 1. Compaction Triggered by Space Amplification
