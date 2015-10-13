@@ -11,7 +11,8 @@ In universal style compaction, sometimes full compaction is needed. In this case
 ### DB (Column Family) Size if num_levels=1
 When using Universal Compaction, if num_levels = 1, all data of the DB (or Column Family to be precise) is sometimes compacted to one single SST file. There is a limitation of size of one single SST file. In RocksDB, a block cannot exceed 4GB (to allow size to be uint32). The index block can exceed the limit if the single SST file is too big. The size of index block depends on your data. In one of our use cases, we would observe the DB to reach the limitation when the DB grows to about 250GB, using 4K data block size.
 
-This problem is mitigated if users set num_levels to be much larger than 1. In that case, larger sorted runs will be put in larger "levels" with files divided into smaller files. L0->L0 compaction can still happen for parallel compactions, but most likely files in L0 are much smaller.
+This problem is mitigated if users set num_levels to be much larger than 1. In that case, larger "files" will be put in larger "levels" with files divided into smaller files (more explanation below). L0->L0 compaction can still happen for parallel compactions, but most likely files in L0 are much smaller.
+
 
 ## Compaction Picking Algorithm
 Assuming we have file
