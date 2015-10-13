@@ -15,30 +15,30 @@ This problem is mitigated if users set num_levels to be much larger than 1. In t
 
 
 ## Compaction Picking Algorithm
-Assuming we have file
+Assuming we have sorted runs
 ```
-    F1, F2, F3, ..., Fn
+    R1, R2, R3, ..., Rn
 ```
-where F1 containing data of most recent updates to the DB and Fn containing the data of oldest updates of the DB. Note it is sorted by age of the data inside the file, not the file itself. According to this sorting order, after compaction, the output file is always placed into the place where the inputs were.
+where R1 containing data of most recent updates to the DB and Rn containing the data of oldest updates of the DB. Note it is sorted by age of the data inside the sorted run, not the sorted run itself. According to this sorting order, after compaction, the output sorted run is always placed into the place where the inputs were.
 
 How is all compactions are picked up:
 
 #### Precondition: n >= options.level0_file_num_compaction_trigger
-Unless number of files reaches this threshold, no compaction will be triggered at all.
+Unless number of sorted runs reaches this threshold, no compaction will be triggered at all.
 
 If pre-condition is satisfied, there are three conditions. Each of them can trigger a compaction:
 
 #### 1. Compaction Triggered by Space Amplification
-If the estimated _size amplification ratio_ is larger than options.compaction_options_universal.max_size_amplification_percent / 100, all files will be compacted to one single file.
+If the estimated _size amplification ratio_ is larger than options.compaction_options_universal.max_size_amplification_percent / 100, all files will be compacted to one single sorted run.
 
 Here is how _size amplification ratio_ is estimated:
 
 ```
-    size amplification ratio = (size(F1) + size(F2) + ... size(Fn-1)) / size(Fn)
+    size amplification ratio = (size(R1) + size(R2) + ... size(Rn-1)) / size(Rn)
 ```
-Please note, size of Fn is not included, which means 0 is the perfect size amplification and 100 means DB size is double the space of live data, and 200 means triple.
+Please note, size of Rn is not included, which means 0 is the perfect size amplification and 100 means DB size is double the space of live data, and 200 means triple.
 
-The reason we estimate size amplification in this way: in a stable sized DB, incoming rate of deletion should be similar to rate of insertion, which means for any of the files except Fn should include similar number of insertion and deletion. After applying F1, F2 ... Fn-1, to Fn, the size effects of them will cancel each other, so the output should also be size of Fn, which is the size of live data, which is used as the base of size amplification.
+The reason we estimate size amplification in this way: in a stable sized DB, incoming rate of deletion should be similar to rate of insertion, which means for any of the sorted runs except Rn should include similar number of insertion and deletion. After applying R1, R2 ... Rn-1, to Rn, the size effects of them will cancel each other, so the output should also be size of Rn, which is the size of live data, which is used as the base of size amplification.
 
 If options.compaction_options_universal.max_size_amplification_percent = 25, which means we will keep total space of DB less than 125% of total size of live data. Let's use this value in an example. Assuming compaction is only triggered by space amplification, options.level0_file_num_compaction_trigger = 1, file size after each mem table flush is always 1, and compacted size always equals to total input sizes. After two flushes, we have two files size of 1, while 1/1 > 25% so we'll need to do a full compaction:
 
@@ -103,7 +103,7 @@ We calculated a value of _size ratio trigger_ as
 ```
 Usually options.compaction_options_universal.size_ratio is close to 0 so _size ratio trigger_ is close to 1.
 
-We start from F1, if size(F2) / size(F1) < _size ratio trigger_, then (F1, F2) are qualified to be compacted together. We continue from here to determine whether F3 can be added too. If size(F1 + F2) / size(F3) < _size ratio trigger_, we would include (F1, F2, F3). Then we do the same for F4. We keep comparing total existing size to the next file until the _size ratio trigger_ condition doesn't hold any more.
+We start from R1, if size(R2) / size(R1) < _size ratio trigger_, then (R1, R2) are qualified to be compacted together. We continue from here to determine whether R3 can be added too. If size(R1 + R2) / size(R3) < _size ratio trigger_, we would include (R1, R2, R3). Then we do the same for F4. We keep comparing total existing size to the next sorted run until the _size ratio trigger_ condition doesn't hold any more.
 
 Here is an example to make it easier to understand. Assuming options.compaction_options_universal.size_ratio = 0, total mem table flush size is always 1, compacted size always equals to total input sizes, compaction is only triggered by space amplification and options.level0_file_num_compaction_trigger = 1. Now we start with only one file with size 1. After another mem table flush, we have two files size of 1, which triggers a compaction:
 
@@ -147,16 +147,16 @@ The compaction will keep working like this:
 ......
 ```
 
-Compaction is only triggered when number of input files would be at least options.compaction_options_universal.min_merge_width and number of files as inputs will be capped as no more than  options.compaction_options_universal.max_merge_width.
+Compaction is only triggered when number of input sorted runs would be at least options.compaction_options_universal.min_merge_width and number of sorted runs as inputs will be capped as no more than  options.compaction_options_universal.max_merge_width.
 
-#### 3. Compaction Triggered by number of files
-If for every time we try to schedule a compaction, neither of 1 and 2 are triggered, we will try to compaction whatever files from F1, F2..., so that after the compaction the total number of files is not greater than options.level0_file_num_compaction_trigger + 1. If we need to compact more than options.compaction_options_universal.max_merge_width number of files, we cap it to options.compaction_options_universal.max_merge_width.
+#### 3. Compaction Triggered by number of sorted runs
+If for every time we try to schedule a compaction, neither of 1 and 2 are triggered, we will try to compaction whatever sorted runs from R1, R2..., so that after the compaction the total number of sorted runs is not greater than options.level0_file_num_compaction_trigger + 1. If we need to compact more than options.compaction_options_universal.max_merge_width number of sorted runs, we cap it to options.compaction_options_universal.max_merge_width.
 
 "Try to schedule" I mentioned below will happen when after flushing a memtable, finished a compaction. Sometimes duplicated attempts are scheduled.
 
-See [Universal Style Compaction Example](https://github.com/facebook/rocksdb/wiki/Universal-Style-Compaction-Example) as an example of how output file sizes look like for a common setting.
+See [Universal Style Compaction Example](https://github.com/facebook/rocksdb/wiki/Universal-Style-Compaction-Example) as an example of how output sorted run sizes look like for a common setting.
 
-Parallel compactions are possible if options.max_background_compactions > 1. Same as all other compaction styles, parallel compactions will not work on the same file.
+Parallel compactions are possible if options.max_background_compactions > 1. Same as all other compaction styles, parallel compactions will not work on the same sorted run.
 
  
 
