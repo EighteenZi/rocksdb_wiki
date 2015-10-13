@@ -13,6 +13,13 @@ When using Universal Compaction, if num_levels = 1, all data of the DB (or Colum
 
 This problem is mitigated if users set num_levels to be much larger than 1. In that case, larger "files" will be put in larger "levels" with files divided into smaller files (more explanation below). L0->L0 compaction can still happen for parallel compactions, but most likely files in L0 are much smaller.
 
+## Data Layout and Placement
+As mentioned above, data is organized as sorted runs. A sorted runs are laid out by updated time of the data in it and stored as either files in L0 or a whole "level".
+
+Here is an example of a typical file layout:
+
+(TBD)
+
 
 ## Compaction Picking Algorithm
 Assuming we have sorted runs
