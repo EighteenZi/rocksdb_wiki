@@ -40,8 +40,11 @@ Level 4
 Level 5
 ```
 If we compact all the data, the output sorted run will be placed in level 5.
-If we compact File0_0, File0_1, File0_2 and Level 4, the output sorted run will be placed in level 4
+
+If we compact File0_0, File0_1, File0_2 and Level 4, the output sorted run will be placed in level 4.
+
 If we compact File0_0, File0_1 and File0_2, the output sorted run will be placed in level 3. 
+
 If we compact File0_0 and File0_1, the output sorted run will still be placed in level 0.
 
 ### Special case options.num_levels=1
