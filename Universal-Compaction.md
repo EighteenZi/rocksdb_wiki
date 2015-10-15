@@ -234,7 +234,7 @@ Following are options affecting universal compactions:
 * options.target_file_size_base: effective if options.num_levels > 1. Files of levels other than level 0 will be cut to file size not larger than this threshold.
 * options.target_file_size_multiplier: it is effective, but we don't know a way how to use this option in universal compaction that makes sense. So we don't recommend you to tune it.
 
-Following options **do NOT** affect universal compactions:
+Following options **DO NOT** affect universal compactions:
 * options.max_bytes_for_level_base: only for level-based compaction
 * options.level_compaction_dynamic_level_bytes: only for level-based compaction
 * options.max_bytes_for_level_multiplier and options.max_bytes_for_level_multiplier_additional: only for level-based compaction
