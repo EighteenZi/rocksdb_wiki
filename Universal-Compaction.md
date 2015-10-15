@@ -233,3 +233,14 @@ Following are options affecting universal compactions:
 * options.num_levels: if this value is 1, all sorted runs will be stored as level 0 files. Otherwise, we will try to fill non-zero levels as much as possible. The larger num_levels is, the less likely we will have large files on level 0.
 * options.target_file_size_base: effective if options.num_levels > 1. Files of levels other than level 0 will be cut to file size not larger than this threshold.
 * options.target_file_size_multiplier: it is effective, but we don't know a way how to use this option in universal compaction that makes sense. So we don't recommend you to tune it.
+
+Following options **do NOT** affect universal compactions:
+* options.max_bytes_for_level_base: only for level-based compaction
+* options.level_compaction_dynamic_level_bytes: only for level-based compaction
+* options.max_bytes_for_level_multiplier and options.max_bytes_for_level_multiplier_additional: only for level-based compaction
+* options.expanded_compaction_factor: only for level-based compactions
+* options.source_compaction_factor: only for level-based compactions
+* options.max_grandparent_overlap_factor: only for level-based compactions
+* options.soft_rate_limit and options.hard_rate_limit: deprecated
+* options.hard_pending_compaction_bytes_limit: only used for level-based compaction
+* options.compaction_pri: only supported in level-based compaction
