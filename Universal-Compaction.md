@@ -232,7 +232,7 @@ Following are options affecting universal compactions:
 * options.level0_stop_writes_trigger: if number of sorted runs exceed this value, writes will stop until compaction finishes and number of sorted runs turn under this threshold.
 * options.num_levels: if this value is 1, all sorted runs will be stored as level 0 files. Otherwise, we will try to fill non-zero levels as much as possible. The larger num_levels is, the less likely we will have large files on level 0.
 * options.target_file_size_base: effective if options.num_levels > 1. Files of levels other than level 0 will be cut to file size not larger than this threshold.
-* options.target_file_size_multiplier: it is effective, but we don't know a way how to use this option in universal compaction that makes sense. So we don't recommend you to tune it.
+* options.target_file_size_multiplier: it is effective, but we don't know a way to use this option in universal compaction that makes sense. So we don't recommend you to tune it.
 
 Following options **DO NOT** affect universal compactions:
 * options.max_bytes_for_level_base: only for level-based compaction
