@@ -223,7 +223,13 @@ If for every time we try to schedule a compaction, neither of 1 and 2 are trigge
 See [Universal Style Compaction Example](https://github.com/facebook/rocksdb/wiki/Universal-Style-Compaction-Example) as an example of how output sorted run sizes look like for a common setting.
 
 Parallel compactions are possible if options.max_background_compactions > 1. Same as all other compaction styles, parallel compactions will not work on the same sorted run.
-
  
-
-This wiki page is not completed.
+## Options to Tune
+Following are options affecting universal compactions:
+* options.compaction_options_universal: various options mentioned above
+* options.level0_file_num_compaction_trigger the triggering condition of any compaction. It also means after all compactions' finishing, number of sorted runs will be under options.level0_file_num_compaction_trigger+1
+* options.level0_slowdown_writes_trigger: if number of sorted runs exceed this value, writes will be artificially slowed down.
+* options.level0_stop_writes_trigger: if number of sorted runs exceed this value, writes will stop until compaction finishes and number of sorted runs turn under this threshold.
+* options.num_levels: if this value is 1, all sorted runs will be stored as level 0 files. Otherwise, we will try to fill non-zero levels as much as possible. The larger num_levels is, the less likely we will have large files on level 0.
+* options.target_file_size_base: effective if options.num_levels > 1. Files of levels other than level 0 will be cut to file size not larger than this threshold.
+* options.target_file_size_multiplier: it is effective, but we don't know a way how to use this option in universal compaction that makes sense. So we don't recommend you to tune it.
