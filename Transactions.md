@@ -35,5 +35,103 @@ Optimistic concurrency control is useful for many workloads that need to protect
 	txn->Delete(“key2”);
 	txn->Merge(“key3”, “value”);
 	s = txn->Commit();
-	delete txn;`
+	delete txn;
 
+
+### Reading from a Transaction            
+Transactions also support easily reading the state of keys that are currently batched in a given transaction but not yet committed:
+
+	db->Put(write_options, “a”, “old”);
+	db->Put(write_options, “b”, “old”);
+	txn->Put(“a”, “new”);
+
+	vector<string> values;
+	vector<Status> results = txn->MultiGet(read_options, {“a”, “b”}, &values);
+	//  The value returned for key “a” will be “new” since it was written by this transaction.
+	//  The value returned for key “b” will be “old” since it is unchanged in this transaction.
+
+### Setting a Snapshot
+
+By default, Transaction conflict checking validates that no one else has written a key *after* the time the key was first written in this transaction. This isolation guarantee is sufficient for many use-cases. However, you may want to guarantee that no else has written a key since the start of the transaction. This can be accomplished by calling SetSnapshot() after creating the transaction.
+
+Default behavior:
+
+	// Create a txn using either a TransactionDB or OptimisticTransactionDB
+	txn = txn_db->BeginTransaction(write_options);
+
+	// Write to key1 OUTSIDE of the transaction
+	db->Put(write_options, “key1”, “value0”);
+
+	// Write to key1 IN transaction
+	s = txn->Put(“key1”, “value1”);
+	s = txn->Commit();
+	// There is no conflict since the write to key1 outside of the transaction happened before it was written in this transaction.
+
+Using SetSnapshot():
+
+	txn = txn_db->BeginTransaction(write_options);
+	txn->SetSnapshot();
+
+	// Write to key1 OUTSIDE of the transaction
+	db->Put(write_options, “key1”, “value0”);
+
+	// Write to key1 IN transaction
+	s = txn->Put(“key1”, “value1”);
+	s = txn->Commit();
+	// Transaction will NOT commit since key1 was written outside of this transaction after SetSnapshot() was called (even though this write
+	// occurred before this key was written in this transaction).
+
+Note that in the previous example, if this were a TransactionDB, the Put() would have failed. If this were an OptimisticTransactionDB, the Commit() would fail.	
+
+### Repeatable Read
+Similar to normal RocksDB DB reads, you can achieve repeatable reads when reading through a transaction by setting a Snapshot in the ReadOptions.
+
+	read_options.snapshot = db->GetSnapshot();
+	s = txn->GetForUpdate(read_options, “key1”, &value);
+	…
+	s = txn->GetForUpdate(read_options, “key1”, &value);
+	db->ReleaseSnapshot(read_options.snapshot);
+
+Note that Setting a snapshot in the ReadOptions only affects the version of the data that is read.  This does not have any affect on whether the transaction will be able to be committed.
+
+If you have called SetSnapshot(), you can read using the same snapshot that was set in the transaction:
+	read_options.snapshot = txn->GetSnapshot();
+	Status s = txn->GetForUpdate(read_options, “key1”, &value);
+	
+
+### Guarding against Read-Write Conflicts:
+GetForUpdate() will ensure that no other writer modifies any keys that were read by this transaction.
+
+	// Start a transaction 
+	txn = txn_db->BeginTransaction(write_options);
+
+	// Read key1 in this transaction
+	Status s = txn->GetForUpdate(read_options, “key1”, &value);
+
+	// Write to key1 OUTSIDE of the transaction
+	s = db->Put(write_options, “key1”, “value0”);
+
+If this transaction was created by a TransactionDB, the Put would either timeout or block until the transaction commits or aborts.  If this transaction were created by an OptimisticTransactionDB(), then the Put would succeed, but the transaction would not succeed if txn->Commit() were called.
+
+	// Repeat the previous example but just do a Get() instead of a GetForUpdate()
+	txn = txn_db->BeginTransaction(write_options);
+
+	// Read key1 in this transaction
+	Status s = txn->Get(read_options, “key1”, &value);
+
+	// Write to key1 OUTSIDE of the transaction
+	s = db->Put(write_options, “key1”, “value0”);
+
+	// No conflict since transactions only do conflict checking for keys read using GetForUpdate().
+	s = txn->Commit();
+
+
+### Tuning / Memory Usage
+
+Internally, Transactions need to keep track of which keys have been written recently.  The existing in-memory write buffers are re-used for this purpose.  Transactions will still obey the existing **max_write_buffer_number** option when deciding how many write buffers to keep in memory.  In addition, using transactions will not affect flushes or compactions.
+
+It is possible that switching to using a [Optimistic]TransactionDB will use more memory than was used previously.  If you have set a very large value for **max_write_buffer_number**, a typical RocksDB instance will could never come close to this maximum memory limit.  However, an [Optimistic]TransactionDB will try to use as many write buffers as allowed.  But this can be tuned by either reducing **max_write_buffer_number** or by setting **max_write_buffer_number_to_maintain** to a value smaller than max_write_buffer_number.
+
+If **max_write_buffer_number_to_maintain** and **max_write_buffer_number** are too small, some transactions may fail to commit.  If this is the case, then the error message will suggest increasing **max_write_buffer_number_to_maintain**.
+
+Note: In the future, improvements to TransactionDB should remove the need to tune this parameter.  However, this tuning will still be necessary for an OptimisticTransactionDB.
