@@ -8,7 +8,7 @@ The <code>rocksdb</code> library provides a persistent key value store. Keys and
 A <code>rocksdb</code> database has a name which corresponds to a file system directory. All of the contents of database are stored in this directory. The following example shows how to open a database, creating it if necessary:
 
 ```cpp
-  #include <assert>
+  #include <cassert>
   #include "rocksdb/db.h"
 
   rocksdb::DB* db;
