@@ -7,6 +7,8 @@ When using a TransactionDB, all keys that are written are locked internally by R
 
 A TransactionDB can be better for workloads with heavy concurrency compared to an OptimisticTransactionDB.  However, there is a small cost to using a TransactionDB due to the locking overhead.  A TransactionDB will do conflict checking for all write operations, including writes performed outside of a Transaction.
 
+Locking timeouts and limits can be tuned in the TransactionDBOptions.
+
 	TransactionDB* txn_db;
 	Status s = TransactionDB::Open(options, path, &txn_db);
 
