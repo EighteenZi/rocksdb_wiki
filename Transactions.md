@@ -50,6 +50,8 @@ Transactions also support easily reading the state of keys that are currently ba
 	//  The value returned for key “a” will be “new” since it was written by this transaction.
 	//  The value returned for key “b” will be “old” since it is unchanged in this transaction.
 
+You can also iterate through keys that exist in both the db and the current transaction by using Transaction::GetIterator().
+
 ### Setting a Snapshot
 
 By default, Transaction conflict checking validates that no one else has written a key *after* the time the key was first written in this transaction. This isolation guarantee is sufficient for many use-cases. However, you may want to guarantee that no else has written a key since the start of the transaction. This can be accomplished by calling SetSnapshot() after creating the transaction.
