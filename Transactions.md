@@ -5,7 +5,7 @@ Note that RocksDB provides Atomicity by default when writing multiple keys via W
 ### TransactionDB
 When using a TransactionDB, all keys that are written are locked internally by RocksDB to perform conflict detection.  If a key cannot be locked, the operation will return an error.  When the transaction is committed it is guaranteed to succeed as long as the database is able to be written to.
 
-A TransactionDB can be better for workloads with heavy concurrency compared to an OptimisticTransactionDB.  However, there is a small cost to using a TransactionDB due to the locking overhead.
+A TransactionDB can be better for workloads with heavy concurrency compared to an OptimisticTransactionDB.  However, there is a small cost to using a TransactionDB due to the locking overhead.  A TransactionDB will do conflict checking for all write operations, including writes performed outside of a Transaction.
 
 	TransactionDB* txn_db;
 	Status s = TransactionDB::Open(options, path, &txn_db);
