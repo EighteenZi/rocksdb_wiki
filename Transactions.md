@@ -137,3 +137,15 @@ It is possible that switching to using a [Optimistic]TransactionDB will use more
 If **max_write_buffer_number_to_maintain** and **max_write_buffer_number** are too small, some transactions may fail to commit.  If this is the case, then the error message will suggest increasing **max_write_buffer_number_to_maintain**.
 
 Note: In the future, improvements to TransactionDB should remove the need to tune this parameter.  However, this tuning will still be necessary for an OptimisticTransactionDB.
+
+### Save Points
+
+In addition to Rollback(), Transactions can also be partially rolled back if SavePoints are used.
+
+	s = txn->Put("A", "a");
+	txn->SetSavePoint();
+	s = txn->Put("B", "b");
+	txn->RollbackToSavePoint()
+	s = txn->Commit()
+	// Since RollbackToSavePoint() was called, this transaction will only write key A and not write key B.
+
