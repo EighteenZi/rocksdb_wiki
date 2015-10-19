@@ -97,6 +97,7 @@ Similar to normal RocksDB DB reads, you can achieve repeatable reads when readin
 Note that Setting a snapshot in the ReadOptions only affects the version of the data that is read.  This does not have any affect on whether the transaction will be able to be committed.
 
 If you have called SetSnapshot(), you can read using the same snapshot that was set in the transaction:
+
 	read_options.snapshot = txn->GetSnapshot();
 	Status s = txn->GetForUpdate(read_options, “key1”, &value);
 	
