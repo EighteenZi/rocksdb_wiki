@@ -5,6 +5,8 @@ Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 ## Getting Started
 [Migrating from LevelDB to RocksDB](http://rocksdb.org/blog/1811/migrating-from-leveldb-to-rocksdb-2/) by Leonidas Galanis. 16th January 2015.
 
+[The Journey from Faster to Better](https://scs.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f4e0eb37-ae18-468f-9248-cb73edad3e56) by Mark Callaghan and Igor Canadi. 22nd October 2015.
+
 ## Working with RocksDB
 [Integrating RocksDB with MongoDB](http://rocksdb.org/blog/author/icanadi/) by Igor Canadi. 22nd April 2015.
 
