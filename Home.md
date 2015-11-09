@@ -8,7 +8,7 @@ RocksDB features highly flexible configuration settings that may be tuned to run
 ## Features
 * Designed for application servers wanting to store up to a few terabytes of data on locally attached Flash drives or in RAM
 * Optimized for storing small to medium size key-values on fast storage -- flash devices or in-memory
-* Scales linearly with number of CPUs so that it works well on ARM processors
+* Scales linearly with number of CPUs so that it works well on processors with many cores
 
 
 ## Getting Started
