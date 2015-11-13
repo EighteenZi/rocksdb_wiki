@@ -326,7 +326,7 @@ Tune compaction so that, a full compaction is kicked off as soon as we have two 
     options.compaction_options_universal.size_ratio = 10;
     options.compaction_options_universal.min_merge_width = 2;
     options.compaction_options_universal.max_size_amplification_percent = 50;
-    options.level0_file_num_compaction_trigger = 0;
+    options.level0_file_num_compaction_trigger = 1;
     options.level0_slowdown_writes_trigger = 8;
     options.level0_stop_writes_trigger = 16;
 
