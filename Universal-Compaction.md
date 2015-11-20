@@ -36,8 +36,8 @@ Use the same example shown above. We have following sorted runs:
 File0_0
 File0_1
 File0_2
-Level 4
-Level 5
+Level 4: File4_0, File4_1, File4_2, File4_3
+Level 5: File5_0, File5_1, File5_2, File5_3, File5_4, File5_5, File5_6, File5_7
 ```
 If we compact all the data, the output sorted run will be placed in level 5. so it becomes:
 ```
