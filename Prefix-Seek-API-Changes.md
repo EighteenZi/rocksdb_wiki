@@ -5,6 +5,7 @@ When options.prefix_extractor for your DB or column family is specified, RocksDB
 Options options;
 
 // <---- Enable some features supporting prefix extraction
+options.prefix_extractor.reset(NewFixedPrefixTransform(3));
 
 DB* db;
 Status s = DB::Open(options, "/tmp/rocksdb",  &db);
