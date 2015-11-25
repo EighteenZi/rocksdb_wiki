@@ -57,7 +57,9 @@ iter->Seek(key);  // Seek "foobar" in total order
 Performance might be worse in this mode. Please aware not all the implementation of prefix seek supports this option. For example, some implementation of [PlainTable](https://github.com/facebook/rocksdb/wiki/PlainTable-Format) doesn't support it and you'll see an error in status code when you try to use it. [Hash-based mem tables](https://github.com/facebook/rocksdb/wiki/Hash-based-memtable-implementations) might do a very expensive online sorting if you use it. This mode is supported in prefix bloom and hash index of block based tables.
 
 # Limitation
-Prev() and SeekToLast() is not supported well with prefix iterating. SeekToFirst() is only supported by some configuration. You should use total order mode, if you will execute those types of queries against your iterator. One common bug of using prefix iterating is to use prefix mode to iterate in reverse order. But it is not yet supported. 
+Prev() and SeekToLast() is not supported well with prefix iterating. SeekToFirst() is only supported by some configuration. You should use total order mode, if you will execute those types of queries against your iterator. 
+
+One common bug of using prefix iterating is to use prefix mode to iterate in reverse order. But it is not yet supported. If reverse iterating is your common query pattern, you can reorder the data to turn your iterating order to be forward. You can do it through implementing a customized comparator, or encode your key in a different way.
 
 # API change from 2.8 -> 3.0
 In this section, we explained the API as of 2.8 release and the change in 3.0.
