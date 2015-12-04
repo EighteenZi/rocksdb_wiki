@@ -18,6 +18,7 @@
 ** [[FIFO-compaction-style | FIFO compaction style]]
 ** [[Write Ahead Log File Format | Write Ahead Log File Format]]
 ** [[EventListener | EventListener]]
+** [[RocksDB-Options-File | RocksDB Options File]]
 * '''Tools / Utilities'''
 ** [[Ldb-Tool | Administration and Data Access Tool]]
 ** [https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F How to Backup RocksDB?] <!-- note this link must use an external link format bec MediaWiki markup doesn't support special characters in its native namespace -->
