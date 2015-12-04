@@ -62,3 +62,33 @@ Now we perform sanity check to make sure the set of options is safe to open the 
 If the return value indicates OK status, we can proceed and use the loaded set of options to open the target RocksDB database:
 
     s = DB::Open(loaded_db_opt, kDBPath, loaded_cf_descs, &handles, &db);
+
+# RocksDB Options File Format
+RocksDB options file is a text file that follows the [INI file format](https://en.wikipedia.org/wiki/INI_file).  Each RocksDB options file has one version section, one DBOptions section, and one CFOptions and TableOptions section for each column family.  Below is an example RocksDB options file.  A complete example can be found in [examples/rocksdb_option_file_example.ini](https://github.com/facebook/rocksdb/blob/master/examples/rocksdb_option_file_example.ini):
+
+    [Version]
+      rocksdb_version=4.3.0
+      options_file_version=1.1
+    [DBOptions]
+      stats_dump_period_sec=600
+      max_manifest_file_size=18446744073709551615
+      bytes_per_sync=8388608
+      delayed_write_rate=2097152
+      WAL_ttl_seconds=0
+      ...
+    [CFOptions "default"]
+      compaction_style=kCompactionStyleLevel
+      compaction_filter=nullptr
+      num_levels=6
+      table_factory=BlockBasedTable
+      comparator=leveldb.BytewiseComparator
+      compression_per_level=kNoCompression:kNoCompression:kNoCompression:kSnappyCompression:kSnappyCompression:kSnappyCompression
+      ...
+    [TableOptions/BlockBasedTable "default"]
+      format_version=2
+      whole_key_filtering=true
+      skip_table_builder_flush=false
+      no_block_cache=false
+      checksum=kCRC32c
+      filter_policy=rocksdb.BuiltinBloomFilter
+      ....
