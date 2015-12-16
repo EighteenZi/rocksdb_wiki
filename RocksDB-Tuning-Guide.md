@@ -235,7 +235,8 @@ Since the service doesn't need total order iterations (see [Prefix databases](#p
 
      rocksdb::BlockBasedTableOptions table_options;
      table_options.index_type = rocksdb::BlockBasedTableOptions::kHashSearch;
-options.table_factory.reset(NewBlockBasedTableFactory(table_options));
+     table_options.block_size = 4 * 1024;
+     options.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
 We use a hash index in table files to speed up prefix lookup, but it increases storage space and memory usage.
 
