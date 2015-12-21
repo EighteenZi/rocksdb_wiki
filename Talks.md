@@ -1,10 +1,10 @@
 ### 2015.12 5th RocksDB Meetup [Video Playlist] (https://www.youtube.com/playlist?list=PLb0IAmt7-GS292rNhzcGTi5cOdcTuK70v) 
-* Anthony Giardullo @ Facebook – RocksDB Transactions
-* Bo Liu @ Pinterest - RealPin: A Highly Customizable Object Retrieval System   
-* Javier González @ CNEX Labs – RocksDB on Open-Channel SSDs
-* Tao Xu @ Airbnb – RocksDB for Personalized Search At Airbnb   
-* Spencer Kimball @ CockroachDB – CockroachDB’s MVCC model  
-* Praveen Krishnamoorthy @ Samsung Inc – Fine-tuning RocksDB
+* Anthony Giardullo @ Facebook – [RocksDB Transactions](https://www.youtube.com/watch?v=tMeon8FHF3I)
+* Bo Liu @ Pinterest - RealPin: [A Highly Customizable Object Retrieval System](https://www.youtube.com/watch?v=MtFEVEs_2Vo)  
+* Javier González @ CNEX Labs – [RocksDB on Open-Channel SSDs](https://www.youtube.com/watch?v=x_tAkLYUdZ8)
+* Tao Xu @ Airbnb – [RocksDB for Personalized Search At Airbnb](https://www.youtube.com/watch?v=ASQ6XMtogMs)
+* Spencer Kimball @ CockroachDB – [CockroachDB’s MVCC model](https://www.youtube.com/watch?v=-ij2OiDTxz0)
+* Praveen Krishnamoorthy @ Samsung Inc – [Fine-tuning RocksDB](https://www.youtube.com/watch?v=pvUqbIeoPzM)
 
 ### 2015.09.23 Percona Live Europe
 * [RocksDB storage engine for MySQL and MongoDB](http://www.slideshare.net/IgorCanadi/rocksdb-storage-engine-for-mysql-and-mongodb) (Igor Canadi @ Facebook)
