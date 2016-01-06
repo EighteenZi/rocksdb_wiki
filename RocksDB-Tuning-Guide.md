@@ -307,10 +307,8 @@ In this case, prefix hash can be used to allow the system to use hash indexing i
 Use the memory addressing table format built for low-latency access, which requires mmap read mode to be on: 
 
     options.table_factory = std::shared_ptr<rocksdb::TableFactory>(rocksdb::NewPlainTableFactory(0, 8, 0.85));
-    options.no_block_cache = true;
     options.allow_mmap_reads = true;
     options.allow_mmap_writes = false;
-    options.compression = rocksdb::kNoCompression;
 
 Use hash link list memtable to change binary search to hash lookup in mem table:
 
