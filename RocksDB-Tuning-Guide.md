@@ -293,6 +293,9 @@ We first set a total of 4 threads in the thread pool.
 
 We use level style compaction with high concurrency. Memtable size is 64MB and the total number of level 0 files is 8. This means compaction is triggered when L0 size grows to 512MB. L1 size is 512MB and every level is 8 times larger than the previous one. L2 is 4GB and L3 is 32GB.
 
+### Database on Spinning Disks
+Coming soon...
+
 ### In-memory prefix database
 In this example, database is mounted in tmpfs file system. We support only Get() and prefix range scans. Transational logs are stored on hard drive to avoid consuming memory not used for querying.
 
@@ -363,9 +366,6 @@ Settings for WAL logs:
 **block_size:** By default, this value is set to be 4k. If compression is enabled, a smaller block size would lead to higher random read speed because decompression overhead is reduced. But the block size cannot be too small to make compression useless. It is recommended to set it to be 1k.
 
 **verify_checksum:** As we are storing data in tmpfs and care read performance a lot, checksum could be disabled.
-
-### Spinning Disks
-Coming soon...
 
 ## Final thoughts
 Unfortunately, configuring RocksDB optimally is not trivial. Even we as RocksDB developers don't fully understand the effect of each configuration change. If you want to fully optimize RocksDB for your workload, we recommend experiments and benchmarking, while keeping an eye on the three amplification factors. Also, please don't hesitate to ask us for help on the [RocksDB Developer's Discussion Group](https://www.facebook.com/groups/rocksdb.dev/).
