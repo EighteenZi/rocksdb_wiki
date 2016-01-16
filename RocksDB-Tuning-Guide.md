@@ -364,5 +364,8 @@ Settings for WAL logs:
 
 **verify_checksum:** As we are storing data in tmpfs and care read performance a lot, checksum could be disabled.
 
+### Spinning Disks
+Coming soon...
+
 ## Final thoughts
 Unfortunately, configuring RocksDB optimally is not trivial. Even we as RocksDB developers don't fully understand the effect of each configuration change. If you want to fully optimize RocksDB for your workload, we recommend experiments and benchmarking, while keeping an eye on the three amplification factors. Also, please don't hesitate to ask us for help on the [RocksDB Developer's Discussion Group](https://www.facebook.com/groups/rocksdb.dev/).
