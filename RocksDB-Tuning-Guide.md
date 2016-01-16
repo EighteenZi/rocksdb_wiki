@@ -224,6 +224,10 @@ Advanced users may configure custom memtable and table format.
 To learn more about how RocksDB uses memory, check out this wiki page: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB
 
 ## Difference of spinning disk
+* Memory / Persistent Storage ratio is usually much lower for databases on spinning disks.
+* Spinning disks usually provide much lower random read throughput than flash.
+* Throughput gap between random read vs. sequential read is much higher in spinning disks.
+
 Coming soon...
 
 ## Example configurations
