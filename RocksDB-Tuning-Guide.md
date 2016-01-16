@@ -223,6 +223,9 @@ Advanced users may configure custom memtable and table format.
 ## Memory usage
 To learn more about how RocksDB uses memory, check out this wiki page: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB
 
+## Difference of spinning disk
+Coming soon...
+
 ## Example configurations
 In this section we will present some RocksDB configurations that we actually run in production.
 
