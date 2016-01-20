@@ -19,6 +19,7 @@
 ** [[Write Ahead Log File Format | Write Ahead Log File Format]]
 ** [[EventListener | EventListener]]
 ** [[RocksDB-Options-File | RocksDB Options File]]
+** [[Transactions | Transactions]]
 * '''Tools / Utilities'''
 ** [[Ldb-Tool | Administration and Data Access Tool]]
 ** [https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F How to Backup RocksDB?] <!-- note this link must use an external link format bec MediaWiki markup doesn't support special characters in its native namespace -->
