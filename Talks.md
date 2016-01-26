@@ -7,13 +7,13 @@
 * [Fine-tuning RocksDB](https://www.youtube.com/watch?v=pvUqbIeoPzM) (Praveen Krishnamoorthy @ Samsung Inc)
 
 ### 2015.09.29 HPTS
-* [RocksDB: Challenges of LSM-Trees in Practice](https://github.com/facebook/rocksdb/blob/gh-pages/talks/2015-09-29-HPTS-Siying-RocksDB.pdf) (Siying @ Facebook)
+* [RocksDB: Challenges of LSM-Trees in Practice](https://github.com/facebook/rocksdb/blob/gh-pages/talks/2015-09-29-HPTS-Siying-RocksDB.pdf) (Siying Dong @ Facebook)
 
 ### 2015.09.23 Percona Live Europe
 * [RocksDB storage engine for MySQL and MongoDB](http://www.slideshare.net/IgorCanadi/rocksdb-storage-engine-for-mysql-and-mongodb) (Igor Canadi @ Facebook)
 
 ### 2015.07.02 4th RocksDB Meetup
-* [Transactions on RocksDB](https://github.com/facebook/rocksdb/blob/gh-pages/talks/2015-07-02-RocksDB-Meetup-Anthony-Transactions.pdf) (Anthony @ Facebok)
+* [Transactions on RocksDB](https://github.com/facebook/rocksdb/blob/gh-pages/talks/2015-07-02-RocksDB-Meetup-Anthony-Transactions.pdf) (Anthony Giardullo @ Facebok)
 
 ### 2015.05.20 XLDB
 * [Lightning Talk "MySQL + RocksDB for better storage efficiency than InnoDB"](https://www.youtube.com/watch?v=Wbq6E71l97A) (Siying Dong @ Facebook)
