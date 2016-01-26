@@ -6,6 +6,9 @@
 * [CockroachDB’s MVCC model](https://www.youtube.com/watch?v=-ij2OiDTxz0) (Spencer Kimball @ CockroachDB)
 * [Fine-tuning RocksDB](https://www.youtube.com/watch?v=pvUqbIeoPzM) (Praveen Krishnamoorthy @ Samsung Inc)
 
+### 2015.09.29 HPTS
+* [RocksDB: Challenges of LSM-Trees in Practice](https://github.com/facebook/rocksdb/blob/gh-pages/talks/2015-09-29-HPTS-Siying-RocksDB.pdf) (Siying @ Facebook)
+
 ### 2015.09.23 Percona Live Europe
 * [RocksDB storage engine for MySQL and MongoDB](http://www.slideshare.net/IgorCanadi/rocksdb-storage-engine-for-mysql-and-mongodb) (Igor Canadi @ Facebook)
 
