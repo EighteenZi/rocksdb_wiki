@@ -243,6 +243,7 @@ To learn more about how RocksDB uses memory, check out this wiki page: https://g
 
 ##### Spinning disks are much larger than flash:
 * To avoid too many file descriptors, use relatively larger files. We suggest at least file size of 256MB.
+* If you use universal compaction style, don't make single DB size too large, because the full compaction will take a long time and impact performance. You can use more DBs but single DB size is smaller than 500GB.
 
 ## Example configurations
 In this section we will present some RocksDB configurations that we actually run in production.
