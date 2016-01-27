@@ -225,20 +225,20 @@ To learn more about how RocksDB uses memory, check out this wiki page: https://g
 
 ## Difference of spinning disk
 ##### Memory / Persistent Storage ratio is usually much lower for databases on spinning disks. Suggestions:
-* Use relatively larger block sizes to reduce index block size. You should use at least 64KB block size. You can consider 256KB or even 512KB.
-* Turn on BlockBasedTableOptions.cache_index_and_filter_blocks=true as it's very likely you can't fit all index and bloom filters in memory. Even if you can, it's better to set it for safety.
-* enable options.optimize_filters_for_hits to reduce some bloom filter block size.
+* Use relatively l**arger block sizes** to reduce index block size. You should use at least 64KB block size. You can consider 256KB or even 512KB.
+* Turn on **BlockBasedTableOptions.cache_index_and_filter_blocks=true** as it's very likely you can't fit all index and bloom filters in memory. Even if you can, it's better to set it for safety.
+* **enable options.optimize_filters_for_hits** to reduce some bloom filter block size.
 * Be careful about whether you have enough memory to keep all bloom filters. If you can't, it's suspicious whether bloom filter can help.
-* Try to encode keys in more compacted way. Shorter keys can reduce index block size.  
+* Try to **encode keys in as compact as possible**. Shorter keys can reduce index block size.  
 
 ##### Spinning disks usually provide much lower random read throughput than flash.
-* Set options.skip_stats_update_on_db_open=true to speed up DB open time.
-* This is a controversy suggestion: use level-based compaction, as it is more friendly to reduce reads from disks.
-* If you use level-based compaction, use options.level_compaction_dynamic_level_bytes=true.
+* Set **options.skip_stats_update_on_db_open=true** to speed up DB open time.
+* This is a controversy suggestion: use **level-based compaction**, as it is more friendly to reduce reads from disks.
+* If you use level-based compaction, use **options.level_compaction_dynamic_level_bytes=true**.
 
 ##### Throughput gap between random read vs. sequential read is much higher in spinning disks. Suggestions:
-* Enable RocksDB-level read ahead for compaction inputs: options.compaction_readahead_size with options.new_table_reader_for_compaction_inputs=true
-* Use relatively large file sizes. We suggest at least 256MB
+* Enable RocksDB-level read ahead for compaction inputs: **options.compaction_readahead_size** with **options.new_table_reader_for_compaction_inputs=true**
+* Use relatively **large file sizes**. We suggest at least 256MB
 * Use relatively bigger block sizes
 
 ##### Spinning disks are much larger than flash:
