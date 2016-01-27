@@ -227,10 +227,18 @@ To learn more about how RocksDB uses memory, check out this wiki page: https://g
 * Memory / Persistent Storage ratio is usually much lower for databases on spinning disks. Suggestions:
 ** Use relatively larger block sizes to reduce index block size. You should use at least 64KB block size. You can consider 256KB or even 512KB.
 ** enable options.optimize_filters_for_hits to reduce some bloom filter block size.
+** Be careful about whether you have enough memory to keep all bloom filters. If you can't, it's suspicious whether bloom filter can help.
 ** Try to encode keys in more compacted way. Shorter keys can reduce index block size.  
 
 * Spinning disks usually provide much lower random read throughput than flash.
-* Throughput gap between random read vs. sequential read is much higher in spinning disks.
+** This is a controversy suggestion: use level-based compaction, as it is more friendly to reduce reads from disks.
+** If you use level-based compaction, use options.level_compaction_dynamic_level_bytes=true.
+
+* Throughput gap between random read vs. sequential read is much higher in spinning disks. Suggestions:
+** Enable RocksDB-level read ahead for compaction inputs: options.compaction_readahead_size with options.new_table_reader_for_compaction_inputs=true
+** Use relatively large file sizes. We suggest at least 256MB
+** Use relatively bigger block sizes
+
 * Spinning disks are much larger than flash:
 ** To avoid too many file descriptors, use relatively larger files. We suggest at least file size of 256MB.
 
