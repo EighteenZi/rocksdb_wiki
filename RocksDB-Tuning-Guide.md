@@ -225,7 +225,7 @@ To learn more about how RocksDB uses memory, check out this wiki page: https://g
 
 ## Difference of spinning disk
 ##### Memory / Persistent Storage ratio is usually much lower for databases on spinning disks. Suggestions:
-* Use relatively l**arger block sizes** to reduce index block size. You should use at least 64KB block size. You can consider 256KB or even 512KB.
+* Use relatively **larger block sizes** to reduce index block size. You should use at least 64KB block size. You can consider 256KB or even 512KB.
 * Turn on **BlockBasedTableOptions.cache_index_and_filter_blocks=true** as it's very likely you can't fit all index and bloom filters in memory. Even if you can, it's better to set it for safety.
 * **enable options.optimize_filters_for_hits** to reduce some bloom filter block size.
 * Be careful about whether you have enough memory to keep all bloom filters. If you can't, it's suspicious whether bloom filter can help.
