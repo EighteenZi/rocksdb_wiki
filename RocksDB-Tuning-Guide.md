@@ -224,9 +224,15 @@ Advanced users may configure custom memtable and table format.
 To learn more about how RocksDB uses memory, check out this wiki page: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB
 
 ## Difference of spinning disk
-* Memory / Persistent Storage ratio is usually much lower for databases on spinning disks.
+* Memory / Persistent Storage ratio is usually much lower for databases on spinning disks. Suggestions:
+** Use relatively larger block sizes to reduce index block size. You should use at least 64KB block size. You can consider 256KB or even 512KB.
+** enable options.optimize_filters_for_hits to reduce some bloom filter block size.
+** Try to encode keys in more compacted way. Shorter keys can reduce index block size.  
+
 * Spinning disks usually provide much lower random read throughput than flash.
 * Throughput gap between random read vs. sequential read is much higher in spinning disks.
+* Spinning disks are much larger than flash:
+** To avoid too many file descriptors, use relatively larger files. We suggest at least file size of 256MB.
 
 Coming soon...
 
