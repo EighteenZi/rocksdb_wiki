@@ -15,18 +15,28 @@ This is an example of how to create SST file in `/home/usr/file1.sst`
     
     // Open the file for writing
     Status s = sst_file_writer.Open(file1);
-    assert(s.ok());
+    if (!s.ok()) {
+	printf("Error while opening file %s, Error: %s\n", file_path.c_str(), s.ToString());
+	return 1;
+    }
     
     // Insert rows into the SST file, note that inserted keys must be 
     // strictly increasing (based on options.comparator)
     for (...) {
       s = sst_file_writer.Add(key, value);
-      assert(s.ok());
+      if (!s.ok()) {
+  	printf("Error while adding Key: %s, Error: %s\n", key.c_str(), s.ToString());
+  	return 1;
+      }
     }
 
     // Close the file
     s = sst_file_writer.Finish();
-    assert(s.ok());
+    if (!s.ok()) {
+	printf("Error while finishing file %s, Error: %s\n", file_path.c_str(), s.ToString());
+	return 1;
+    }
+    return 0;
 
 Now we have our SST file located at `/home/usr/file1.sst`.
 
