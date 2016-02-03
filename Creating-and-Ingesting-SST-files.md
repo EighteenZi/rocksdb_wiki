@@ -16,7 +16,7 @@ This is an example of how to create SST file in `/home/usr/file1.sst`
     // Open the file for writing
     Status s = sst_file_writer.Open(file1);
     if (!s.ok()) {
-        printf("Error while opening file %s, Error: %s\n", file_path.c_str(), s.ToString());
+        printf("Error while opening file %s, Error: %s\n", file_path.c_str(), s.ToString().c_str());
         return 1;
     }
     
@@ -25,7 +25,7 @@ This is an example of how to create SST file in `/home/usr/file1.sst`
     for (...) {
       s = sst_file_writer.Add(key, value);
       if (!s.ok()) {
-        printf("Error while adding Key: %s, Error: %s\n", key.c_str(), s.ToString());
+        printf("Error while adding Key: %s, Error: %s\n", key.c_str(), s.ToString().c_str());
         return 1;
       }
     }
@@ -33,7 +33,7 @@ This is an example of how to create SST file in `/home/usr/file1.sst`
     // Close the file
     s = sst_file_writer.Finish();
     if (!s.ok()) {
-        printf("Error while finishing file %s, Error: %s\n", file_path.c_str(), s.ToString());
+        printf("Error while finishing file %s, Error: %s\n", file_path.c_str(), s.ToString().c_str());
         return 1;
     }
     return 0;
@@ -51,7 +51,10 @@ Ingesting an SST file is simple, all you need to do is to call DB::AddFile() and
 
     std::string file_path = "/home/usr/file1.sst";
     Status s = db_->AddFile(file_path);
-    assert(s.ok());
+    if (!s.ok()) {
+      printf("Error while adding file %s, Error %s\n", file_path.c_str(), s.ToString().c_str());
+      return 1;
+    }
 
 Please notice there are some restrictions on the SST files that you can ingest into a DB:
 * SST file must have been created using SstFileWriter.
