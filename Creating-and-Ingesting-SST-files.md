@@ -14,7 +14,7 @@ This is an example of how to create SST file in `/home/usr/file1.sst`
     std::string file_path = "/home/usr/file1.sst";
     
     // Open the file for writing
-    Status s = sst_file_writer.Open(file1);
+    Status s = sst_file_writer.Open(file_path);
     if (!s.ok()) {
         printf("Error while opening file %s, Error: %s\n", file_path.c_str(), s.ToString().c_str());
         return 1;
