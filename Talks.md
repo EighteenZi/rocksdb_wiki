@@ -6,6 +6,9 @@
 * [CockroachDB’s MVCC model](https://www.youtube.com/watch?v=-ij2OiDTxz0) (Spencer Kimball @ CockroachDB)
 * [Fine-tuning RocksDB](https://www.youtube.com/watch?v=pvUqbIeoPzM) (Praveen Krishnamoorthy @ Samsung Inc)
 
+### 2015.10.22 The Databaseology Lectures @ CMU
+* [The Journey From Faster To Better](https://scs.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f4e0eb37-ae18-468f-9248-cb73edad3e56) (Mark Callaghan & Igor Canadi @ Facebook)
+ 
 ### 2015.09.29 HPTS
 * [RocksDB: Challenges of LSM-Trees in Practice](https://github.com/facebook/rocksdb/blob/gh-pages/talks/2015-09-29-HPTS-Siying-RocksDB.pdf) (Siying Dong @ Facebook)
 
