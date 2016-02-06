@@ -224,6 +224,9 @@ See [Universal Style Compaction Example](https://github.com/facebook/rocksdb/wik
 
 Parallel compactions are possible if options.max_background_compactions > 1. Same as all other compaction styles, parallel compactions will not work on the same sorted run.
  
+## Subcompaction
+Subcompaction is supported in universal compaction. If the output level of a compaction is not "level" 0, we will try to range partitioned the inputs and use number of threads of `options.max_subcompaction` to compact them in parallel. It will help with the problem that full compaction of universal compaction takes too long.
+
 ## Options to Tune
 Following are options affecting universal compactions:
 * options.compaction_options_universal: various options mentioned above
