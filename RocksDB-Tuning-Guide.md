@@ -192,7 +192,7 @@ Those applications can benefit of configuring prefix_extractor for the database.
 1. Define prefix bloom filters, which can reduce read amplification of prefix range queries (e.g., give me all keys that start with prefix `XXX`). Be sure to define **Options::filter_policy**.
 2. Use hash-map-based memtables to avoid binary search costs in memtables.
 3. Add hash index to table files to avoid binary search costs in table files.
-For more details on (2) and (3), see [Custom memtable and table factories](https://github.com/facebook/rocksdb/wiki/Basic-Operations#memtable-and-table-factories).
+For more details on (2) and (3), see [Custom memtable and table factories](https://github.com/facebook/rocksdb/wiki/Basic-Operations#memtable-and-table-factories). Please be aware that (1) is usually sufficient in reducing I/Os. (2) and (3) can reduce CPU costs in some use cases and usually with some costs of memory. You should only try it if CPU is your bottleneck and you run out of other easier tuning to save CPU, which is not common.
 Make sure to check comments about prefix_extractor in `include/rocksdb/options.h`.
 
 ## Bloom filters
