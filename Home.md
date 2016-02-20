@@ -14,6 +14,8 @@ RocksDB features highly flexible configuration settings that may be tuned to run
 ## Getting Started
 For a complete Table of Contents, see the sidebar to the left. Most readers will want to start with the [Overview](https://github.com/facebook/rocksdb/wiki/RocksDB-Basics) and the [Basic Operations](https://github.com/facebook/rocksdb/wiki/Basic-Operations) section of the Developer's Guide. 
 
+## Reporting bugs and asking for help
+If you will run into any issues then please use [these guidelines] (https://github.com/facebook/mysql-5.6/wiki/Reporting-bugs-and-asking-for-help) to report bugs and ask for help.
 
 ## Blog 
 * Check out our blog at [rocksdb.org/blog](http://rocksdb.org/blog)
