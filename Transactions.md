@@ -137,9 +137,11 @@ Internally, Transactions need to keep track of which keys have been written rece
 
 It is possible that switching to using a [Optimistic]TransactionDB will use more memory than was used previously.  If you have set a very large value for **max_write_buffer_number**, a typical RocksDB instance will could never come close to this maximum memory limit.  However, an [Optimistic]TransactionDB will try to use as many write buffers as allowed.  But this can be tuned by either reducing **max_write_buffer_number** or by setting **max_write_buffer_number_to_maintain** to a value smaller than max_write_buffer_number.
 
-If **max_write_buffer_number_to_maintain** and **max_write_buffer_number** are too small, some transactions may fail to commit.  If this is the case, then the error message will suggest increasing **max_write_buffer_number_to_maintain**.
+OptimisticTransactionDBs:
+At commit time, optimistic transactions will use the in-memory write buffers for conflict detection.  For this to be successful, the data buffered must be older than the changes in the transaction.  If not, Commit will fail.  To decrease the likelihood of Commit failures due to insufficient buffer history, increase **max_write_buffer_number_to_maintain**.
 
-Note: In the future, improvements to TransactionDB should remove the need to tune this parameter.  However, this tuning will still be necessary for an OptimisticTransactionDB.
+TransactionDBs:
+If SetSnapshot() is used, Put/Delete/Merge/GetForUpdate operations will first check the in-memory buffers to do conflict detection.  If there isn’t sufficient data history in the in-memory buffers, the SST files will then be checked.  Increasing **max_write_buffer_number_to_maintain** will reduce the chance that SST files must be read during conflict detection.
 
 ### Save Points
 
