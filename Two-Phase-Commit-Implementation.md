@@ -1,6 +1,6 @@
 In this document I will attempt to outline a general design approach for implementing Two Phase Commit (2PC) semantics for RocksDB and how this feature will be used by MyRocks.
 
-## This project can be decomposed into five areas of focus:
+### This project can be decomposed into five areas of focus:
 
 1. Modification of the WAL format
 2. Extension of the existing transaction API
