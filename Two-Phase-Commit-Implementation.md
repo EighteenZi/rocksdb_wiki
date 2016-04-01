@@ -1,6 +1,6 @@
 In this document I will attempt to outline a general design approach for implementing Two Phase Commit (2PC) semantics for RocksDB and how this feature will be used by MyRocks.
 
-### This project can be decomposed into five areas of focus:
+##### This project can be decomposed into five areas of focus:
 
 1. Modification of the WAL format
 2. Extension of the existing transaction API
@@ -76,17 +76,17 @@ The transaction API will gain a new member function, Prepare().  Prepare() will 
 
 These so-called 'meta markers' (Prepare(xid), EndPrepare(), Commit(xid), Rollback(xid)) will never be inserted directly into a write batch. The write path (WriteImpl()) will have the context of the transactions it is writing. It uses this context to insert the relevant markers directly into the WAL (So they are inserted into the aggregate WriteBatch right before being inserted into the WAL, but no other WriteBatch). During recovery these markers will be encountered by the MemTableInserter which he will use to reconstruct previously prepared transactions.
 
-### Transaction Wallclock Expiration
+##### Transaction Wallclock Expiration
 
 Currently at the time of a transaction commit there is a callback which will fail the write if the transaction has expired. Similarly, if a transaction has expired then it is now eligible to have its locks stolen by other transactions. These mechanisms should still be in place for 2PC - the difference being that the expiration callback will be called at the time of preparation. If the transaction did not expire at the time of preparation then it cannot expire at the time of commit.
 
-## TransactionDB Modification
+### TransactionDB Modification
 
 To use transactions the client must open a TransactionDB. This TransactionDB instance is then used to create Transactions. This TransactionDB now keeps track of a mapping from XID to all two phase transactions which has been created. When a transactions is Deleted or Rolled-back it is removed from this mapping. There is also an API to query all outstanding prepared transactions. This is used during MyRocks recovery.
 
 The TransactionDB also keeps track of a min heap of all log numbers containing a prepared section. When a transaction is 'prepared' its WriteBatch is written to a log, this log number is then stored in the transaction object and subsequently the min heap. When a transaction is committed its log number is deleted from the min heap, but it is not forgotten! It is now the duty of each memtable to keep track of the oldest log it needs to keep around until his is successfully flushed to L0.
 
-## Modification of the Write Path
+### Modification of the Write Path
 
 The write path can be decomposed into two main areas of focus. DBImpl::WriteImpl(...) and the MemTableInserter. Multiple client threads will call into WriteImpl. The first thread will be designated as the 'leader' while a number of following threads will be designated as 'followers'. Both the leader and set of followers will be batched together into a logical group referred to as a 'write group'. The leader will take all WriteBatches of the write group, concatenate them together and write this blob out to the WAL. Depending on the size of the write group and the current memtables's willingness to support parallel writes the leader may insert all WriteBatches into the memtable or each thread may be left to insert his own WriteBatch into the memtable.
 
@@ -141,11 +141,11 @@ Modification of the write path will include adding an optional parameter to DBIm
 
 `WriteBatchInternal::InsertInto` could then be modified to only iterate over writers having no Transaction associated or Transactions in the COMMIT state.
 
-### modification of Mem Table Inserter for WritePath
+##### modification of Mem Table Inserter for WritePath
 
 As you can see above when a transactions is prepared the transaction takes note of what log number its prepared section resided in. At the time of insertion each MemTable must keep track of the minimum log number containing prepared data which has been inserted into him. This modification will take place in the MemTableInserter. We will discuss how this value is used in the log lifespan section.
 
-## Modification of Recovery Path
+### Modification of Recovery Path
 
 The current recovery path is already pretty well suited for two phase commit. It iterates over all batches in all the logs in chronological order and feeds them, along the the log number, into the MemTableInserter. The MemTableInserter then iterates over each of these batches and inserts the values into the correct MemTable. Each MemTable knows what values it can ignore for insertion based on the current log number being recovered from.
 
@@ -170,11 +170,11 @@ Consider the following scenario:
 13. CFB is flushed to L0 and is now consistent to LOG 3
 14. LOG 1, LOG 2 can now be released
 
-### Rebuilding Transactions
+##### Rebuilding Transactions
 
 As mentioned before, modification of the recovery path only required modification of MemTableInserter to handle the new meta-markers. Because at the time of recovery we can't have access to a full instance of a TransactionDB we must recreate hollow 'shill' transactions. This is essentially  mapping of XID → (WriteBatch, log_number) for all recovered prepared transactions. When we hit a Commit(xid) marker we attempt to look up the shill transaction for this xid and re-insert into Mem. If we hit a rollback(xid) marker we delete the shill transaction. At the end of recovery we are left with a set of all prepared transactions in shill form. We then recreate full transactions from these objects, acquiring the required locks. Rocks DB is now the the same state is it was before crash/shutdown.
 
-## Log Lifespan
+### Log Lifespan
 
 To find the minimum log that must be kept around we first find the minimum log_number_ of each column family.
 
