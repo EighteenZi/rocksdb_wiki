@@ -17,7 +17,7 @@ A WriteBatch is an ordered set of records (Put(k,v), Merge(k,v), Delete(k), Sing
 A WriteBatch can be iterated over by extending the WriteBatch::Handler.  MemTableInserter is an extension of WriteBatch::Handler which inserts the operations contained in a WriteBatch into the appropriate column family MemTable.
 
 An existing WriteBatch may have the logical representation:
-Sequence(0);NumRecords(3);Put(a,1);Merge(a,1);Delete(a);
+`Sequence(0);NumRecords(3);Put(a,1);Merge(a,1);Delete(a);`
 
 Modification of the WriteBatch format for 2PC includes the addition of four new records. 
 
@@ -60,6 +60,7 @@ For the time being we will only focus on 2PC for pessimistic transactions. The c
     txn→Commit();
 
 A transaction object now has more states that it can occupy so our enum of states now becomes:
+
     enum ExecutionStatus {
       STARTED = 0,
       AWAITING_PREPARE = 1,
