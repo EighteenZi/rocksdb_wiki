@@ -27,7 +27,7 @@ Modification of the WriteBatch format for 2PC includes the addition of four new 
 * Rollback(xid)
 
 A 2PC capable WriteBatch may have the logical representation:
-Sequence(0);NumRecords(6);Prepare(foo);Put(a,b);Put(x,y);EndPrepare();Put(j,k);Commit(foo);
+`Sequence(0);NumRecords(6);Prepare(foo);Put(a,b);Put(x,y);EndPrepare();Put(j,k);Commit(foo);`
 
 It can be seen that Prepare(xid) and EndPrepare() are analogous to mating brackets which contain the operations belonging to transaction with ID 'foo'. Commit(xid) and Rollback(xid) mark that operations belonging to transaction with ID xid should be committed or rolled-back.
 
@@ -47,29 +47,29 @@ Progress had been made on this front and relevant discussion can be found at htt
 
 For the time being we will only focus on 2PC for pessimistic transactions. The client must specify ahead of time if they intend to employ two phase commit semantics.  For example, the client code could be imagined as:
 
-`TransactionDB* db;`
-`TransactionDB::Open(Options(), TransactionDBOptions(), "foodb", &db);`
-
-`TransactionOptions txn_options;`
-`txn_options.two_phase_commit = true;`
-`txn_options.xid = "12345";`
-`Transaction* txn = db→BeginTransaction(write_options, txn_options);`
-
-`txn→Put(...);`
-`txn→Prepare();`
-`txn→Commit();`
+    TransactionDB* db;
+    TransactionDB::Open(Options(), TransactionDBOptions(), "foodb", &db);
+    
+    TransactionOptions txn_options;```
+    txn_options.two_phase_commit = tr
+    txn_options.xid = "12345";
+    Transaction* txn = db→BeginTransaction(write_options, txn_options);
+    
+    txn→Put(...);
+    txn→Prepare();
+    txn→Commit();
 
 A transaction object now has more states that it can occupy so our enum of states now becomes:
-`enum ExecutionStatus {`
-  `STARTED = 0,`
-  `AWAITING_PREPARE = 1,`
-  `PREPARED = 2,`
-  `AWAITING_COMMIT = 3,`
-  `COMMITED = 4,`
-  `AWAITING_ROLLBACK = 5,`
-  `ROLLEDBACK = 6,`
-  `LOCKS_STOLEN = 7,`
-`};`
+    enum ExecutionStatus {
+      STARTED = 0,
+      AWAITING_PREPARE = 1,
+      PREPARED = 2,
+      AWAITING_COMMIT = 3,
+      COMMITED = 4,
+      AWAITING_ROLLBACK = 5,
+      ROLLEDBACK = 6,
+      LOCKS_STOLEN = 7,
+    };
 
 The transaction API will gain a new member function, Prepare().  Prepare() will call into WriteImpl with a context of it self giving WriteImpl and the WriteThread access to the ExecutionStatus, XID, and WriteBatch. WriteImpl will insert the Prepare(xid) marker followed by the contents of the WriteBatch followed by EndPrepare() marker. No memtable insertion will be issued. When the same transaction instance issued its commit, again, it calls into WriteImpl(). This time only a Commit() marker is inserted into the WAL on its behalf and the contents of the WriteBatch are inserted into the appropriate memtables. When Rollback() on the transactions is called the contents of the transactions are cleared and a call into WriteImpl to insert a Rollback(xid) marker is made if the transaction is in a prepared state.
 
