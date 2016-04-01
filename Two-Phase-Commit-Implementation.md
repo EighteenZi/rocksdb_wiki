@@ -46,7 +46,7 @@ Progress had been made on this front and relevant discussion can be found at htt
 ## Extension of Transaction API
 
 For the time being we will only focus on 2PC for pessimistic transactions. The client must specify ahead of time if they intend to employ two phase commit semantics.  For example, the client code could be imagined as:
-
+```c
     TransactionDB* db;
     TransactionDB::Open(Options(), TransactionDBOptions(), "foodb", &db);
     
@@ -58,7 +58,7 @@ For the time being we will only focus on 2PC for pessimistic transactions. The c
     txn→Put(...);
     txn→Prepare();
     txn→Commit();
-
+```
 A transaction object now has more states that it can occupy so our enum of states now becomes:
 
     enum ExecutionStatus {
