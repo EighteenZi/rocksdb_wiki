@@ -102,7 +102,7 @@ Status DBImpl::WriteImpl(
   const WriteOptions& write_options, 
   WriteBatch* my_batch,
   WriteCallback* callback,
-  Transaction* txn=nullptr
+  Transaction* txn
 ) {
   WriteThread::Writer w;
   //...
@@ -112,9 +112,9 @@ Status DBImpl::WriteImpl(
   int total_count = 0;
   uint64_t total_byte_size = 0;
   for (auto writer : write_group) {
-    if (writer→CheckCallback(this)) {
-      if (writer→ShouldWriteToMem())
-        total_count += WriteBatchInternal::Count(writer→batch)
+    if (writer->CheckCallback(this)) {
+      if (writer->ShouldWriteToMem())
+        total_count += WriteBatchInternal::Count(writer->batch)
        }
   }
   const SequenceNumber current_sequence = last_sequence + 1;
@@ -124,20 +124,20 @@ Status DBImpl::WriteImpl(
   for (auto writer : write_group) {
     // currently only optimistic transactions use callbacks
     // and optimistic transaction do not support 2pc
-   if (writer→CallbackFailed()) {
+   if (writer->CallbackFailed()) {
       continue;
-    } else if (writer→IsCommitPhase()) {
-      WriteBatchInternal::MarkCommit(merged_batch, writer→txn->XID_);
-    } else if (writer→IsRollbackPhase()) {
-      WriteBatchInternal::MarkRollback(merged_batch, writer→txn->XID_);
-    } else if (writer→IsPreparePhase()) {
-      WriteBatchInternal::MarkBeginPrepare(merged_batch, writer→txn->XID_);
-      WriteBatchInternal::Append(merged_batch, writer→batch);
+    } else if (writer->IsCommitPhase()) {
+      WriteBatchInternal::MarkCommit(merged_batch, writer->txn->XID_);
+    } else if (writer->IsRollbackPhase()) {
+      WriteBatchInternal::MarkRollback(merged_batch, writer->txn->XID_);
+    } else if (writer->IsPreparePhase()) {
+      WriteBatchInternal::MarkBeginPrepare(merged_batch, writer->txn->XID_);
+      WriteBatchInternal::Append(merged_batch, writer->batch);
       WriteBatchInternal::MarkEndPrepare(merged_batch);
-      writer→txn->log_number_ = logfile_number_;
+      writer->txn->log_number_ = logfile_number_;
     } else {
-      assert(writer→ShouldWriteToMem());
-      WriteBatchInternal::Append(merged_batch, writer→batch);
+      assert(writer->ShouldWriteToMem());
+      WriteBatchInternal::Append(merged_batch, writer->batch);
     }
   }
   //now do MemTable Inserts for WriteGroup
