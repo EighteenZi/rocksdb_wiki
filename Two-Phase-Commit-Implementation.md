@@ -80,7 +80,7 @@ These so-called 'meta markers' (Prepare(xid), EndPrepare(), Commit(xid), Rollbac
 
 Currently at the time of a transaction commit there is a callback which will fail the write if the transaction has expired. Similarly, if a transaction has expired then it is now eligible to have its locks stolen by other transactions. These mechanisms should still be in place for 2PC - the difference being that the expiration callback will be called at the time of preparation. If the transaction did not expire at the time of preparation then it cannot expire at the time of commit.
 
-### TransactionDB Modification
+##### TransactionDB Modification
 
 To use transactions the client must open a TransactionDB. This TransactionDB instance is then used to create Transactions. This TransactionDB now keeps track of a mapping from XID to all two phase transactions which has been created. When a transactions is Deleted or Rolled-back it is removed from this mapping. There is also an API to query all outstanding prepared transactions. This is used during MyRocks recovery.
 
