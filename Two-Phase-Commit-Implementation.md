@@ -8,7 +8,7 @@ In this document I will attempt to outline a general design approach for impleme
 4. Modification of the recovery path
 5. Integration with MyRocks
 
-## Modification of WAL Format
+### Modification of WAL Format
 
 The WAL consists of one or more logs. Each log is one or more serialized WriteBatches. During recovery WriteBatches are reconstructed from the logs. To modify the WAL format or extend its functionality we must only concern ourselves with the WriteBatch.
 
@@ -31,15 +31,15 @@ A 2PC capable WriteBatch may have the logical representation:
 
 It can be seen that Prepare(xid) and EndPrepare() are analogous to mating brackets which contain the operations belonging to transaction with ID 'foo'. Commit(xid) and Rollback(xid) mark that operations belonging to transaction with ID xid should be committed or rolled-back.
 
-### Sequence ID Distribution
+##### Sequence ID Distribution
 
 When a WriteBatch is inserted into a memtable (via MemTableInserter) the sequence ID of each operation is equal to the sequence ID of the WriteBatch plus the number of sequence ID consuming records previous to this operation in the WriteBatch. This implicit mapping of sequence ids within a WriteBatch will no longer hold with the addition of 2PC. Operations contained within a Prepare() enclosure will consume sequence IDs as if they were inserted starting at the location of their relative Commit() marker. This Commit() marker may be in a different WriteBatch or log from the prepared operations to which it applies.
 
-### Backwards Compatibility
+##### Backwards Compatibility
 
 WAL formats are not versioned so we need to take note of backwards compatibility. A current version of RocksDB would not be able to recover itself from a WAL file containing 2PC markers. In fact it would fatal on the unrecognized record ids. It would be trivial, however, to patch a current version of RocksDB to be able to recover itself from this new WAL format just skipping over the prepared sections and unknown markers.
 
-### Existing Progress
+##### Existing Progress
 
 Progress had been made on this front and relevant discussion can be found at https://reviews.facebook.net/D54093
 
