@@ -62,16 +62,18 @@ txn->Commit();
 ```
 A transaction object now has more states that it can occupy so our enum of states now becomes:
 
-    enum ExecutionStatus {
-      STARTED = 0,
-      AWAITING_PREPARE = 1,
-      PREPARED = 2,
-      AWAITING_COMMIT = 3,
-      COMMITED = 4,
-      AWAITING_ROLLBACK = 5,
-      ROLLEDBACK = 6,
-      LOCKS_STOLEN = 7,
-    };
+```c++
+enum ExecutionStatus {
+  STARTED = 0,
+  AWAITING_PREPARE = 1,
+  PREPARED = 2,
+  AWAITING_COMMIT = 3,
+  COMMITED = 4,
+  AWAITING_ROLLBACK = 5,
+  ROLLEDBACK = 6,
+  LOCKS_STOLEN = 7,
+};
+```
 
 The transaction API will gain a new member function, Prepare().  Prepare() will call into WriteImpl with a context of it self giving WriteImpl and the WriteThread access to the ExecutionStatus, XID, and WriteBatch. WriteImpl will insert the Prepare(xid) marker followed by the contents of the WriteBatch followed by EndPrepare() marker. No memtable insertion will be issued. When the same transaction instance issued its commit, again, it calls into WriteImpl(). This time only a Commit() marker is inserted into the WAL on its behalf and the contents of the WriteBatch are inserted into the appropriate memtables. When Rollback() on the transactions is called the contents of the transactions are cleared and a call into WriteImpl to insert a Rollback(xid) marker is made if the transaction is in a prepared state.
 
@@ -95,50 +97,52 @@ All memtable inserts are handled by MemTableInserter. This is an implementation 
 
 Modification of the write path will include adding an optional parameter to DBImpl::WriteImpl. This optional parameter will be a pointer to the two phase transaction instance that is having his data written. This object will give the write path insight into the current state of two phase transaction. A 2PC transaction will call into WriteImpl once for preparation, once for commit, and once for roll-back - though commit and rollback are obviously exclusive operations.
 
-    Status DBImpl::WriteImpl(
-      const WriteOptions& write_options, 
-      WriteBatch* my_batch,
-      WriteCallback* callback,
-      Transaction* txn=nullptr
-    ) {
-      WriteThread::Writer w;
-      //...
-      w.txn = txn; // writethreads also have txn context for memtable insert
-    
-      // we are now the group leader
-      int total_count = 0;
-      uint64_t total_byte_size = 0;
-      for (auto writer : write_group) {
-        if (writer→CheckCallback(this)) {
-          if (writer→ShouldWriteToMem())
-            total_count += WriteBatchInternal::Count(writer→batch)
-           }
-      }
-      const SequenceNumber current_sequence = last_sequence + 1;
-      last_sequence += total_count;
-    
-      // now we produce the WAL entry from our write group
-      for (auto writer : write_group) {
-        // currently only optimistic transactions use callbacks
-        // and optimistic transaction do not support 2pc
-       if (writer→CallbackFailed()) {
-          continue;
-        } else if (writer→IsCommitPhase()) {
-          WriteBatchInternal::MarkCommit(merged_batch, writer→txn->XID_);
-        } else if (writer→IsRollbackPhase()) {
-          WriteBatchInternal::MarkRollback(merged_batch, writer→txn->XID_);
-        } else if (writer→IsPreparePhase()) {
-          WriteBatchInternal::MarkBeginPrepare(merged_batch, writer→txn->XID_);
-          WriteBatchInternal::Append(merged_batch, writer→batch);
-          WriteBatchInternal::MarkEndPrepare(merged_batch);
-          writer→txn->log_number_ = logfile_number_;
-        } else {
-          assert(writer→ShouldWriteToMem());
-          WriteBatchInternal::Append(merged_batch, writer→batch);
-        }
-      }
-      //now do MemTable Inserts for WriteGroup
+```c++
+Status DBImpl::WriteImpl(
+  const WriteOptions& write_options, 
+  WriteBatch* my_batch,
+  WriteCallback* callback,
+  Transaction* txn=nullptr
+) {
+  WriteThread::Writer w;
+  //...
+  w.txn = txn; // writethreads also have txn context for memtable insert
+
+  // we are now the group leader
+  int total_count = 0;
+  uint64_t total_byte_size = 0;
+  for (auto writer : write_group) {
+    if (writer→CheckCallback(this)) {
+      if (writer→ShouldWriteToMem())
+        total_count += WriteBatchInternal::Count(writer→batch)
+       }
+  }
+  const SequenceNumber current_sequence = last_sequence + 1;
+  last_sequence += total_count;
+
+  // now we produce the WAL entry from our write group
+  for (auto writer : write_group) {
+    // currently only optimistic transactions use callbacks
+    // and optimistic transaction do not support 2pc
+   if (writer→CallbackFailed()) {
+      continue;
+    } else if (writer→IsCommitPhase()) {
+      WriteBatchInternal::MarkCommit(merged_batch, writer→txn->XID_);
+    } else if (writer→IsRollbackPhase()) {
+      WriteBatchInternal::MarkRollback(merged_batch, writer→txn->XID_);
+    } else if (writer→IsPreparePhase()) {
+      WriteBatchInternal::MarkBeginPrepare(merged_batch, writer→txn->XID_);
+      WriteBatchInternal::Append(merged_batch, writer→batch);
+      WriteBatchInternal::MarkEndPrepare(merged_batch);
+      writer→txn->log_number_ = logfile_number_;
+    } else {
+      assert(writer→ShouldWriteToMem());
+      WriteBatchInternal::Append(merged_batch, writer→batch);
     }
+  }
+  //now do MemTable Inserts for WriteGroup
+}
+```
 
 `WriteBatchInternal::InsertInto` could then be modified to only iterate over writers having no Transaction associated or Transactions in the COMMIT state.
 
