@@ -141,7 +141,7 @@ Modification of the write path will include adding an optional parameter to DBIm
 
 `WriteBatchInternal::InsertInto` could then be modified to only iterate over writers having no Transaction associated or Transactions in the COMMIT state.
 
-##### modification of Mem Table Inserter for WritePath
+##### Modification of MemTableInserter for WritePath
 
 As you can see above when a transactions is prepared the transaction takes note of what log number its prepared section resided in. At the time of insertion each MemTable must keep track of the minimum log number containing prepared data which has been inserted into him. This modification will take place in the MemTableInserter. We will discuss how this value is used in the log lifespan section.
 
@@ -174,7 +174,7 @@ Consider the following scenario:
 
 As mentioned before, modification of the recovery path only required modification of MemTableInserter to handle the new meta-markers. Because at the time of recovery we can't have access to a full instance of a TransactionDB we must recreate hollow 'shill' transactions. This is essentially  mapping of XID → (WriteBatch, log_number) for all recovered prepared transactions. When we hit a Commit(xid) marker we attempt to look up the shill transaction for this xid and re-insert into Mem. If we hit a rollback(xid) marker we delete the shill transaction. At the end of recovery we are left with a set of all prepared transactions in shill form. We then recreate full transactions from these objects, acquiring the required locks. Rocks DB is now the the same state is it was before crash/shutdown.
 
-### Log Lifespan
+##### Log Lifespan
 
 To find the minimum log that must be kept around we first find the minimum log_number_ of each column family.
 
@@ -182,4 +182,4 @@ We must also consider the minimum value in the prepared sections heap in Transac
 
 We must also consider the minimum prep section log referenced by all MemTables and ImmutableMemTables that have not been flushed.
 
-The minmum of these three values is the earlies log that still contains data not yet flushed to L0.
+The minimum of these three values is the earliest log that still contains data not yet flushed to L0.
