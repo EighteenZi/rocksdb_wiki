@@ -15,6 +15,6 @@ Block cache stores uncompressed block contents. Optionally, you can have a secon
 
 There are two more options to control whether to cache index blocks and filter blocks:
 
-`BlockBasedTableOptions.cache_index_and_filter_blocks`: Cache index blocks and filter blocks in block cache. Defaults to false, where index and filter blocks will be pre-loaded by `BlockBasedTableReader` and stored separately from block cache.
+* `BlockBasedTableOptions.cache_index_and_filter_blocks`: Cache index blocks and filter blocks in block cache. Defaults to false, where index and filter blocks will be pre-loaded by `BlockBasedTableReader` and stored separately from block cache.
 
-`BlockBasedTableOptions.pin_l0_filter_and_index_blocks_in_cache`: For L0 block based tables, avoid index blocks and filter blocks being swap out of block cache. Instead, `BlockBasedTableReader` holds a reference of these blocks, and further access will not hit block cache. This option can help reduce lock contention on block cache.
+* `BlockBasedTableOptions.pin_l0_filter_and_index_blocks_in_cache`: For L0 block based tables, avoid index blocks and filter blocks being swap out of block cache. Instead, `BlockBasedTableReader` holds a reference of these blocks, and further access will not hit block cache. This option can help reduce lock contention on block cache.
