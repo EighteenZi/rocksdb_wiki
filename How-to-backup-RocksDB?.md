@@ -2,18 +2,24 @@ In RocksDB, we have implemented an easy way to backup your DB. Here is a simple 
  
 ```cpp
     #include "rocksdb/db.h"
-    #include "utilities/backupable_db.h"
+    #include "rocksdb/utilities/backupable_db.h"
     using namespace rocksdb;
 
-    DB* db;
-    DB::Open(Options(), "/tmp/rocksdb", &db);
-    db->Put(...); // do your thing 
-    BackupEngine* backup_engine;
-    Status s = BackupEngine::Open(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"), &backup_engine);
-    assert(s.ok());
-    backup_engine->CreateNewBackup(db);
-    delete db;
-    delete backup_engine;
+    int main() {
+        Options options;                                                                                  
+        options.create_if_missing = true;                                                                 
+        DB* db;
+        Status s = DB::Open(options, "/tmp/rocksdb", &db);
+        assert(s.ok());
+        db->Put(...); // do your thing
+
+        BackupEngine* backup_engine;
+        s = BackupEngine::Open(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"), &backup_engine);
+        assert(s.ok());
+        backup_engine->CreateNewBackup(db);
+        delete db;
+        delete backup_engine;
+    }
 ```
 
 This simple example will create a backup of your DB in "/tmp/rocksdb_backup".
