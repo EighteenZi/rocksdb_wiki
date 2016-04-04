@@ -15,7 +15,7 @@ If `BlockBasedTableOptions.block_cache` is null, a default 8MB cache will be use
 
 Block cache stores uncompressed block contents. Optionally, you can have a second layer block cache which stores compressed block content. It can be enable via `BlockBasedTableOptions.compressed_block_cache`. It is disabled by default since OS page cache is playing the role.
 
-By default insert to block cache will success even when the cache reaches its capacity and no blocks can be evicted from it. To enforce a strict capacity, call `NewLRUCache()` with a third parameter equal to true:
+By default insert to block cache will succeed even when the cache reaches its capacity and no blocks can be evicted from it. To enforce a strict capacity, call `NewLRUCache()` with a third parameter equal to true:
     
     block_cache = NewLRUCache(capacity, num_shard_bits, true/*strict_capacity_limit*/);
 
