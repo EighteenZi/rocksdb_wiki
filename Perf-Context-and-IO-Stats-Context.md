@@ -43,6 +43,7 @@ Stats will not be updated, if they are not included in the profile level being u
 ## Stats
 We are giving some typical examples of  how to use those stats to solve your problem. We are not introducing all the stats here. To get description of all the stats, read the code comments in the header files.
 
+### Perf Context
 #### Binary Searchable Costs
 `user_key_comparison_count` helps us figure out whether too many comparisons in binary search can be a problem, especially when a more expensive comparator is used. Moreover, since number of comparisons is usually uniform based on the size of memtable size, the SST file size for Level 0 and level size for Level 1+, an significant increase of the counter can indicate unexpected LSM-tree shape. For example, you may want to check whether flush/compaction can keep up with the write speed.
 
@@ -65,5 +66,5 @@ We can use "get_*" stats to break down time inside one Get() query. The most imp
 #### Iterator Operations Break-Down
 "seek_*" and "find_next_user_entry_time" break down iterator operations. The most interesting one is `seek_child_seek_count`. It tells us how many sub-iterators we have, which mostly means number of sorted runs in the LSM tree.
 
-
-Coming Soon.....
+### IO Stats Context
+We have counters for time spent on major file system calls. Write related counters are more interesting to look if you see stalls in write paths. It tells us we are slow because of which file system operations, or it's not caused by file system calls.
