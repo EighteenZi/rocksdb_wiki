@@ -42,13 +42,13 @@ Restoring is also easy:
     }
 ```
 
-This code will restore the backup back to "/tmp/rocksdb". The first parameter of RestoreDBFromLatestBackup() is the target DB directory. The second parameter is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
+This code will restore the backup back to "/tmp/rocksdb". The first parameter of `RestoreDBFromLatestBackup()` is the target DB directory. The second parameter is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
 
-Be aware, that backup engine's Open() takes time proportional to amount of backups. So if you have slow filesystem to backup (like HDFS), and you have a lot of backups, then restoring or creating further backups can take some time. That's why we recommend to limit the number of backups. Also we recommend to keep BackupEngine alive and not to recreate it every time you need to do a backup.
+Be aware, that backup engine's `Open()` takes time proportional to amount of backups. So if you have slow filesystem to backup (like HDFS), and you have a lot of backups, then restoring or creating further backups can take some time. That's why we recommend to limit the number of backups. Also we recommend to keep BackupEngine alive and not to recreate it every time you need to do a backup.
 
 Backups are incremental as long as BackupableDBOptions::share_table_files is set. You can create a new backup with `CreateNewBackup()` and only the new data will be copied to backup directory (for more details on what gets copied, see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood)).
 
-Checksums are always stored separately for any backed up file (including sst, log, and etc), and file size is stored in filename when Options::share_files_with_checksum is set. These attributes can be used to uniquely identify files when multiple databases share a single backup directory. Additionally, file size is always used to make sure files haven't changed since the engine was opened -- we do not verify checksum, however, since it would require reading all the data. Any file size mismatch aborts the current backup or restore (see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood) for more details).
+Checksums are always stored separately for any backed up file (including sst, log, and etc), and file size is stored in filename when Options::share_files_with_checksum is set. These attributes can be used to uniquely identify files when multiple databases share a single backup directory. Additionally, file size is used for consistency checking when `VerifyBackups()` is called -- we do not verify checksum, however, since it would require reading all the data.
 
 Once you have some backups saved, you can issue `GetBackupInfo()` call to get a list of all backups together with information on timestamp of the backup and the size (please note that sum of all backups' sizes is bigger than the actual size of the backup directory because some data is shared by multiple backups). Backups are identified by their always-increasing IDs.
 
