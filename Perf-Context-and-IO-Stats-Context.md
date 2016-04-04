@@ -43,17 +43,18 @@ Stats will not be updated, if they are not included in the profile level being u
 ## Stats
 We are giving some typical examples of  how to use those stats to solve your problem. We are not introducing all the stats here. To get description of all the stats, read the code comments in the header files.
 
-### Binary Searchable Costs
+#### Binary Searchable Costs
 `user_key_comparison_count` helps us figure out whether too many comparisons in binary search can be a problem, especially when a more expensive comparator is used. Moreover, since number of comparisons is usually uniform based on the size of memtable size, the SST file size for Level 0 and level size for Level 1+, an significant increase of the counter can indicate unexpected LSM-tree shape. For example, you may want to check whether flush/compaction can keep up with the write speed.
 
-### Block Cache and OS Page Cache Efficiency
+#### Block Cache and OS Page Cache Efficiency
 `block_cache_hit_count` tells us how many times we read data blocks from block cache, and `block_read_count` tells us how many times we have to read blocks from the file system (either block cache is disabled or it is a cache miss). We can evaluate the block cache efficiency by looking at the two counters over time.
 
 `block_read_byte` tells us how many total bytes we read from the file system. It can tell us whether a slow query can be caused by reading large blocks from the file system. Index and bloom filter blocks are usually large blocks. A large block can also be the result of a very large value of a key.
 
 In many setting of RocksDB, we rely on OS page cache to reduce I/O from the device. In fact, in the most common hardware setting, we suggest users tune the OS page cache size to be large enough to hold all the data except the last level so that we can limit a ready query to issue no more than one I/O. With this setting, we will issue multiple file system calls but at most one of them end up with reading from devices. To verify whether, it is the case, we can use counter `block_read_time` to see whether total time spent on reading the blocks from file system is expected.
 
-
+#### Tombstones
+When deleting a key, RocksDB simply put a marker, or tombstone to memtable. The original value of the key will not be removed until we compact to the files containing the keys with the tombstone. The tombstone may even live longer even after the original value is removed. So if we have lots of consecutive keys deleted, a user may experience slowness when iterating across these tombstones. Counters `internal_delete_skipped_count` tells us how many tombstones we skipped. `internal_key_skipped_count` covers some other keys we skip. From the counter, we can infer how many tombstones could have been dropped because the original keys are already removed.
 
 
 
