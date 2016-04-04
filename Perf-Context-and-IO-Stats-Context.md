@@ -1,5 +1,3 @@
-Perf Context / IO Stats Context
-
 Perf Context and IO Stats Context can help us understand performance bottleneck of your queries. Compared to options.statistics, which stores accumulated statistics across all the operations, Perf Context and IO Stat Context can help us look inside a query.
 
 This is the header file for perf context: https://github.com/facebook/rocksdb/blob/master/include/rocksdb/perf_context.h
