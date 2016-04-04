@@ -85,7 +85,7 @@ After the per-level compaction stats, we also output some general stats. General
 * Stalls: total count and seconds of each stall type since beginning of time: level0_slowdown -- Stall because of `level0_slowdown_writes_trigger`. level0_numfiles -- Stall because of `level0_stop_writes_trigger`. `memtable_compaction` -- Stall because all memtables were full, flush process couldn't keep up. `leveln_slowdown` -- Stall because of `soft_rate_limit` and `hard_rate_limit`
 
 ### Perf Context and IO Stats Context
-[[Perf-Context-and-IO-Stats-Context | Perf Context and IO Stats Context]] can help you figure out counters within one specific query.
+[[Perf Context and IO Stats Context | Perf Context and IO Stats Context]] can help figure out counters within one specific query.
 
 ## Parallelism options
 In LSM architecture, there are two background processes: flush and compaction. Both can execute concurrently via threads to take advantage of storage technology concurrency. Flush threads are in the HIGH priority pool, while compaction threads are in the LOW priority pool. To increase the number of threads in each pool call:
