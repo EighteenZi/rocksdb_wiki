@@ -28,7 +28,7 @@ Note that the same perf level is applied to both of Perf Context and IO Stats Co
 
 You can also call rocksdb::perf_context.ToString() and rocksdb::iostat_context.ToString() for a human-readable report.
 
-## Profiling Levels And Costs
+## Profile Levels And Costs
 
 There are several profiling levels to help us trade off the costs:
 
