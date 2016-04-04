@@ -59,6 +59,8 @@ You probably want to keep around only small number of backups. To delete old bac
 ### Advanced usage
 Let's say you want to backup your DB to HDFS. There is an option in `BackupableDBOptions` to set `backup_env`, which will be used for all file I/O related to backup dir (writes when backuping, reads when restoring). If you set it to HDFS Env, all the backups will be stored in HDFS.
 
+`BackupableDBOptions::max_background_operations` controls the number of threads used for copying files during backup and restore. For distributed file systems like HDFS, it can be very beneficial to increase the copy parallelism.
+
 `BackupableDBOptions::info_log` is a Logger object that is used to print out LOG messages if not-nullptr.
 
 If `BackupableDBOptions::sync` is true, we will sync data to disk after every file write, guaranteeing that backups will be consistent after a reboot or if machine crashes. Setting it to false will speed things up a bit, but some (newer) backups might be inconsistent. In most cases, everything should be fine, though.
