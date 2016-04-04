@@ -42,9 +42,7 @@ Restoring is also easy:
     }
 ```
 
-This code will restore the backup back to "/tmp/rocksdb". The second parameter is the location of log files (In some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
-
-An alternative API for backups is to use BackupEngine directly:
+This code will restore the backup back to "/tmp/rocksdb". The first parameter of RestoreDBFromLatestBackup() is the target DB directory. The second parameter is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
 
 Be aware, that NewBackupEngine take time proportional to amount of backups. So if you have slow filesystem to backup (like HDFS) and you have a lot of backups then restoring can take some time. That's why we recommend to limit the number of backups. Also we recommend to keep BackupEngine alive and not to recreate it every time you need to do a backup.
 
