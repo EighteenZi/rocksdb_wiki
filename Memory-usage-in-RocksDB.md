@@ -64,6 +64,6 @@ In MongoRocks, the equivalent call is
 
 ## Blocks pinned by iterators
 
-Blocks pinned by iterators usually don't contribute much to the overall memory usage. However, in some cases, when you have 100k read transactions happening simultaneously, it might put a strain on memory. Memory usage for pinned blocks is easy to calculate. Each iterator pins exactly one data block for each level in the database. So the total memory usage from pinned blocks is approximately `num_iterators * block_size * num_levels`. To get the statistics about this memory usage, call GetPinnedUsage() on block cache object:
+Blocks pinned by iterators usually don't contribute much to the overall memory usage. However, in some cases, when you have 100k read transactions happening simultaneously, it might put a strain on memory. Memory usage for pinned blocks is easy to calculate. Each iterator pins exactly one data block for each L0 file plus one data block for each L1+ level. So the total memory usage from pinned blocks is approximately `num_iterators * block_size * ((num_levels-1) + num_l0_files)`. To get the statistics about this memory usage, call GetPinnedUsage() on block cache object:
 
         table_options.block_cache->GetPinnedUsage();
