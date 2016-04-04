@@ -56,7 +56,14 @@ In many setting of RocksDB, we rely on OS page cache to reduce I/O from the devi
 #### Tombstones
 When deleting a key, RocksDB simply put a marker, or tombstone to memtable. The original value of the key will not be removed until we compact to the files containing the keys with the tombstone. The tombstone may even live longer even after the original value is removed. So if we have lots of consecutive keys deleted, a user may experience slowness when iterating across these tombstones. Counters `internal_delete_skipped_count` tells us how many tombstones we skipped. `internal_key_skipped_count` covers some other keys we skip. From the counter, we can infer how many tombstones could have been dropped because the original keys are already removed.
 
+#### Get() Break-Down
+We can use "get_*" stats to break down time inside one Get() query. The most important two are `get_from_memtable_time` and `get_from_output_files_time`. The counters tell us whether the slowness is caused by memtable, SST tables, or both. `seek_on_memtable_time` can tell us how much of the time is spent on seeking memtables.
 
+#### Write Break-Down
+"write_*" stats break down write operations. `write_wal_time`, `write_memtable_time` and `write_delay_time` tell us the time is spent on writing WAL, memtable, or active slow-down. `write_pre_and_post_process_time` mostly means time spent on waiting in the writer queue. It includes the time waiting for another thread to group commits this thread's data together with other data.
+
+#### Iterator Operations Break-Down
+"seek_*" and "find_next_user_entry_time" break down iterator operations. The most interesting one is `seek_child_seek_count`. It tells us how many sub-iterators we have, which mostly means number of sorted runs in the LSM tree.
 
 
 Coming Soon.....
