@@ -1,6 +1,6 @@
 Blocks of block-based table are cached in memory in a sharded LRU cache. By default the highest `kNumShardBits` (which is 4) of hash of keys is used as shard id, so there will be `2^kNumShardBits` shards. Capacity is split evenly to each of the shards. Each shard maintains its own hash table for lookup and a linked-list of cached blocks for eviction. Operations on a shard need to lock the whole shard. As a result, shards with hot blocks (such as index blocks and filter blocks) can have lock contention.
 
-See also: [[Memory-usage-in-RocksDB]]
+See also: [[Memory-usage-in-RocksDB#block-cache]]
 
 ### Usage
 
