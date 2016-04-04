@@ -78,6 +78,12 @@ After setting ReadOptions::pin_data to true, now we can use Iterator::key() Slic
 
 ## Requirements
 Right now to use this feature, RocksDB must be created using BlockBased table with BlockBasedTableOptions::use_delta_encoding set to false.
+
+	Options options;
+	BlockBasedTableOptions table_options;
+	table_options.use_delta_encoding = false;
+	options.table_factory.reset(NewBlockBasedTableFactory(table_options));
+
 To verify that the current key Slice is pinned and will be valid as long as the Iterator is not deleted,
 We can check `rocksdb.iterator.is-key-pinned` Iterator property and assert that it's equal to `1`
 
