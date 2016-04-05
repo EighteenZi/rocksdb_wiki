@@ -36,6 +36,7 @@ In RocksDB, we have implemented an easy way to backup your DB and verify correct
 
         // you can get IDs from backup_info if there are more than two
         s = backup_engine->VerifyBackup(1 /* ID */);
+        assert(s.ok());
         s = backup_engine->VerifyBackup(2 /* ID */);
         assert(s.ok());
         delete db;
