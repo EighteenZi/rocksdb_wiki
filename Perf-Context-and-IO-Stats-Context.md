@@ -1,10 +1,12 @@
-Perf Context and IO Stats Context can help us understand performance bottleneck of individual DB operations . Compared to `options.statistics`, which stores ccumulated statistics for all the operations from all the threads since the DB is opened, Perf Context and IO Stat Context can help us look inside an individual DB operation.
+Perf Context and IO Stats Context can help us understand the performance bottleneck of individual DB operations. Options.statistics stores cumulative statistics for all operations from all threads since the opening of the DB. Perf Context and IO Stat Context look inside individual operations.
 
-This is the header file for perf context: https://github.com/facebook/rocksdb/blob/master/include/rocksdb/perf_context.h
-This is the header file for IO Stats Context: https://github.com/facebook/rocksdb/blob/master/include/rocksdb/iostats_context.h
-Level of profiling for the two is controlled by the same function in this header file: https://github.com/facebook/rocksdb/blob/master/include/rocksdb/perf_level.h
+This is the header file for perf context: https://github.com/facebook/rocksdb/blob/master/include/rocksdb/perf_context.h 
 
-Perf Context and IO Stats Context use the same mechanism. The only difference is Perf Context measures functions of RocksDB, while IO Stats Context measures I/O related calls. They need be enabled in the thread where query to profile is executed. After the profile level is higher than disable, RocksDB will update some counters into a thread-local data structure. After the query, we can read the counters from the thread-local data structure.
+This is the header file for IO Stats Context: https://github.com/facebook/rocksdb/blob/master/include/rocksdb/iostats_context.h 
+
+The level of profiling for the two is controlled by the same function in this header file: https://github.com/facebook/rocksdb/blob/master/include/rocksdb/perf_level.h
+
+Perf Context and IO Stats Context use the same mechanism. The only difference is that Perf Context measures functions of RocksDB, whereas IO Stats Context measures I/O related calls. These features need to be enabled in the thread where the query to profile is executed. If the profile level is higher than disable, RocksDB will update the counters in a thread-local data structure. After the query, we can read the counters from the structure.
 
 ## How to Use Them
 Here is a typical example of using using Perf Context and IO Stats Context:
