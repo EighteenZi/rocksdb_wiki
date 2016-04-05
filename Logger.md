@@ -18,3 +18,5 @@ The various implementations of Logger available are :
 | WinLogger| Specialized logger for Windows OS|
 
 # Writing your custom Logger
+
+Users are encouraged to write their own logging infrastructure as per the use case by extending any one of the existing logger implementations.
