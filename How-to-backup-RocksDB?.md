@@ -43,7 +43,7 @@ In RocksDB, we have implemented an easy way to backup your DB and verify correct
     }
 ```
 
-This simple example will create a couple backups in "/tmp/rocksdb_backup".
+This simple example will create a couple backups in "/tmp/rocksdb_backup". Note that you can create and verify multiple backups using the same engine.
 
 Backups are normally incremental (see `BackupableDBOptions::share_table_files`). You can create a new backup with `BackupEngine::CreateNewBackup()` and only the new data will be copied to backup directory (for more details on what gets copied, see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood)).
 
@@ -72,9 +72,9 @@ Restoring is also easy:
     }
 ```
 
-This code will restore the first backup back to "/tmp/rocksdb". The first parameter of `BackupEngineReadOnly::RestoreDBFromBackup()` is the backup ID, second is target DB directory, and third is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
+This code will restore the first backup back to "/tmp/rocksdb". The first parameter of `BackupEngineReadOnly::RestoreDBFromBackup()` is the backup ID, second is target DB directory, and third is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info). `BackupEngineReadOnly::RestoreDBFromLatestBackup()` will restore the DB from the latest backup, i.e., the one with the highest ID.
 
-`BackupEngineReadOnly::RestoreDBFromLatestBackup()` will restore the DB from the latest backup, i.e., the one with the highest ID. An alternative is `BackupEngineReadOnly::RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
+Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
 
 ### Backup performance
 
