@@ -24,7 +24,28 @@ A: Obtaining an accurate number of keys in any LSM databases like RocksDB is a c
 **Q: Is basic operations Put(), Write(), Get() and NewIterator() thread safe?**
 A: Yes.
 
-**Q: Can I write to RocksDB using multiple threads?**
+**Q: Can I write to RocksDB using multiple processes?**
 
-A: Yes. However, they must be in the same process if at least one of them does not open rocksdb in read-only mode.
+A: No. However, it can be opened in read-only mode from multiple processes.
+
+**Q: Does RocksDB support multi-process read access?**
+
+A: RocksDB support multi-process read only process without writing the database.  This can be done by opening the database with DB::OpenForReadOnly() call.
+
+**Q: Is it safe to close RocksDB while another thread is issuing read, write or manual compaction requests?**
+
+A: No. The users of RocksDB need to make sure all functions have finished before they close RocksDB.
+
+**Q: What's the maximum key and value sizes supported?**
+
+A: In general, RocksDB is not designed for large keys.  The maximum recommended sizes for key and value are 8MB and 3GB respectively.
+
+**Q: Can I run RocksDB and store the data on HDFS?**
+
+A: Yes, by using the Env returned by NewHdfsEnv(), RocksDB will store data on HDFS.  However, the file lock is currently not supported in HDFS Env.
+
+**Q: Can I preserve a “snapshot” of RocksDB and later roll back the DB state to it?**
+
+A: Yes, via the BackupEngine or Checkpoint.
+
 
