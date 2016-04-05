@@ -69,7 +69,7 @@ This code will restore the backup back to "/tmp/rocksdb". The first parameter of
 
 `BackupEngineReadOnly::RestoreDBFromLatestBackup()` will restore the DB from the latest backup, i.e., the one with the highest ID. An alternative is `BackupEngineReadOnly::RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
 
-### Maintaining your backup directory
+### Backup performance
 
 Beware that backup engine's `Open()` takes time proportional to the number of existing backups. So if you have a slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. We recommend to keep your backup engine alive and not to recreate it every time you need to do a backup or restore.
 
