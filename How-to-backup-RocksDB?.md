@@ -1,3 +1,11 @@
+### Backup API
+
+For the C++ API, see `include/rocksdb/utilities/backupable_db.h`. There are two representations of backup engine: (1) `BackupEngine` for creating new backups, and (2) `BackupEngineReadOnly` for restoring from backup.
+
+Be aware, that backup engine's `Open()` takes time proportional to amount of backups. So if you have slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. We recommend to keep your backup engine alive and not to recreate it every time you need to do a backup or restore.
+
+Also, we recommend to keep around only small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
+
 ### Creating and verifying a backup
 
 In RocksDB, we have implemented an easy way to backup your DB and verify correctness. Here is a simple example:
@@ -21,7 +29,8 @@ In RocksDB, we have implemented an easy way to backup your DB and verify correct
         BackupEngine* backup_engine;
         s = BackupEngine::Open(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"), &backup_engine);
         assert(s.ok());
-        backup_engine->CreateNewBackup(db);
+        s = backup_engine->CreateNewBackup(db);
+        assert(s.ok());
         std::vector<BackupInfo> backup_info;
         backup_engine->GetBackupInfo(&backup_info);
         s = backup_engine->VerifyBackup(1 /* ID */);  // if there exists more than one backup, get ID from backup_info
@@ -32,8 +41,6 @@ In RocksDB, we have implemented an easy way to backup your DB and verify correct
 ```
 
 This simple example will create a backup of your DB in "/tmp/rocksdb_backup".
-
-Be aware, that backup engine's `Open()` takes time proportional to amount of backups. So if you have slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. That's why we recommend to limit the number of backups (see `PurgeOldBackups()`). Also we recommend to keep BackupEngine alive and not to recreate it every time you need to do a backup.
 
 Backups are normally incremental (see `BackupableDBOptions::share_table_files`). You can create a new backup with `CreateNewBackup()` and only the new data will be copied to backup directory (for more details on what gets copied, see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood)).
 
@@ -64,11 +71,9 @@ Restoring is also easy:
 
 This code will restore the backup back to "/tmp/rocksdb". The first parameter of `RestoreDBFromLatestBackup()` is the target DB directory. The second parameter is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
 
-You probably want to keep around only small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
-
 `RestoreDBFromLatestBackup()` will restore the DB from the latest backup, i.e., the one with the highest ID. An alternative is `RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
 
-### Options (advanced)
+### Advanced options
 
 Let's say you want to backup your DB to HDFS. There is an option in `BackupableDBOptions` to set `backup_env`, which will be used for all file I/O related to backup dir (writes when backuping, reads when restoring). If you set it to HDFS Env, all the backups will be stored in HDFS.
 
@@ -94,4 +99,4 @@ When you call `BackupEngine::CreateNewBackup()`, it does the following:
 
 ### Further reading
 
-For the API details, see `include/rocksdb/utilities/backupable_db.h`. For the implementation, see `utilities/backupable/backupable_db.cc`.
+For the implementation, see `utilities/backupable/backupable_db.cc`.
