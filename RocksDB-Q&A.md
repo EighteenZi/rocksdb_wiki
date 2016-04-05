@@ -48,4 +48,18 @@ A: Yes, by using the Env returned by NewHdfsEnv(), RocksDB will store data on HD
 
 A: Yes, via the BackupEngine or Checkpoint.
 
+**Q: What's the fastest way to load data into RocksDB?**
+
+A: A fast way to direct insert data to the DB:
+
+1. using single writer thread and insert in sorted order
+2. batch hundreds of keys into one write batch
+3. use vector memtable
+4. make sure options.max_background_flushes is at least 4
+5. before inserting the data, disable automatic compaction, set options.level0_file_num_compaction_trigger, options.level0_slowdown_writes_trigger and options.level0_stop_writes_trigger to very large. After inserting all the data, issue a manual compaction.
+
+3-5 will be automatically done if you call Options::PrepareForBulkLoad() to your option
+
+If you can pre-process the data offline before inserting. There is a faster way: you can sort the data, generate SST files with non-overlapping ranges in parallel and bulkload the SST files. See https://github.com/facebook/rocksdb/wiki/Creating-and-Ingesting-SST-files
+
 
