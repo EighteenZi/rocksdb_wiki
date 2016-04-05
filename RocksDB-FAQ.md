@@ -142,7 +142,7 @@ A: No, DBwithTTL does not provide an upper time bound.  Expired keys will be rem
 
 A: Yes.  DropColumnFamily() only marks the specified column family as dropped, and it will not be dropped until its reference count goes to zero and marked as dropped.
 
-**Q: Why does RocksDB issue reads from the disk when I only make write request? **
+**Q: Why does RocksDB issue reads from the disk when I only make write request?**
 
 A: Such IO reads are from compactions.  RocksDB compaction reads from one or more SST files, perform merge-sort like operation, generate new SST files, and delete the old SST files it inputs.
 
@@ -164,7 +164,7 @@ A: block_size is for size before compression.
 
 A: There are limitations of options.prefix_extractor. If prefix iterating is used, doesn't support Prev() or SeekToLast(), and many operations don't support SeekToFirst() either. A common mistake to seek the last key of a prefix by calling Seek(), followed by Prev(). This is, however, not supported. Currently there is no way to find the last key of prefix with prefix iterating. Also, you can't continue iterating keys after finishing the prefix you seek to. In the places where those operations are needed, you can try to set ReadOptions.total_order_seek = true to disable prefix iterating.
 
-**Q: How much resource does an iterator hold and when will these resource be released? **
+**Q: How much resource does an iterator hold and when will these resource be released?**
 
 A:  Iterators hold both data blocks and memtables in memory.  The resource each iterator holds are:
 
@@ -175,17 +175,17 @@ A:  Iterators hold both data blocks and memtables in memory.  The resource each 
 
 These resources will be released when the iterator is deleted.  If forward iterator is used, then it will release resources when it's moving its cursor.
 
-**Q: Can I put log files and sst files in different directories? How about information logs? **
+**Q: Can I put log files and sst files in different directories? How about information logs?**
 
 A: Yes.  WAL files can be placed in a separate directory by specifying DBOptions::wal_dir, information logs can as well be written in a separate directory by using DBOptions::db_log_dir.
 
 
 
-**Q: Are bloom filter blocks of SST files always loaded to memory, or can they be loaded from disk? **
+**Q: Are bloom filter blocks of SST files always loaded to memory, or can they be loaded from disk?**
 
 A: The behavior is configurable.  When BlockBaseTableOptions::cache_index_and_filter_blocks is set to true, then bloom filters and index block will be loaded into a LRU cache only when related Get() requests are issued.  In the other case where cache_index_and_filter_blocks is set to false, then RocksDB will try to keep the index block and bloom filter in memory up to DBOptions::max_open_files number of SST files.
 
-**Q: If issue a Put() or Write() with WriteOptions.sync=true, does it mean all previous writes are persistent too? **
+**Q: If issue a Put() or Write() with WriteOptions.sync=true, does it mean all previous writes are persistent too?**
 
 A: Yes, but only for all previous writes with WriteOptions.disableWAL=false.
 
