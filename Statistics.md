@@ -10,8 +10,8 @@ options.statistics = rocksdb::CreateDBStatistics();
 `options.statistics` is a shared pointer, so it is safe to pass the ownership to it. Later the users can access the stats through `options.statistics`.
 
 ## Stats Level And Performance Costs
-Currently, we implement stats using atomic integers and atomic incremental operations. There are non-negligible costs. There are also costs of timing for duration stats. The costs would vary for different workloads and platforms. We usually observe a 5%-10% costs.
+Currently, stats are implemented with atomic integers. We issue atomic incremental operations when updating them. The costs of that are non-negligible. We also have some stats of time duration. They require to call timing functions, which can introduce extra costs. The costs vary on different platforms. We usually observe a 5%-10% costs.
 
-Counter `rocksdb.db.mutex.wait.micros` will issue timing function inside DB mutex. If the timing function is expensive, this can hurt overall write throughput. 
+We have two stats levels of statistics, `kExceptTimeForMutex` and `kAll`. The only difference is that with `kExceptTimeForMutex`, counter `rocksdb.db.mutex.wait.micros` is not measured. By measuring the counter, we call the timing function inside DB mutex. If the timing function is slow, it can reduce write throughput significantly.
 
 
