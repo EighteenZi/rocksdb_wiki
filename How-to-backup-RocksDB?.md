@@ -27,16 +27,23 @@ In RocksDB, we have implemented an easy way to backup your DB and verify correct
         assert(s.ok());
         s = backup_engine->CreateNewBackup(db);
         assert(s.ok());
+        db->Put(...); // make some more changes
+        s = backup_engine->CreateNewBackup(db);
+        assert(s.ok());
+
         std::vector<BackupInfo> backup_info;
         backup_engine->GetBackupInfo(&backup_info);
-        s = backup_engine->VerifyBackup(1 /* ID */);  // if there exists more than one backup, get ID from backup_info
+
+        // you can get IDs from backup_info if there are more than two
+        s = backup_engine->VerifyBackup(1 /* ID */);
+        s = backup_engine->VerifyBackup(2 /* ID */);
         assert(s.ok());
         delete db;
         delete backup_engine;
     }
 ```
 
-This simple example will create a backup of your DB in "/tmp/rocksdb_backup".
+This simple example will create a couple backups in "/tmp/rocksdb_backup".
 
 Backups are normally incremental (see `BackupableDBOptions::share_table_files`). You can create a new backup with `BackupEngine::CreateNewBackup()` and only the new data will be copied to backup directory (for more details on what gets copied, see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood)).
 
@@ -60,20 +67,20 @@ Restoring is also easy:
         BackupEngineReadOnly* backup_engine;
         Status s = BackupEngineReadOnly::Open(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"), &backup_engine);
         assert(s.ok());
-        backup_engine->RestoreDBFromLatestBackup("/tmp/rocksdb", "/tmp/rocksdb");
+        backup_engine->RestoreDBFromBackup(1, "/tmp/rocksdb", "/tmp/rocksdb");
         delete backup_engine;
     }
 ```
 
-This code will restore the backup back to "/tmp/rocksdb". The first parameter of `BackupEngineReadOnly::RestoreDBFromLatestBackup()` is the target DB directory. The second parameter is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
+This code will restore the first backup back to "/tmp/rocksdb". The first parameter of `BackupEngineReadOnly::RestoreDBFromBackup()` is the backup ID, second is target DB directory, and third is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
 
 `BackupEngineReadOnly::RestoreDBFromLatestBackup()` will restore the DB from the latest backup, i.e., the one with the highest ID. An alternative is `BackupEngineReadOnly::RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
 
 ### Backup performance
 
-Beware that backup engine's `Open()` takes time proportional to the number of existing backups. So if you have a slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. We recommend to keep your backup engine alive and not to recreate it every time you need to do a backup or restore.
+Beware that backup engine's `Open()` takes time proportional to the number of existing backups since we initialize info about files in each existing backup. So if you target a remote file system (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time due to all the network round-trips. We recommend to keep your backup engine alive and not to recreate it every time you need to do a backup or restore.
 
-Also, we recommend to keep around only a small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
+Another way to keep engine initialization fast is to remove unnecessary backups. To delete unnecessary backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
 ### Advanced options
 
