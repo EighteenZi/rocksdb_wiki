@@ -23,7 +23,7 @@ To learn more about the three amplification factors in context of different data
 
 When debugging performance, there are some tools that can help you:
 
-**statistics** -- Set this to `rocksdb::CreateDBStatistics()`. You can get human-readable RocksDB statistics any time by calling `options.statistics.ToString()`.
+**statistics** -- Set this to `rocksdb::CreateDBStatistics()`. You can get human-readable RocksDB statistics any time by calling `options.statistics.ToString()`. See [[Statistics|Statistics]] for details.
 
 **stats_dump_period_sec** -- We dump statistics to LOG file every stats_dump_period_sec seconds. This is 3600 by default, which means that stats will be dumped every 1 hour. You can get the same data in the application by calling `db->GetProperty("rocksdb.stats");`
 
