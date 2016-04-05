@@ -62,4 +62,7 @@ A: A fast way to direct insert data to the DB:
 
 If you can pre-process the data offline before inserting. There is a faster way: you can sort the data, generate SST files with non-overlapping ranges in parallel and bulkload the SST files. See https://github.com/facebook/rocksdb/wiki/Creating-and-Ingesting-SST-files
 
+**Q: Does RocksJava support all the features?**
+
+A: We are working toward to make RocksJava feature compatible.  However, there're missing features in RocksJava.
 
