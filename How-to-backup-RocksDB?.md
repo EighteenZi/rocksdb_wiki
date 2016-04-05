@@ -116,7 +116,9 @@ When you call `BackupEngine::CreateNewBackup()`, it does the following:
 4. If `flush_before_backup` was set to false, we also need to copy log files to the backup directory. We call `GetSortedWalFiles()` and copy all live files to the backup directory.
 5. Re-enable file deletions
 
-### Advanced options
+### Advanced usage
+
+We can store user-defined metadata in the backups. Pass your metadata to `BackupEngine::CreateNewBackupWithMetadata()` and then read it back later using `BackupEngine::GetBackupInfo()`. For example, this can be used to identify backups using different identifiers from our auto-incrementing IDs.
 
 Let's say you want to backup your DB to HDFS. `BackupableDBOptions::backup_env` sets the environment that will be used for all file I/O related to `BackupableDBOptions::backup_dir` (writes when backuping, reads when restoring or getting info). If you set it to HDFS Env, all the backups will be stored in HDFS.
 
