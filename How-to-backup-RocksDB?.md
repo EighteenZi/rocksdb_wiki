@@ -1,8 +1,8 @@
 ### Backup API
 
-For the C++ API, see `include/rocksdb/utilities/backupable_db.h`. There are two representations of backup engine: (1) `BackupEngine` for creating new backups, and (2) `BackupEngineReadOnly` for restoring from backup.
+For the C++ API, see `include/rocksdb/utilities/backupable_db.h`. The key abstraction is the backup engine, which exposes simple interfaces to create backups, get info about backups, and restore from backup. There are two distinct representations of backup engines: (1) `BackupEngine` for creating new backups, and (2) `BackupEngineReadOnly` for restoring from backup. Either one can be used to get info about backups.
 
-Be aware, that backup engine's `Open()` takes time proportional to amount of backups. So if you have slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. We recommend to keep your backup engine alive and not to recreate it every time you need to do a backup or restore.
+Be aware, that backup engine's `Open()` takes time proportional to the number of existing backups. So if you have slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. We recommend to keep your backup engine alive and not to recreate it every time you need to do a backup or restore.
 
 Also, we recommend to keep around only small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
