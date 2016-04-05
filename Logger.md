@@ -1,6 +1,6 @@
 # Introduction
 
-RocksDB supports a generalized message logging infrastructure. RocksDB caters to a variety of use cases -- from low power mobile systems to high end servers running distributed applications. The framework helps extent the message logging as per the use case needs. The mobile app might need a relatively simpler logging mechanism, compared to a server running mission critical application. It also provides a means to integrate RocksDB log messages with the embeded application logging infrastructure. 
+RocksDB supports a generalized message logging infrastructure. RocksDB caters to a variety of use cases -- from low power mobile systems to high end servers running distributed applications. The framework helps extent the message logging infrastructure as per the use case requirements. The mobile app might need a relatively simpler logging mechanism, compared to a server running mission critical application. It also provides a means to integrate RocksDB log messages with the embedded application logging infrastructure. 
 
 # Exiting Logger Hierarchy
 
