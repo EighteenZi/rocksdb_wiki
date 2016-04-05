@@ -61,7 +61,7 @@ When deleting a key, RocksDB simply puts a marker, called tombstone to memtable.
 We can use "get_*" stats to break down time inside one Get() query. The most important two are `get_from_memtable_time` and `get_from_output_files_time`. The counters tell us whether the slowness is caused by memtable, SST tables, or both. `seek_on_memtable_time` can tell us how much of the time is spent on seeking memtables.
 
 #### Write Break-Down
-"write_*" stats break down write operations. `write_wal_time`, `write_memtable_time` and `write_delay_time` tell us the time is spent on writing WAL, memtable, or active slow-down. `write_pre_and_post_process_time` mostly means time spent on waiting in the writer queue. If the writer is assigned as a part of a commit group but it is not the commit leader, `write_pre_and_post_process_time` will also include the time waiting for the group commit leader to finish.
+"write_*" stats break down write operations. `write_wal_time`, `write_memtable_time` and `write_delay_time` tell us the time is spent on writing WAL, memtable, or active slow-down. `write_pre_and_post_process_time` mostly means time spent on waiting in the writer queue. If the write is assigned to a commit group but it is not the group leader, `write_pre_and_post_process_time` will also include the time waiting for the group commit leader to finish.
 
 #### Iterator Operations Break-Down
 "seek_*" and "find_next_user_entry_time" break down iterator operations. The most interesting one is `seek_child_seek_count`. It tells us how many sub-iterators we have, which mostly means number of sorted runs in the LSM tree.
