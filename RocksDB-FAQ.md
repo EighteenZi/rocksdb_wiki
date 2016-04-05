@@ -122,3 +122,62 @@ A: No, unless the RocksDB instance is opened in read-only mode.
 
 A:  Yes, since rocksdb stored the compression information in each SST file and performs decompression accordingly,  you can change the compression and the db will still be able to read existing files.  In addition, you can also specify different compression for different level by specifying ColumnFamilyOptions::compression_per_level.
 
+**Q: How can I configure RocksDB to backup to HDFS?**
+
+A: Use BackupableDB and set backup_env to the return value of NewHdfsEnv().
+
+**Q: Is it safe to read from or write to RocksDB inside compaction filter callback?**
+
+A: It is safe to read but not always safe to write to RocksDB inside compaction filter callback as write might trigger deadlock when write-stop condition is triggered.
+
+**Q: Does RocksDB hold SST files and memtables for a snapshot?**
+
+A: No.
+
+**Q: With DBWithTTL, is there a time bound for the expired keys to be removed?**
+
+A: No, DBwithTTL does not provide an upper time bound.  Expired keys will be removed when they are part of any compaction.  However, there's no guarantee that when such compaction will start.  For instance, if you have a certain key-range that is never updated, then compaction is less likely to apply to that key-range.
+
+**Q: If I delete a column family, and I didn't yet delete the column family handle, can I still use it to access the data?**
+
+A: Yes.  DropColumnFamily() only marks the specified column family as dropped, and it will not be dropped until its reference count goes to zero and marked as dropped.
+
+**Q: Why does RocksDB issue reads from the disk when I only make write request? **
+
+A: Such IO reads are from compactions.  RocksDB compaction reads from one or more SST files, perform merge-sort like operation, generate new SST files, and delete the old SST files it inputs.
+
+
+**Q: Does RocksDB support replication?**
+
+A: No, RocksDB does not directly support replication.  However, it offers some APIs that can be used as building blocks to support replication.  For instance, GetUpdatesSince() allows developers to iterate though all updates since a specific point in time. 
+https://github.com/facebook/rocksdb/blob/4.4.fb/include/rocksdb/db.h#L676-L687
+
+**Q: What is RocksDB's latest stable release?**
+
+A: All the releases in https://github.com/facebook/rocksdb/releases are stable.
+
+**Q: Is block_size before compression , or after?**
+
+A: block_size is for size before compression.
+
+**Q: After using options.prefix_extractor, I sometimes see wrong results. What's wrong?**
+
+A: There are limitations of options.prefix_extractor. If prefix iterating is used, doesn't support Prev() or SeekToLast(), and many operations don't support SeekToFirst() either. A common mistake to seek the last key of a prefix by calling Seek(), followed by Prev(). This is, however, not supported. Currently there is no way to find the last key of prefix with prefix iterating. Also, you can't continue iterating keys after finishing the prefix you seek to. In the places where those operations are needed, you can try to set ReadOptions.total_order_seek = true to disable prefix iterating.
+
+**Q: How much resource does an iterator hold and when will these resource be released? **
+
+A:  Iterators hold both data blocks and memtables in memory.  The resource each iterator holds are:
+
+1. The data block in memory that the iterator is currently pointing to for each L0 SST file.
+2. The data block in memory that the iterator is currently pointing to for each non-level-0 SST file.
+3. The memtables that existed when the iterator was created, even after the memtables have been flushed.
+4. All the SST files on disk that existed when the iterator was created, even if they are compacted.
+
+These resources will be released when the iterator is deleted.  If forward iterator is used, then it will release resources when it's moving its cursor.
+
+**Q: Can I put log files and sst files in different directories? How about information logs? **
+
+A: Yes.  WAL files can be placed in a separate directory by specifying DBOptions::wal_dir, information logs can as well be written in a separate directory by using DBOptions::db_log_dir.
+
+
+
