@@ -23,7 +23,12 @@ Ticker type is represented by 64-bit unsigned integer. The value never decreases
 Histogram type measures distribution of a stat across all operations. Take "rocksdb.db.get.micros" as an example. We measure time spent on each Get() operation and calculate the distribution of them for all of them with the histogram. Most of the histograms are for distribution of duration of a DB operation. There are stats for counts and number of bytes too.
 
 #### Print Human Readable String
-You can get a human readable string of all the counters by calling `ToString()`.
+We can get a human readable string of all the counters by calling `ToString()`.
 
 ### Dump Statistics Periodically in information logs
 Statistics are automatically dumped to information logs, for periodic interval of `options.stats_dump_period_sec`. Notice currently it is only dumped after compactions. So if the database doesn't server any write, statistics will not be dumped, despite of `options.stats_dump_period_sec`.
+
+#### Access Stats Programmatically
+We can also access specific stat directly from the statistics object. The list of ticker types can be found in enum Tickers. By calling statistics.getTickerCount() for a ticker type, we can retrieve the value. Similarly, single histogram stat can be queried by calling statistics.histogramData() with enum Histograms, or statistics.getHistogramString().
+
+#### 
