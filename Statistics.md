@@ -14,7 +14,7 @@ Advanced users can implement their own statistics class. See the last section fo
 ## Stats Level And Performance Costs
 Costs of statistics is usually small but non-negligible. We usually observe costs of 5%-10%.
 
-Stats are implemented with atomic integers. We issue atomic incremental operations when updating them. Further more, stats about time duration require to call timing functions. Both of the atomic incremental and timing function introduce costs and the costs vary on different platforms. 
+Stats are implemented with atomic integers. We issue atomic incremental operations when updating them. Further more, stats about time duration require to call the timing function. Both of the atomic incremental and the timing function introduce costs, which vary on different platforms. 
 
 We have two stats levels of statistics, `kExceptTimeForMutex` and `kAll`. The only difference is that with `kExceptTimeForMutex`, counter `rocksdb.db.mutex.wait.micros` is not measured. By measuring the counter, we call the timing function inside DB mutex. If the timing function is slow, it can reduce write throughput significantly.
 
