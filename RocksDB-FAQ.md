@@ -79,7 +79,7 @@ A: Close the DB then destroy the DB is the correct way.  Calling DestroyDB() on 
 
 A: The major difference is that DestroyDB() will take care of the case where the RocksDB database is stored in multiple directories.  For instance, a single DB can be configured to store its data in multiple directories by specifying different paths to DBOptions::db_paths, DBOptions::db_log_dir, and DBOptions::wal_dir.
 
-**Q: Does BackupableDB create a point-in-time snapshot of the database? **
+**Q: Does BackupableDB create a point-in-time snapshot of the database?**
 
 A: Yes when BackupOptions::backup_log_files = true or flush_before_backup is set to true when calling CreateNewBackup().
 
