@@ -25,6 +25,7 @@
 ** [[Transactions | Transactions]]
 ** [[Creating-and-Ingesting-SST-files | Creating and Ingesting SST files]]
 ** [[Perf-Context-and-IO-Stats-Context | Perf Context and IO Stats Context]]
+** [[Logger | Logger]]
 * '''Tools / Utilities'''
 ** [[Ldb-Tool | Administration and Data Access Tool]]
 ** [https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F How to Backup RocksDB?] <!-- note this link must use an external link format bec MediaWiki markup doesn't support special characters in its native namespace -->
