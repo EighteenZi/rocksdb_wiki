@@ -19,6 +19,7 @@
 ** [[Universal-Compaction | Universal compaction style]]
 ** [[FIFO-compaction-style | FIFO compaction style]]
 ** [[Write Ahead Log File Format | Write Ahead Log File Format]]
+** [[WAL Recovery Modes | WAL Recovery Modes]]
 ** [[EventListener | EventListener]]
 ** [[RocksDB-Options-File | RocksDB Options File]]
 ** [[Transactions | Transactions]]
