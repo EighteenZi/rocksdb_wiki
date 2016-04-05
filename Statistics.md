@@ -1,4 +1,4 @@
-## Normal Usage
+## Usage
 Function `CreateDBStatistics()` creates a statistics object. 
 
 Here is an example to pass it to one DB:
