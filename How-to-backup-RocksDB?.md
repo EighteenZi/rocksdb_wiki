@@ -1,8 +1,12 @@
-In RocksDB, we have implemented an easy way to backup your DB. Here is a simple example:
+### Creating and verifying a backup
+
+In RocksDB, we have implemented an easy way to backup your DB and verify correctness. Here is a simple example:
  
 ```cpp
     #include "rocksdb/db.h"
     #include "rocksdb/utilities/backupable_db.h"
+
+    #include <vector>
 
     using namespace rocksdb;
 
@@ -18,12 +22,28 @@ In RocksDB, we have implemented an easy way to backup your DB. Here is a simple 
         s = BackupEngine::Open(Env::Default(), BackupableDBOptions("/tmp/rocksdb_backup"), &backup_engine);
         assert(s.ok());
         backup_engine->CreateNewBackup(db);
+        std::vector<BackupInfo> backup_info;
+        backup_engine->GetBackupInfo(&backup_info);
+        s = backup_engine->VerifyBackup(1 /* ID */);  // if there exists more than one backup, get ID from backup_info
+        assert(s.ok());
         delete db;
         delete backup_engine;
     }
 ```
 
 This simple example will create a backup of your DB in "/tmp/rocksdb_backup".
+
+Be aware, that backup engine's `Open()` takes time proportional to amount of backups. So if you have slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. That's why we recommend to limit the number of backups (see `PurgeOldBackups()`). Also we recommend to keep BackupEngine alive and not to recreate it every time you need to do a backup.
+
+Backups are normally incremental (see `BackupableDBOptions::share_table_files`). You can create a new backup with `CreateNewBackup()` and only the new data will be copied to backup directory (for more details on what gets copied, see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood)).
+
+Once you have some backups saved, you can issue `GetBackupInfo()` call to get a list of all backups together with information on timestamp of the backup and the size (please note that sum of all backups' sizes is bigger than the actual size of the backup directory because some data is shared by multiple backups). Backups are identified by their always-increasing IDs.
+
+When `VerifyBackups()` is called, it checks the file sizes in the backup directory against the sizes of the corresponding files in the db directory. However, we do not verify checksums since it would require reading all the data. Note that the only valid use case for `VerifyBackups()` is invoking it on a backup engine after that same engine was used for creating backup(s).
+
+Checksums are always stored separately for any backed up file (including sst, log, and etc), and file size is embedded in filename when multiple databases share a single backup directory (see `Options::share_files_with_checksum`). These attributes uniquely identify files that can come from multiple RocksDB instances.
+
+### Restoring a backup
 
 Restoring is also easy:
 
@@ -44,19 +64,12 @@ Restoring is also easy:
 
 This code will restore the backup back to "/tmp/rocksdb". The first parameter of `RestoreDBFromLatestBackup()` is the target DB directory. The second parameter is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info).
 
-Be aware, that backup engine's `Open()` takes time proportional to amount of backups. So if you have slow filesystem to backup (like HDFS), and you have a lot of backups, then restoring or creating further backups can take some time. That's why we recommend to limit the number of backups. Also we recommend to keep BackupEngine alive and not to recreate it every time you need to do a backup.
-
-Backups are incremental as long as BackupableDBOptions::share_table_files is set. You can create a new backup with `CreateNewBackup()` and only the new data will be copied to backup directory (for more details on what gets copied, see [Under the hood](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F#under-the-hood)).
-
-Checksums are always stored separately for any backed up file (including sst, log, and etc), and file size is stored in filename when Options::share_files_with_checksum is set. These attributes can be used to uniquely identify files when multiple databases share a single backup directory. Additionally, file size is used for consistency checking when `VerifyBackups()` is called -- we do not verify checksum, however, since it would require reading all the data.
-
-Once you have some backups saved, you can issue `GetBackupInfo()` call to get a list of all backups together with information on timestamp of the backup and the size (please note that sum of all backups' sizes is bigger than the actual size of the backup directory because some data is shared by multiple backups). Backups are identified by their always-increasing IDs.
-
 You probably want to keep around only small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
 `RestoreDBFromLatestBackup()` will restore the DB from the latest backup, i.e., the one with the highest ID. An alternative is `RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
 
-### Advanced usage
+### Options (advanced)
+
 Let's say you want to backup your DB to HDFS. There is an option in `BackupableDBOptions` to set `backup_env`, which will be used for all file I/O related to backup dir (writes when backuping, reads when restoring). If you set it to HDFS Env, all the backups will be stored in HDFS.
 
 `BackupableDBOptions::max_background_operations` controls the number of threads used for copying files during backup and restore. For distributed file systems like HDFS, it can be very beneficial to increase the copy parallelism.
@@ -70,6 +83,7 @@ If you set `BackupableDBOptions::destroy_old_data` to true, creating new `Backup
 `BackupEngine::CreateNewBackup()` method takes a parameter `flush_before_backup`, which is false by default. When `flush_before_backup` is true, `BackupEngine` will first issue a memtable flush and only then copy the DB files to the backup directory. Doing so will prevent log files from being copied to the backup directory (since flush will delete them). If `flush_before_backup` is false, backup will not issue flush before starting the backup. In that case, the backup will also include log files corresponding to live memtables. Backup will be consistent with current state of the database regardless of `flush_before_backup` parameter.
 
 ### Under the hood
+
 When you call `BackupEngine::CreateNewBackup()`, it does the following:
 
 1. Disable file deletions
@@ -79,4 +93,5 @@ When you call `BackupEngine::CreateNewBackup()`, it does the following:
 5. Re-enable file deletions
 
 ### Further reading
+
 For the API details, see `include/rocksdb/utilities/backupable_db.h`. For the implementation, see `utilities/backupable/backupable_db.cc`.
