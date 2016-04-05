@@ -95,7 +95,7 @@ Let's say you want to backup your DB to HDFS. `BackupableDBOptions::backup_env` 
 
 `BackupableDBOptions::info_log` is a Logger object that is used to print out LOG messages if not-nullptr.
 
-If `BackupableDBOptions::sync` is true, we will sync data to disk after every file write, guaranteeing that backups will be consistent after a reboot or if machine crashes. Setting it to false will speed things up a bit, but some (newer) backups might be inconsistent. In most cases, everything should be fine, though.
+If `BackupableDBOptions::sync` is true, we will use `fsync(2)` to sync file data and metadata to disk after every file write, guaranteeing that backups will be consistent after a reboot or if machine crashes. Setting it to false will speed things up a bit, but some (newer) backups might be inconsistent. In most cases, everything should be fine, though.
 
 If you set `BackupableDBOptions::destroy_old_data` to true, creating new `BackupEngine` will delete all the old backups in the backup directory.
 
