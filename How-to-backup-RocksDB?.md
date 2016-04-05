@@ -83,6 +83,16 @@ Beware that backup engine's `Open()` takes time proportional to the number of ex
 
 Another way to keep engine initialization fast is to remove unnecessary backups. To delete unnecessary backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
+### Under the hood
+
+When you call `BackupEngine::CreateNewBackup()`, it does the following:
+
+1. Disable file deletions
+2. Get live files (this includes table files, current and manifest file).
+3. Copy live files to the backup directory. Since table files are immutable and filenames unique, we don't copy a table file that is already present in the backup directory. For example, if there is a file `00050.sst` already backed up and `GetLiveFiles()` returns `00050.sst`, we will not copy that file to the backup directory. However, checksum is calculated for all files regardless if a file needs to be copied or not. If a file is already present, the calculated checksum is compared against previously calculated checksum to make sure nothing crazy happened between backups. If a mismatch is detected, backup is aborted and the system is restored back to the state before `BackupEngine::CreateNewBackup()` is called. One thing to note is that a backup abortion could mean a corruption from a file in backup directory or the corresponding live file in current DB. Both manifest and current files are copied, since they are not immutable.
+4. If `flush_before_backup` was set to false, we also need to copy log files to the backup directory. We call `GetSortedWalFiles()` and copy all live files to the backup directory.
+5. Re-enable file deletions
+
 ### Advanced options
 
 Let's say you want to backup your DB to HDFS. `BackupableDBOptions::backup_env` sets the environment that will be used for all file I/O related to `BackupableDBOptions::backup_dir` (writes when backuping, reads when restoring or getting info). If you set it to HDFS Env, all the backups will be stored in HDFS.
@@ -93,23 +103,13 @@ Let's say you want to backup your DB to HDFS. `BackupableDBOptions::backup_env` 
 
 `BackupableDBOptions::max_background_operations` controls the number of threads used for copying files during backup and restore. For distributed file systems like HDFS, it can be very beneficial to increase the copy parallelism.
 
-`BackupableDBOptions::info_log` is a Logger object that is used to print out LOG messages if not-nullptr.
+`BackupableDBOptions::info_log` is a Logger object that is used to print out LOG messages if not-nullptr. (TODO(ajkr): link to Logger page).
 
 If `BackupableDBOptions::sync` is true, we will use `fsync(2)` to sync file data and metadata to disk after every file write, guaranteeing that backups will be consistent after a reboot or if machine crashes. Setting it to false will speed things up a bit, but some (newer) backups might be inconsistent. In most cases, everything should be fine, though.
 
 If you set `BackupableDBOptions::destroy_old_data` to true, creating new `BackupEngine` will delete all the old backups in the backup directory.
 
 `BackupEngine::CreateNewBackup()` method takes a parameter `flush_before_backup`, which is false by default. When `flush_before_backup` is true, `BackupEngine` will first issue a memtable flush and only then copy the DB files to the backup directory. Doing so will prevent log files from being copied to the backup directory (since flush will delete them). If `flush_before_backup` is false, backup will not issue flush before starting the backup. In that case, the backup will also include log files corresponding to live memtables. Backup will be consistent with current state of the database regardless of `flush_before_backup` parameter.
-
-### Under the hood
-
-When you call `BackupEngine::CreateNewBackup()`, it does the following:
-
-1. Disable file deletions
-2. Get live files (this includes table files, current and manifest file).
-3. Copy live files to the backup directory. Since table files are immutable and filenames unique, we don't copy a table file that is already present in the backup directory. For example, if there is a file `00050.sst` already backed up and `GetLiveFiles()` returns `00050.sst`, we will not copy that file to the backup directory. However, checksum is calculated for all files regardless if a file needs to be copied or not. If a file is already present, the calculated checksum is compared against previously calculated checksum to make sure nothing crazy happened between backups. If a mismatch is detected, backup is aborted and the system is restored back to the state before `BackupEngine::CreateNewBackup()` is called. One thing to note is that a backup abortion could mean a corruption from a file in backup directory or the corresponding live file in current DB. Both manifest and current files are copied, since they are not immutable.
-4. If `flush_before_backup` was set to false, we also need to copy log files to the backup directory. We call `GetSortedWalFiles()` and copy all live files to the backup directory.
-5. Re-enable file deletions
 
 ### Further reading
 
