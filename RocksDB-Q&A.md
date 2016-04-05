@@ -98,5 +98,26 @@ A: Yes.
 
 A: No.  Once you've specified a prefix extractor, you cannot change it.  However, you can disable it by specifying a null value.
 
+**Q: What is the absolute minimum version of gcc that we need to build RocksDB?**
 
+A: 4.7, but 4.8 or up is recommended.
+
+**Q: How to configure rocksdb to use multiple disks?**
+
+A:  You can create a single filesystem (ext3, xfs, etc) on multiple disks. Then you can run rocksdb on that single file system.
+Some tips when using disks:
+
+* if using RAID then don't use a too small RAID stripe size (64kb is too small, 1MB would be excellent). 
+* consider enabling compaction readahead by specifying ColumnFamilyOptions::compaction_readahead_size to at least 2MB.
+* if workload is write-heavy then have enough compaction threads to keep the disks busy
+* consider enabling async write behind for compaction
+
+
+**Q: Is it safe to directly copy an open RocksDB instance?**
+
+A: No, unless the RocksDB instance is opened in read-only mode.
+
+**Q: Can I open RocksDB with a different compression type and still read old data?**
+
+A:  Yes, since rocksdb stored the compression information in each SST file and performs decompression accordingly,  you can change the compression and the db will still be able to read existing files.  In addition, you can also specify different compression for different level by specifying ColumnFamilyOptions::compression_per_level.
 
