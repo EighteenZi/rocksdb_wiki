@@ -12,7 +12,7 @@ Technically, you can create a statistics object and pass to multiple DBs. Then t
 Advanced users can implement their own statistics class. See the last section for details.
 
 ## Stats Level And Performance Costs
-Costs of statistics is usually small but non-negligible. We usually observe a 5%-10% costs in common use cases.
+Costs of statistics is usually small but non-negligible. We usually observe costs of 5%-10%.
 
 Stats are implemented with atomic integers. We issue atomic incremental operations when updating them. We also have some stats of time duration, which requires to call timing functions. Both of the atomic incremental and timing function introduce costs and the costs vary on different platforms. 
 
