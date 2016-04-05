@@ -181,3 +181,22 @@ A: Yes.  WAL files can be placed in a separate directory by specifying DBOptions
 
 
 
+**Q: Are bloom filter blocks of SST files always loaded to memory, or can they be loaded from disk? **
+
+A: The behavior is configurable.  When BlockBaseTableOptions::cache_index_and_filter_blocks is set to true, then bloom filters and index block will be loaded into a LRU cache only when related Get() requests are issued.  In the other case where cache_index_and_filter_blocks is set to false, then RocksDB will try to keep the index block and bloom filter in memory up to DBOptions::max_open_files number of SST files.
+
+**Q: If issue a Put() or Write() with WriteOptions.sync=true, does it mean all previous writes are persistent too? **
+
+A: Yes, but only for all previous writes with WriteOptions.disableWAL=false.
+
+
+**Q: I disabled write-ahead-log and rely on DB::Flush() to persist the data. It works well for single family. Can I do the same if I have multiple column families?**
+
+A: No, currently DB::Flush() is not atomic across multiple column families. We do have a plan to support that in the future.
+
+**Q: If I use non-default comparators or merge operators, can I still use ldb tool?**
+
+A: You cannot use the regular ldb tool in this case.  However, you can build your custom ldb tool by passing your own options using this function rocksdb::LDBTool::Run(argc, argv, options) and compile it.
+
+
+
