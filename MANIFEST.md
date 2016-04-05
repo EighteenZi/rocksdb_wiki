@@ -12,7 +12,7 @@ RocksDB has a built-in mechanism to overcome these limitations of POSIX file sys
 
 ## How does it work ?
 
-MANIFEST is a transactional log of the RocksDB state changes. MANIFEST consists of - manifest log files and latest manifest file pointer. Manifest logs are rolling log files named MANIFEST-<seq number>. The sequence number is always increasing. CURRENT is a special file that identifies the latest manifest log file.
+MANIFEST is a transactional log of the RocksDB state changes. MANIFEST consists of - manifest log files and latest manifest file pointer. Manifest logs are rolling log files named MANIFEST-(seq number). The sequence number is always increasing. CURRENT is a special file that identifies the latest manifest log file.
 
 On system (re)start, the latest manifest log contains the consistent state of RocksDB. Any subsequent change to RocksDB state is logged to the manifest log file. When a manifest log file exceeds a certain size, a new manifest log file is created with the snapshot of the RocksDB state. The latest manifest file pointer is updated and the file system is synced. Upon successful update to CURRENT file, the redundant manifest logs are purged. 
 
