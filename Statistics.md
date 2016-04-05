@@ -24,7 +24,7 @@ There are two types of stats, ticker and histogram.
 
 Ticker type is represented by 64-bit unsigned integer. The value never decreases or resets. Ticker stats are used to measure counters (e.g. "rocksdb.block.cache.hit"), cumulative bytes (e.g. "rocksdb.bytes.written") or time (e.g. "rocksdb.l0.slowdown.micros").
 
-Histogram type measures distribution of a stat across all operations. Taking "rocksdb.db.get.micros" as an example, we measure time spent on each Get() operation and calculate the distribution for all of them. Most of the histograms are for distribution of duration of a DB operation.
+Histogram type measures distribution of a stat across all operations. Most of the histograms are for distribution of duration of a DB operation. Taking "rocksdb.db.get.micros" as an example, we measure time spent on each Get() operation and calculate the distribution for all of them.
 
 #### Print Human Readable String
 We can get a human readable string of all the counters by calling `ToString()`.
