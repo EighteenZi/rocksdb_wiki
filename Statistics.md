@@ -18,8 +18,9 @@ We have two stats levels of statistics, `kExceptTimeForMutex` and `kAll`. The on
 #### Stats Types
 There are two types of stats, ticker and histogram.
 
-Ticker type is represented by 64-bit unsigned integer. The value never decreases. Ticker stats are used to measure counters (e.g. , as well as accumulated )...
+Ticker type is represented by 64-bit unsigned integer. The value never decreases or resets. Ticker stats are used to measure counters (e.g. "rocksdb.block.cache.hit"), as well as cumulative bytes (e.g. "rocksdb.bytes.written") or time (e.g. "rocksdb.l0.slowdown.micros").
 
+Histogram type measures distribution of a stat across all operations. Take "rocksdb.db.get.micros" as an example. We measure time spent on each Get() operation and calculate the distribution of them for all of them with the histogram. Most of the histograms are for distribution of duration of a DB operation. There are stats for counts and number of bytes too.
 
 #### Print Human Readable String
 You can get a human readable string of all the counters by calling `ToString()`
