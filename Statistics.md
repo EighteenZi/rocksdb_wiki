@@ -1,3 +1,5 @@
+DB Statistics provides cumulative stats over time. It serves different function from DB properties and [[perf and IO Stats context|Perf Context And IO Stats Context]]: statistics accumulate stats for history, while DB properties report current state of the database; DB statistics give an aggregated view across all operations, whereas perf and IO stats context allow us to look inside of individual operations.  
+
 ## Usage
 Function `CreateDBStatistics()` creates a statistics object. 
 
