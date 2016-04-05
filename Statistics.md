@@ -31,4 +31,8 @@ Statistics are automatically dumped to information logs, for periodic interval o
 #### Access Stats Programmatically
 We can also access specific stat directly from the statistics object. The list of ticker types can be found in enum Tickers. By calling statistics.getTickerCount() for a ticker type, we can retrieve the value. Similarly, single histogram stat can be queried by calling statistics.histogramData() with enum Histograms, or statistics.getHistogramString().
 
-#### 
+#### Stats For Time-Interval
+Now all the stats in statistics are cumulative. If you need to monitor or report it on time-interval basis, you can check the value periodically and compute the time interval value by taking the difference between the current value and the previous value.
+
+#### User-Defined Statistics
+Statistics is an abstract class and users can implement their own class and pass it to options.statistics. This is useful when you want to integrate RocksDB's stats to your own stats system. When you implement a user-defined statistics, be aware of the volume of calls to recordTick() and measureTime() by RocksDB. The user-defined stats can easily be the performance bottleneck if not implemented carefully.
