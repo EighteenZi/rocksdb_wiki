@@ -1,6 +1,6 @@
 # Introduction
 
-Every application is unique and requires a certain consistency guarantee from RocksDB. Every committed record is RocksDB is persisted. The uncommitted records are recorded in write-ahead-log (WAL). When RocksDB is shutdown cleanly, all uncommitted data is committed before shutdown and hence consistency is always guaranteed. When RocksDB is killed or the machine is restarted, on restart RocksDB need to restore itself to a consistent state.
+Every application is unique and requires a certain consistency guarantee from RocksDB. Every committed record in RocksDB is persisted. The uncommitted records are recorded in write-ahead-log (WAL). When RocksDB is shutdown cleanly, all uncommitted data is committed before shutdown and hence consistency is always guaranteed. When RocksDB is killed or the machine is restarted, on restart RocksDB need to restore itself to a consistent state.
 
 One of the important recovery operation is replay uncommitted records in WAL. The different WAL recovery modes define the behavior of WAL replay. 
 
