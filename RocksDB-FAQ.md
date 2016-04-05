@@ -22,6 +22,7 @@ A: Use GetIntProperty(cf_handle, “rocksdb.estimate-num-keys") to obtain an est
 A: Obtaining an accurate number of keys in any LSM databases like RocksDB is a challenging problem as they have duplicate keys and deletion entries (i.e., tombstones) that will require a full compaction in order to get an accurate number of keys.  In addition, if the RocksDB database contains merge operators, it will also make the estimated number of keys less accurate.
 
 **Q: Is basic operations Put(), Write(), Get() and NewIterator() thread safe?**
+
 A: Yes.
 
 **Q: Can I write to RocksDB using multiple processes?**
