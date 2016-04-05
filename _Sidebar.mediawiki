@@ -1,7 +1,7 @@
 '''Contents'''
 * [[Home | RocksDB Wiki]]
 * [[RocksDB-Basics | Overview]]
-* [[RocksDB Q&A | RocksDB FAQ]]
+* [[RocksDB FAQ | RocksDB FAQ]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
 ** [[Known-Issues | Known Issues]]
