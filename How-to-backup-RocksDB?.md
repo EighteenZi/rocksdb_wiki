@@ -52,8 +52,6 @@ Once you have some backups saved, you can issue `BackupEngine::GetBackupInfo()` 
 
 When `BackupEngine::VerifyBackups()` is called, it checks the file sizes in the backup directory against the original sizes of the corresponding files in the db directory. However, we do not verify checksums since it would require reading all the data. Note that the only valid use case for `BackupEngine::VerifyBackups()` is invoking it on a backup engine after that same engine was used for creating backup(s) because it uses state captured during backup time.
 
-Checksums are always stored separately for any backed up file (including sst, log, and etc), and file size is embedded in filename when multiple databases share a single backup directory (see `Options::share_files_with_checksum`). These attributes uniquely identify files that can come from multiple RocksDB instances.
-
 ### Restoring a backup
 
 Restoring is also easy:
@@ -76,6 +74,31 @@ Restoring is also easy:
 This code will restore the first backup back to "/tmp/rocksdb". The first parameter of `BackupEngineReadOnly::RestoreDBFromBackup()` is the backup ID, second is target DB directory, and third is the target location of log files (in some DBs they are different from DB directory, but usually they are the same. See Options::wal_dir for more info). `BackupEngineReadOnly::RestoreDBFromLatestBackup()` will restore the DB from the latest backup, i.e., the one with the highest ID.
 
 Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
+
+### Backup directory structure
+
+```
+/tmp/rocksdb_backup/
+├── LATEST_BACKUP
+├── meta
+│   └── 1
+├── private
+│   └── 1
+│       ├── CURRENT
+│       └── MANIFEST-000008
+└── shared_checksum
+    └── 000007_1498774076_590.sst
+```
+
+`LATEST_BACKUP` is a file containing the highest backup ID. In our example above, it contains "1".
+
+`meta` directory contains a "meta-file" describing each backup, where its name is the backup ID. For example, a meta-file contains a listing of all files belonging to that backup. The format is described fully in the implementation file (`utilities/backupable/backupable_db.cc`).
+
+`private` directory always contains non-SST files (current, manifest, and WALs). In case `Options::share_table_files` is unset, it also contains the SST files.
+
+`shared` directory (not shown) contains SST files when `Options::share_table_files` is set and `Options::share_files_with_checksum` is unset. In this directory, files are named using only by their name in the original DB. So, it should only be used to backup a single RocksDB instance; otherwise, filenames can conflict.
+
+`shared_checksum` directory contains SST files when both `Options::share_table_files` and `Options::share_files_with_checksum` are set. In this directory, files are named using their name in the original database, size, and checksum. These attributes uniquely identify files that can come from multiple RocksDB instances. 
 
 ### Backup performance
 
@@ -103,7 +126,7 @@ Let's say you want to backup your DB to HDFS. `BackupableDBOptions::backup_env` 
 
 `BackupableDBOptions::max_background_operations` controls the number of threads used for copying files during backup and restore. For distributed file systems like HDFS, it can be very beneficial to increase the copy parallelism.
 
-`BackupableDBOptions::info_log` is a Logger object that is used to print out LOG messages if not-nullptr. (TODO(ajkr): link to Logger page).
+`BackupableDBOptions::info_log` is a Logger object that is used to print out LOG messages if not-nullptr. See [Logger wiki](https://github.com/facebook/rocksdb/wiki/Logger).
 
 If `BackupableDBOptions::sync` is true, we will use `fsync(2)` to sync file data and metadata to disk after every file write, guaranteeing that backups will be consistent after a reboot or if machine crashes. Setting it to false will speed things up a bit, but some (newer) backups might be inconsistent. In most cases, everything should be fine, though.
 
