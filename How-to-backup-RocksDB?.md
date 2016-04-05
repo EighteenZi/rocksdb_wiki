@@ -69,6 +69,12 @@ This code will restore the backup back to "/tmp/rocksdb". The first parameter of
 
 `BackupEngineReadOnly::RestoreDBFromLatestBackup()` will restore the DB from the latest backup, i.e., the one with the highest ID. An alternative is `BackupEngineReadOnly::RestoreDBFromBackup()` which takes a backup ID and restores that particular backup. Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
 
+### Maintaining your backup directory
+
+Beware that backup engine's `Open()` takes time proportional to the number of existing backups. So if you have a slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. We recommend to keep your backup engine alive and not to recreate it every time you need to do a backup or restore.
+
+Also, we recommend to keep around only a small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
+
 ### Advanced options
 
 Let's say you want to backup your DB to HDFS. `BackupableDBOptions::backup_env` sets the environment that will be used for all file I/O related to `BackupableDBOptions::backup_dir` (writes when backuping, reads when restoring or getting info). If you set it to HDFS Env, all the backups will be stored in HDFS.
@@ -86,12 +92,6 @@ If `BackupableDBOptions::sync` is true, we will sync data to disk after every fi
 If you set `BackupableDBOptions::destroy_old_data` to true, creating new `BackupEngine` will delete all the old backups in the backup directory.
 
 `BackupEngine::CreateNewBackup()` method takes a parameter `flush_before_backup`, which is false by default. When `flush_before_backup` is true, `BackupEngine` will first issue a memtable flush and only then copy the DB files to the backup directory. Doing so will prevent log files from being copied to the backup directory (since flush will delete them). If `flush_before_backup` is false, backup will not issue flush before starting the backup. In that case, the backup will also include log files corresponding to live memtables. Backup will be consistent with current state of the database regardless of `flush_before_backup` parameter.
-
-### Maintaining your backup directory
-
-Beware that backup engine's `Open()` takes time proportional to the number of existing backups. So if you have a slow filesystem to backup (like HDFS), and you have a lot of backups, then initializing the backup engine can take some time. We recommend to keep your backup engine alive and not to recreate it every time you need to do a backup or restore.
-
-Also, we recommend to keep around only a small number of backups. To delete old backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
 ### Under the hood
 
