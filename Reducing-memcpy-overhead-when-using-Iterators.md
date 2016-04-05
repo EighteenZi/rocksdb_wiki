@@ -47,6 +47,8 @@ We have introduced a new option for Iterators, ReadOptions::pin_data. When setti
 	// Get the keys from the DB
 	std::vector<Slice> db_keys;
 	for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
+		// We check "rocksdb.iterator.is-key-pinned" property to make sure that
+		// the key is actually pinned
 		std::string is_key_pinned;
 		iter->GetProperty("rocksdb.iterator.is-key-pinned", &is_key_pinned);
 		assert(is_key_pinned == "1");
