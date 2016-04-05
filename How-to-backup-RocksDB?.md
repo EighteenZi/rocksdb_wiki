@@ -77,6 +77,10 @@ This code will restore the backup back to "/tmp/rocksdb". The first parameter of
 
 Let's say you want to backup your DB to HDFS. There is an option in `BackupableDBOptions` to set `backup_env`, which will be used for all file I/O related to backup dir (writes when backuping, reads when restoring). If you set it to HDFS Env, all the backups will be stored in HDFS.
 
+`BackupableDBOptions::share_table_files` controls whether backups are done incrementally. If true, SST files will go under a "shared/" subdirectory. Conflicts can arise when different SST files use the same name (e.g., when multiple databases have the same target backup directory).
+
+`BackupableDBOptions::share_files_with_checksum` controls how shared files are identified. If true, shared SST files are identified using checksum, size, and seqnum. This prevents the conflicts mentioned above when multiple databases use a common target backup directory.
+
 `BackupableDBOptions::max_background_operations` controls the number of threads used for copying files during backup and restore. For distributed file systems like HDFS, it can be very beneficial to increase the copy parallelism.
 
 `BackupableDBOptions::info_log` is a Logger object that is used to print out LOG messages if not-nullptr.
