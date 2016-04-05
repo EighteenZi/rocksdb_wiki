@@ -14,4 +14,12 @@ Currently, stats are implemented with atomic integers. We issue atomic increment
 
 We have two stats levels of statistics, `kExceptTimeForMutex` and `kAll`. The only difference is that with `kExceptTimeForMutex`, counter `rocksdb.db.mutex.wait.micros` is not measured. By measuring the counter, we call the timing function inside DB mutex. If the timing function is slow, it can reduce write throughput significantly.
 
+## Access The Stats
+#### Stats Types
+There are two types of stats, ticker and histogram.
 
+Ticker type is represented by 64-bit unsigned integer. The value never decreases. Ticker stats are used to measure counters (e.g. , as well as accumulated )...
+
+
+#### Print Human Readable String
+You can get a human readable string of all the counters by calling `ToString()`
