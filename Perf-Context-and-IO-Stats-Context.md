@@ -31,16 +31,21 @@ Note that the same perf level is applied to both of Perf Context and IO Stats Co
 You can also call rocksdb::perf_context.ToString() and rocksdb::iostat_context.ToString() for a human-readable report.
 
 ## Profile Levels And Costs
+As always, there are trade-offs between statistics quantity and overhead, so we have designed several profile levels to choose from:
 
-There are several profiling levels to help us trade off the costs:
+* kEnableCount will only enable counters. 
 
-`kEnableCount` will only enable counters. We avoid the more expensive calls to get system times, to lower the costs. In many use cases, we measure in this level for all queries, and report them when specific counters are abnormal.
+* kEnableTimeExceptForMutex enables counter stats and most stats of time duration, except when the timing function needs to be called inside a shared mutex.
 
-With `kEnableTimeExceptForMutex`, we enable counter stats and most stats of time duration, except the cases where timing function needs to be called inside a shared mutex. With this level, RocksDB may call the timing function dozens of times for a query. Our common practice is to turn it on with sampled operations, as well as by user request. Users may still need to be careful when choosing sample rates, since costs of timing functions vary across different platforms. Compared to the next level `kEnableTime`, we avoid timing inside shared mutex in this case, so that the extra costs will mostly be introduced to queries being profiled. The impacts on global performance will be limited.
+* kEnableTime further adds stats for mutex acquisition and waiting time.
 
-`kEnableTime` enables counter stats and all time duration stats. In this level, we further add stats for mutex acquisition and waiting time. When we suspect mutex contention as a possible bottleneck, using this level can be helpful to determine the problem.
+kEnableCount avoids the more expensive calls to get system times, which results in lower overhead. We often measure all of the operations using this level, and report them when specific counters are abnormal. 
 
-Stats will not be updated, if they are not included in the profile level being used. It's the users' responsibility to only use stats being updated. 
+With kEnableTimeExceptForMutex, RocksDB may call the timing function dozens of times for an operation. Our common practice is to turn it on with sampled operations, or when the user requests it. Users need to be careful when choosing sample rates, since the cost of the timing functions varies across different platforms. 
+
+kEnableTime further allows timing within shared mutex, but profiling an operation may slow down other operations. When we suspect that mutex contention is the performance bottleneck, we use this level to verify the problem.
+
+How do we deal with the counters disabled in a level? If a counter is disabled, it we won’t be updated.
 
 ## Stats
 We are giving some typical examples of how to use those stats to solve your problems. We are not introducing all the stats here. A full description of all stats can be found in the header files.
