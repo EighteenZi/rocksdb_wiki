@@ -1,6 +1,6 @@
 In many cases, people want to drop a range of keys. For example, in MyRocks, we encoded rows from one table by prefixing with table ID, so that when we need to drop a table, all keys with the prefix needs to be dropped. For another example, if we store different attributes of a user with key with the format "[user_id][attribute_id]", then if a user deletes the account, we need to delete all the keys prefixing "[user_id]".
 
-The standard way of deleting those rows is to iterate all the keys and issue Delete() to those keys one by one. This approach works when the number of keys to delete is not large. However, there are two potential drawbacks of this solution:
+The standard way of deleting those keys is to iterate through all of them and issue Delete() to them one by one. This approach works when the number of keys to delete is not large. However, there are two potential drawbacks of this solution:
 
 1. the space occupied by the data will not be reclaimed immediately. We'll wait for compaction to clean up the data. This is usually a concern when the range to delete takes a significant amount of space of the database.
 2. the chunk of tombstones may slow down iterators; 
