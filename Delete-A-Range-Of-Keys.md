@@ -1,4 +1,4 @@
-In many cases, people want to drop a range of keys. For example, in MyRocks, we encoded rows from one table by prefixing with table ID, so that when we need to drop a table, all keys with the prefix needs to be dropped. As another example, if a user stores different attributes of a user with key with the format "[user_id][attribute_id]", then if the user deletes the account, we need to delete all the keys prefixing "[user_id]". 
+In many cases, people want to drop a range of keys. For example, in MyRocks, we encoded rows from one table by prefixing with table ID, so that when we need to drop a table, all keys with the prefix needs to be dropped. For another example, if a user stores different attributes of a user with key with the format "[user_id][attribute_id]", then if the user deletes the account, we need to delete all the keys prefixing "[user_id]". 
 
 The standard way of deleting those rows is to iterate all the keys and issue Delete() to those keys one by one. This approach works when the number of keys to delete is not large. However, there are two potential concerns of the solution:
 
