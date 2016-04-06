@@ -1,18 +1,18 @@
-**[Q](q1): If my process crashes, can it corrupt the database?**
+**[Q](#q1): If my process crashes, can it corrupt the database?**
 
 A: No, but data in the un-flushed mem-tables might be lost if Write-Ahead-Log (WAL) is disabled.
 
 
-**[Q](q2): If my machine crashes and rebooted, will RocksDB preserve the data?**
+**[Q](#q2): If my machine crashes and rebooted, will RocksDB preserve the data?**
 
 A: Data is synced when you issue a sync write (write with WriteOptions.sync=true), call DB::SyncWAL(), or when memtables are flushed.
 
-**[Q](q3): Does RocksDB throw exceptions?**
+**[Q](#q3): Does RocksDB throw exceptions?**
 
 A: No,  RocksDB returns rocksdb::Status to indicate any error. However, RocksDB does not catch exceptions thrown by STL or other dependencies.  For instance, so it's possible that you will see std::bad_malloc when memory allocation fails, or similar exceptions in other situations.  
 
 
-**[Q](q4): How to know the number of keys stored in a RocksDB database?**
+**[Q](#q4): How to know the number of keys stored in a RocksDB database?**
 
 A: Use GetIntProperty(cf_handle, “rocksdb.estimate-num-keys") to obtain an estimated number of keys stored in a column family, or use GetAggregatedIntProperty(“rocksdb.estimate-num-keys", &num_keys) to obtain an estimated number of keys stored in the whole RocksDB database.
 
@@ -21,35 +21,35 @@ A: Use GetIntProperty(cf_handle, “rocksdb.estimate-num-keys") to obtain an est
 
 A: Obtaining an accurate number of keys in any LSM databases like RocksDB is a challenging problem as they have duplicate keys and deletion entries (i.e., tombstones) that will require a full compaction in order to get an accurate number of keys.  In addition, if the RocksDB database contains merge operators, it will also make the estimated number of keys less accurate.
 
-**[Q](q6): Is basic operations Put(), Write(), Get() and NewIterator() thread safe?**
+**[Q](#q6): Is basic operations Put(), Write(), Get() and NewIterator() thread safe?**
 
 A: Yes.
 
-**[Q](q7): Can I write to RocksDB using multiple processes?**
+**[Q](#q7): Can I write to RocksDB using multiple processes?**
 
 A: No. However, it can be opened in read-only mode from multiple processes.
 
-**[Q](q8): Does RocksDB support multi-process read access?**
+**[Q](#q8): Does RocksDB support multi-process read access?**
 
 A: RocksDB support multi-process read only process without writing the database.  This can be done by opening the database with DB::OpenForReadOnly() call.
 
-**[Q](q9): Is it safe to close RocksDB while another thread is issuing read, write or manual compaction requests?**
+**[Q](#q9): Is it safe to close RocksDB while another thread is issuing read, write or manual compaction requests?**
 
 A: No. The users of RocksDB need to make sure all functions have finished before they close RocksDB.
 
-**[Q](q): What's the maximum key and value sizes supported?**
+**[Q](#q): What's the maximum key and value sizes supported?**
 
 A: In general, RocksDB is not designed for large keys.  The maximum recommended sizes for key and value are 8MB and 3GB respectively.
 
-**[Q](q10): Can I run RocksDB and store the data on HDFS?**
+**[Q](#q10): Can I run RocksDB and store the data on HDFS?**
 
 A: Yes, by using the Env returned by NewHdfsEnv(), RocksDB will store data on HDFS.  However, the file lock is currently not supported in HDFS Env.
 
-**[Q](q11): Can I preserve a “snapshot” of RocksDB and later roll back the DB state to it?**
+**[Q](#q11): Can I preserve a “snapshot” of RocksDB and later roll back the DB state to it?**
 
 A: Yes, via the BackupEngine or Checkpoint.
 
-**[Q](q12): What's the fastest way to load data into RocksDB?**
+**[Q](#q12): What's the fastest way to load data into RocksDB?**
 
 A: A fast way to direct insert data to the DB:
 
@@ -63,7 +63,7 @@ A: A fast way to direct insert data to the DB:
 
 If you can pre-process the data offline before inserting. There is a faster way: you can sort the data, generate SST files with non-overlapping ranges in parallel and bulkload the SST files. See https://github.com/facebook/rocksdb/wiki/Creating-and-Ingesting-SST-files
 
-**[Q](q13): Does RocksJava support all the features?**
+**[Q](#q13): Does RocksJava support all the features?**
 
 A: We are working toward making RocksJava feature compatible.  However, you're more than welcomed to submit pull request if you find something is missing
 
