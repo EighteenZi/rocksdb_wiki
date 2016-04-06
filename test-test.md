@@ -1,4 +1,4 @@
-**[Q](#q-1): If my process crashes, can it corrupt the database?**
+**[Q](#abc): If my process crashes, can it corrupt the database?**
 
 A: No, but data in the un-flushed mem-tables might be lost if Write-Ahead-Log (WAL) is disabled.
 
@@ -63,7 +63,7 @@ A: A fast way to direct insert data to the DB:
 
 If you can pre-process the data offline before inserting. There is a faster way: you can sort the data, generate SST files with non-overlapping ranges in parallel and bulkload the SST files. See https://github.com/facebook/rocksdb/wiki/Creating-and-Ingesting-SST-files
 
-**[Q](#q-14): Does RocksJava support all the features?**
+**[Q123](#qqqqvv): Does RocksJava support all the features?**
 
 A: We are working toward making RocksJava feature compatible.  However, you're more than welcomed to submit pull request if you find something is missing
 
