@@ -25,6 +25,7 @@
 ** [[RocksDB-Options-File | RocksDB Options File]]
 ** [[Transactions | Transactions]]
 ** [[Creating-and-Ingesting-SST-files | Creating and Ingesting SST files]]
+** [[Statistics | Statistics]]
 ** [[Perf-Context-and-IO-Stats-Context | Perf Context and IO Stats Context]]
 ** [[Logger | Logger]]
 * '''Tools / Utilities'''
