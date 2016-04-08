@@ -1,4 +1,4 @@
-In this document I will attempt to outline a general design approach for implementing Two Phase Commit (2PC) semantics for RocksDB and how this feature will be used by MyRocks.
+This document outlines the implementation of Two Phase Commit in rocksdb.
 
 ##### This project can be decomposed into five areas of focus:
 
