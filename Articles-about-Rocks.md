@@ -27,6 +27,8 @@ Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 
 [Under the Hood: Building and open-sourcing RocksDB](https://www.facebook.com/notes/facebook-engineering/under-the-hood-building-and-open-sourcing-rocksdb/10151822347683920) by Dhruba Borthakur. 21st November 2013.
 
+## MyRocks
+[MyRocks Deep Dive](http://www.slideshare.net/matsunobu/myrocks-deep-dive/) by Yoshinori Matsunobu. 18th April 2016.
 
 ## Showcases
 [how innodb lost its advantage](http://dom.as/2015/04/09/how-innodb-lost-its-advantage/) by Domas Mituzas. 9th April 2015.
