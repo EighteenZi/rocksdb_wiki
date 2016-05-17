@@ -4,7 +4,7 @@ In this page, we summarize some unknown issues and limitations that RocksDB user
 
 * Universal Compaction Style has a limitation on total data size. See [Universal Compaction](https://github.com/facebook/rocksdb/wiki/Universal-Compaction).
 
-* Some features are not supported in RocksJava, See [RocksJava Basics](https://github.com/facebook/rocksdb/wiki/RocksJava-Basics)
+* Some features are not supported in RocksJava, See [RocksJava Basics](https://github.com/facebook/rocksdb/wiki/RocksJava-Basics). If there is a feature in the C++ API which is missing from the Java API that you need, please open an [issue](https://github.com/facebook/rocksdb) with a feature request.
 
 * If you use prefix iterating and iterates out of the prefix range, by running Prev() will not recover from the previous key and the results are undefined. 
 
