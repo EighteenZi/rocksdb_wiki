@@ -126,7 +126,7 @@ Transition to the new style should be simple: remove the assignment to `Options.
 
 ```cpp
     auto iter = DB::NewIterator(ReadOptions());
-    for (iter.Seek(prefix); iter.Valid() && iter.key().startswith(prefix); iter.Next()) {
+    for (iter.Seek(prefix); iter.Valid() && iter.key().starts_with(prefix); iter.Next()) {
        // do something
     }
 ```
