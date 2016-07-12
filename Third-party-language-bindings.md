@@ -8,3 +8,4 @@ This is the list of RocksDB bindings for other languages developed by third part
 * Ruby - http://rubygems.org/gems/rocksdb-ruby
 * Haskell - https://hackage.haskell.org/package/rocksdb-haskell
 * PHP - https://github.com/Photonios/rocksdb-php
+* Rust - https://github.com/spacejam/rust-rocksdb
