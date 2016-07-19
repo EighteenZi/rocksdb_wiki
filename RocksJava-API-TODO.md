@@ -37,6 +37,7 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 
 1. Move on to Java-8, especially because Java-7 is EOL this year.
   1. Look at Java 8 Long#unsigned operations.
+  2. Consider whether we should add an UnsignedLong, UnsignedInt class types of our own to prevent users from sending invalid DBOptions.
 
 2. Restructure the package layout within the Java part.
 
