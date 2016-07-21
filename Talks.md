@@ -8,11 +8,11 @@
 * [Running MongoRocks in production](https://www.youtube.com/watch?v=JKGKwUjyKR0) (Igor Canadi @ Facebook)
 
 ### 2016.02 The Hive Think Tank "Rocking the Database World with RocksDB" [Video] (https://www.youtube.com/watch?v=g2PglBY_18w)
-* Open Discussion on RocksDB Roadmap and Vision (Dhruba Borthakur @ Facebook)
-* Ceph + RocksDB (Sage Weil)
-* MongoDB + RocksDB (Igor Canadi @ Facebook) 
-* Use of RocksDB at Rakuten (Qian Zhu @ Rakuten) 
-* MySQL + RocksDB (Siying Dong @ Facebook)
+* [Open Discussion on RocksDB Roadmap and Vision](http://www.slideshare.net/HiveData/dhruba-borthakur-facebook-rocksdb) (Dhruba Borthakur @ Facebook)
+* [Ceph + RocksDB](http://www.slideshare.net/HiveData/sage-weil-red-hat) (Sage Weil)
+* [MongoDB + RocksDB](http://www.slideshare.net/HiveData/igor-canadi-facebook-mongodb) (Igor Canadi @ Facebook) 
+* [Use of RocksDB at Rakuten](http://www.slideshare.net/HiveData/qian-zhu-rakuten-57935215) (Qian Zhu @ Rakuten) 
+* [MySQL + RocksDB](http://www.slideshare.net/HiveData/siying-dong-facebook) (Siying Dong @ Facebook)
 
 ### 2015.12 5th RocksDB Meetup [Video Playlist] (https://www.youtube.com/playlist?list=PLb0IAmt7-GS292rNhzcGTi5cOdcTuK70v) 
 * [RocksDB Transactions](https://www.youtube.com/watch?v=tMeon8FHF3I) (Anthony Giardullo @ Facebook)
