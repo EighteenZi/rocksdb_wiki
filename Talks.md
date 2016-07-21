@@ -7,7 +7,7 @@
 * [RocksDB: Key-Value Store Optimized for Flash-Based SSD](https://www.youtube.com/watch?v=xbR0epinnqo) (Siying Dong @ Facebook)
 * [Running MongoRocks in production](https://www.youtube.com/watch?v=JKGKwUjyKR0) (Igor Canadi @ Facebook)
 
-### 2016.02 The Hive "Rocking the Database World with RocksDB" [Video Playlist] (https://www.youtube.com/watch?v=g2PglBY_18w)
+### 2016.02 The Hive "Rocking the Database World with RocksDB" [Video] (https://www.youtube.com/watch?v=g2PglBY_18w)
 
 
 ### 2015.12 5th RocksDB Meetup [Video Playlist] (https://www.youtube.com/playlist?list=PLb0IAmt7-GS292rNhzcGTi5cOdcTuK70v) 
