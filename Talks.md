@@ -1,5 +1,5 @@
 ### 2016.06 6th RocksDB Meetup [video](http://www.heavybit.com/library/blog/improving-rocksdbs-write-scalability-counting-things-at-smyte/)
-* Improving RocksDB’s Write Scalability (Nathan Bronson @ Facebook)
+* [Improving RocksDB’s Write Scalability](https://github.com/facebook/rocksdb/blob/gh-pages/talks/rocksdb_write_scalability.pdf) (Nathan Bronson @ Facebook)
 * Counting with Domain Specific Databases (Yunjing Xu @ Smyte)
 
 ### 2016.04 Percona Live
