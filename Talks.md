@@ -1,3 +1,7 @@
+### 2016.06 6th RocksDB Meetup [video](http://www.heavybit.com/library/blog/improving-rocksdbs-write-scalability-counting-things-at-smyte/)
+* [Improving RocksDB’s Write Scalability] (Nathan Bronson @ Facebook)
+* [Counting with Domain Specific Databases] (Yunjing Xu @ Smyte)
+
 ### 2016.04 Percona Live
 * [MyRocks, MongoRocks and RocksDB](https://www.youtube.com/watch?v=s_MCe1noDz0) (Mark Callaghan @ Facebook)
 * [RocksDB: Key-Value Store Optimized for Flash-Based SSD](https://www.youtube.com/watch?v=xbR0epinnqo) (Siying Dong @ Facebook)
