@@ -7,6 +7,9 @@
 * [RocksDB: Key-Value Store Optimized for Flash-Based SSD](https://www.youtube.com/watch?v=xbR0epinnqo) (Siying Dong @ Facebook)
 * [Running MongoRocks in production](https://www.youtube.com/watch?v=JKGKwUjyKR0) (Igor Canadi @ Facebook)
 
+### 2016.02 The Hive Data "Rocking the Database World with RocksDB" [Video Playlist] (https://www.youtube.com/watch?v=g2PglBY_18w)
+
+
 ### 2015.12 5th RocksDB Meetup [Video Playlist] (https://www.youtube.com/playlist?list=PLb0IAmt7-GS292rNhzcGTi5cOdcTuK70v) 
 * [RocksDB Transactions](https://www.youtube.com/watch?v=tMeon8FHF3I) (Anthony Giardullo @ Facebook)
 * [RealPin: A Highly Customizable Object Retrieval System](https://www.youtube.com/watch?v=MtFEVEs_2Vo) (Bo Liu @ Pinterest)
