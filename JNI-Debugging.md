@@ -2,6 +2,11 @@ If you are a Java developer working with JNI code, debugging it can be particula
 
 There are several techniques which we can use to try and help get to the bottom of these:
 
+1. [[Interpreting-hs_err_pid-files | Interpreting hs_err_pid files]]
+2. [[ASAN]]
+
+
+
 # Interpreting hs_err_pid files
 If the JVM crashes whilst executing our native C++ code via JNI, then it will typically write a crash report to a file named like `hs_err_pid76448.log` in the same location that the `java` process was launched from.
 
