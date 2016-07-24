@@ -8,9 +8,9 @@ There are several techniques which we can use to try and help get to the bottom 
 
 
 # Interpreting hs_err_pid files
-If the JVM crashes whilst executing our native C++ code via JNI, then it will typically write a crash report to a file named like `hs_err_pid76448.log` in the same location that the `java` process was launched from.
+If the JVM crashes whilst executing our native C++ code via JNI, then it will typically write a `error report file` to a file named like `hs_err_pid76448.log` in the same location that the `java` process was launched from.
 
-Such a *hs_err* crash report might look like:
+Such a *hs_err* error report file might look like:
 ```hs_err
 #
 # A fatal error has been detected by the Java Runtime Environment:
