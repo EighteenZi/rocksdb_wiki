@@ -429,33 +429,47 @@ If ASAN detects an issue, you will see output similar to the following:
 Run: org.rocksdb.util.BytewiseComparatorTest testing now -> java_vs_java_directBytewiseComparator 
 ASAN:SIGSEGV
 =================================================================
-==15091== ERROR: AddressSanitizer: SEGV on unknown address 0x7fb178a32388 (pc 0x7fb2342ead67 sp 0x7fb2380a52e8 bp 0x7fb2380a5370 T1)
+==4665== ERROR: AddressSanitizer: SEGV on unknown address 0x0000fffffff0 (pc 0x7fd481f913e5 sp 0x7fd48599e308 bp 0x7fd48599e340 T1)
 AddressSanitizer can not provide additional info.
-    #0 0x7fb2342ead66 (/usr/lib64/libstdc++.so.6.0.19+0xbdd66)
-    #1 0x7fb2342eade2 (/usr/lib64/libstdc++.so.6.0.19+0xbdde2)
-    #2 0x7fb177e82556 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6d2556)
-    #3 0x7fb177ec4fac (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x714fac)
-    #4 0x7fb177ef5b07 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x745b07)
-    #5 0x7fb177efa15d (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x74a15d)
-    #6 0x7fb1780fb774 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x94b774)
-    #7 0x7fb1780f3598 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x943598)
-    #8 0x7fb177faac11 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x7fac11)
-    #9 0x7fb177fce4bf (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x81e4bf)
-    #10 0x7fb177fcdbc8 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x81dbc8)
-    #11 0x7fb177eafbc4 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6ffbc4)
-    #12 0x7fb177eadfc5 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6fdfc5)
-    #13 0x7fb177ea3d80 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6f3d80)
-    #14 0x7fb177ea3ef7 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6f3ef7)
-    #15 0x7fb22ef71e97 (+0x14e97)
+    #0 0x7fd481f913e4 (/usr/lib64/libc-2.17.so+0x1633e4)
+    #1 0x7fd48282da65 (/usr/lib64/libasan.so.0.0.0+0xfa65)
+    #2 0x7fd481be5944 (/usr/lib64/libstdc++.so.6.0.19+0xbf944)
+    #3 0x7fd3c57bcfc2 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x714fc2)
+    #4 0x7fd3c57edb07 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x745b07)
+    #5 0x7fd3c57f215d (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x74a15d)
+    #6 0x7fd3c59f3774 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x94b774)
+    #7 0x7fd3c59eb598 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x943598)
+    #8 0x7fd3c58a2c11 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x7fac11)
+    #9 0x7fd3c58c64bf (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x81e4bf)
+    #10 0x7fd3c58c5bc8 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x81dbc8)
+    #11 0x7fd3c57a7bc4 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6ffbc4)
+    #12 0x7fd3c57a5fc5 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6fdfc5)
+    #13 0x7fd3c579bd80 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6f3d80)
+    #14 0x7fd3c579bef7 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6f3ef7)
+    #15 0x7fd47c86ae97 (+0x14e97)
 Thread T1 created by T0 here:
-    #0 0x7fb234f2fc3a (/usr/lib64/libasan.so.0.0.0+0xac3a)
-    #1 0x7fb234b047cf (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x97cf)
-    #2 0x7fb234aff386 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x4386)
-    #3 0x7fb234affe38 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x4e38)
+    #0 0x7fd482828c3a (/usr/lib64/libasan.so.0.0.0+0xac3a)
+    #1 0x7fd4823fd7cf (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x97cf)
+    #2 0x7fd4823f8386 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x4386)
+    #3 0x7fd4823f8e38 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x4e38)
     #4 0x400774 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre-abrt/bin/java+0x400774)
-    #5 0x7fb234556b14 (/usr/lib64/libc-2.17.so+0x21b14)
-==15091== ABORTING
+    #5 0x7fd481e4fb14 (/usr/lib64/libc-2.17.so+0x21b14)
+==4665== ABORTING
 make[1]: *** [run_test] Error 1
 make[1]: Leaving directory `/home/aretter/rocksdb/java'
 make: *** [jtest_run] Error 2
+```
+
+The addresses presented in the stack-trace from GCC ASAN on Linux, can be translated into file and line-numbers by using `addr2line`, for example:
+
+Given the stack frame (from above):
+```bash
+#3 0x7fd3c57bcfc2 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x714fc2)
+```
+
+We can translate it with the command:
+
+```bash
+$ addr2line -e java/target/librocksdbjni-linux64.so 0x714fc2
+/home/aretter/rocksdb/./db/dbformat.h:126 
 ```
