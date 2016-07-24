@@ -43,6 +43,7 @@
 * '''RocksJava'''
 ** [[RocksJava-Basics | RocksJava Basics]]
 ** [[RocksJava-Performance-on-Flash-Storage | RocksJava Performance on Flash Storage]]
+** [[JNI-Debugging | JNI Debugging]]
 ** [[RocksJava-API-TODO | RocksJava API TODO]]
 * '''Performance'''
 ** [[Performance-Benchmarks | Performance on Flash Storage]]
