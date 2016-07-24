@@ -213,6 +213,28 @@ v  ~StubRoutines::call_stub
 
 ```
 
+## Stack
+The most interesting part of the trace is likely the stack frames. For example consider this frame:
+```
+C  [librocksdbjni-osx.jnilib+0x1c38a]  rocksdb::InternalKeyComparator::InternalKeyComparator(rocksdb::Comparator const*)+0x4a
+```
+We can see that something went wrong from a function (in this case a constructor) in `rocksdb::InternalKeyComparator`, however how do we relate these back to file and line-numbers in our source code?
+
+We have to translate the offsets provided in the trace:
+
+### Mac OS X
+On a Mac this would look like:
+```bash
+$ atos -o java/target/librocksdbjni-osx.jnilib 0x1c38a
+ava_org_rocksdb_Logger_setInfoLogLevel (in librocksdbjni-osx.jnilib) (loggerjnicallback.cc:152)
+```
+
+### Linux
+On a Linux system this would look like:
+```bash
+$ addr2line -e java/target/librocksjni-linux64.so 0x1c38a
+```
+
 ** TODO **
 
 # ASAN
