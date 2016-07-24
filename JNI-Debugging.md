@@ -417,7 +417,7 @@ Unfortunately all of those `(<unknown module>)` are execution paths inside the J
     LD_PRELOAD=/usr/lib64/libasan.so.0 make jtest_run
     ```
 
-    or for a single test (e.g. ComparatorTest), execute:
+    or for a single test (e.g. `ComparatorTest`), execute:
 
     ```bash
     cd java
