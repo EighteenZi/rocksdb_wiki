@@ -380,9 +380,60 @@ Unfortunately all of those `(<unknown module>)` are execution paths inside the J
     ```
    You might also need to run `sudo alternatives --config java` and select OpenJDK 7.
 
-2. Perform a clean build where ASAN is compiled in (from your RocksDB folder):
+2. Ensure a clean start:
     ```bash
     make clean jclean
-    DEBUG_LEVEL=2 COMPILE_WITH_ASAN=true make rocksdbjava
     ```
-***TODO***
+
+3. Compile the Java test suite with ASAN compiled in:
+    ```bash
+    DEBUG_LEVEL=2 COMPILE_WITH_ASAN=true make jtest_compile
+    ```
+
+4. Execute the entire Java Test Suite:
+    ```bash
+    LD_PRELOAD=/usr/lib64/libasan.so.0 make jtest_run
+    ```
+
+or for a single test (e.g. ComparatorTest), execute:
+
+    ```bash
+    cd java
+    LD_PRELOAD=/usr/lib64/libasan.so.0 java -ea -Xcheck:jni -Djava.library.path=target -cp "target/classes:target/test-classes:test-libs/junit-4.12.jar:test-libs/hamcrest-core-1.3.jar:test-libs/mockito-all-1.10.19.jar:test-libs/cglib-2.2.2.jar:test-libs/assertj-core-1.7.1.jar:target/*" org.rocksdb.test.RocksJunitRunner org.rocksdb.ComparatorTest
+    ```
+
+If ASAN detects an issue, you will see output similar to the following:
+```bash
+Run: org.rocksdb.util.BytewiseComparatorTest testing now -> java_vs_java_directBytewiseComparator 
+ASAN:SIGSEGV
+=================================================================
+==15091== ERROR: AddressSanitizer: SEGV on unknown address 0x7fb178a32388 (pc 0x7fb2342ead67 sp 0x7fb2380a52e8 bp 0x7fb2380a5370 T1)
+AddressSanitizer can not provide additional info.
+    #0 0x7fb2342ead66 (/usr/lib64/libstdc++.so.6.0.19+0xbdd66)
+    #1 0x7fb2342eade2 (/usr/lib64/libstdc++.so.6.0.19+0xbdde2)
+    #2 0x7fb177e82556 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6d2556)
+    #3 0x7fb177ec4fac (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x714fac)
+    #4 0x7fb177ef5b07 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x745b07)
+    #5 0x7fb177efa15d (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x74a15d)
+    #6 0x7fb1780fb774 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x94b774)
+    #7 0x7fb1780f3598 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x943598)
+    #8 0x7fb177faac11 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x7fac11)
+    #9 0x7fb177fce4bf (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x81e4bf)
+    #10 0x7fb177fcdbc8 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x81dbc8)
+    #11 0x7fb177eafbc4 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6ffbc4)
+    #12 0x7fb177eadfc5 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6fdfc5)
+    #13 0x7fb177ea3d80 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6f3d80)
+    #14 0x7fb177ea3ef7 (/home/aretter/rocksdb/java/target/librocksdbjni-linux64.so+0x6f3ef7)
+    #15 0x7fb22ef71e97 (+0x14e97)
+Thread T1 created by T0 here:
+    #0 0x7fb234f2fc3a (/usr/lib64/libasan.so.0.0.0+0xac3a)
+    #1 0x7fb234b047cf (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x97cf)
+    #2 0x7fb234aff386 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x4386)
+    #3 0x7fb234affe38 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre/lib/amd64/jli/libjli.so+0x4e38)
+    #4 0x400774 (/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.101-2.6.6.1.el7_2.x86_64/jre-abrt/bin/java+0x400774)
+    #5 0x7fb234556b14 (/usr/lib64/libc-2.17.so+0x21b14)
+==15091== ABORTING
+make[1]: *** [run_test] Error 1
+make[1]: Leaving directory `/home/aretter/rocksdb/java'
+make: *** [jtest_run] Error 2
+```
