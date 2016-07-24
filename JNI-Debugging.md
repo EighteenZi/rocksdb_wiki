@@ -3,7 +3,7 @@ If you are a Java developer working with JNI code, debugging it can be particula
 There are several techniques which we can use to try and help get to the bottom of these:
 
 # Interpreting hs_err_pid files
-*** TODO ***
+** TODO **
 
 # ASAN
 [ASAN](https://github.com/google/sanitizers/wiki/AddressSanitizer) (Google Address Sanitizer) attempts to detect a whole range of memory and range issues and can be compiled into your code, at runtime, it will report some memory or buffer-range violations.
@@ -151,6 +151,9 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 make[1]: *** [test] Abort trap: 6
 make: *** [jtest] Error 2
 ```
+
+
+** TODO ** interpreting the output from ASAN and limitations without a `java` with ASAN.
 
 /Library/Developer/CommandLineTools/usr/lib/clang/7.3.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
 
