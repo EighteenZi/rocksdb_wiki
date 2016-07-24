@@ -153,9 +153,12 @@ make: *** [jtest] Error 2
 ```
 
 
-** TODO ** interpreting the output from ASAN and limitations without a `java` with ASAN.
+The output from ASAN shows a stack-trace with file names and line numbers of our C++ code that led to the issue, hopefully this helps shed some light on where the issue is occurring and perhaps why.
 
-/Library/Developer/CommandLineTools/usr/lib/clang/7.3.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+Unfortunately all of those `(<unknown module>)` are execution paths inside the JVM, ASAN cannot discover them because the JVM we are using was not itself build with support for ASAN. We could attempt to build our own JVM from the OpenJDK project and include ASAN, but at the moment that process for Mac OS X seems to be broken: https://github.com/hgomez/obuildfactory/issues/51.
+
+
+** TODO ** Note the path of the DSO for libasan on Mac OS X: `/Library/Developer/CommandLineTools/usr/lib/clang/7.3.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib`
 
 
 ## Linux (CentOS 7) (GCC 4.8.5)
