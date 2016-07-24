@@ -2,8 +2,8 @@ If you are a Java developer working with JNI code, debugging it can be particula
 
 There are several techniques which we can use to try and help get to the bottom of these:
 
-1. [[Interpreting hs_err_pid files | JNI-Debugging#Interpreting-hs_err_pid-files]]
-2. [[JNI-Debugging#ASAN]]
+1. [[Interpreting hs_err_pid files | JNI-Debugging#interpreting-hs_err_pid-files]]
+2. [[ASAN | JNI-Debugging#ASAN]]
 
 
 
