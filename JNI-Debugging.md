@@ -19,7 +19,7 @@ There are several techniques which we can use to try and help get to the bottom 
     make clean jclean
     ```
 
-3. Compile the Java test suite with ASAN is compiled in:
+3. Compile the Java test suite with ASAN compiled in:
     ```bash
     DEBUG_LEVEL=2 COMPILE_WITH_ASAN=true make jtest_compile
     ```
