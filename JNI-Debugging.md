@@ -148,8 +148,8 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
   Left alloca redzone:     ca
   Right alloca redzone:    cb
 ==80632==ABORTING
-make[1]: *** [test] Abort trap: 6
-make: *** [jtest] Error 2
+make[1]: *** [run_test] Abort trap: 6
+make: *** [jtest_run] Error 2
 ```
 
 
