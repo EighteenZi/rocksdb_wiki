@@ -265,7 +265,7 @@ $ addr2line -e java/target/librocksjni-linux64.so 0x1c38a
 
     ```bash
     cd java
-    java -ea -Xcheck:jni -Djava.library.path=target -cp "target/classes:target/test-classes:test-libs/junit-4.12.jar:test-libs/hamcrest-core-1.3.jar:test-libs/mockito-all-1.10.19.jar:test-libs/cglib-2.2.2.jar:test-libs/assertj-core-1.7.1.jar:target/*" org.rocksdb.test.RocksJunitRunner org.rocksdb.ComparatorTest```
+    java -ea -Xcheck:jni -Djava.library.path=target -cp "target/classes:target/test-classes:test-libs/junit-4.12.jar:test-libs/hamcrest-core-1.3.jar:test-libs/mockito-all-1.10.19.jar:test-libs/cglib-2.2.2.jar:test-libs/assertj-core-1.7.1.jar:target/*" org.rocksdb.test.RocksJunitRunner org.rocksdb.ComparatorTest
     ```
 
 If ASAN detects an issue, you will see output similar to the following:
