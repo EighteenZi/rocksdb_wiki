@@ -95,3 +95,5 @@ By default, each table provides the following properties.
      number of data blocks
 
 RocksDB also provides users the "callback" to collect their interested properties about this table. Please refer to `UserDefinedPropertiesCollector`.
+
+### `Compression Dictionary` Meta Block
