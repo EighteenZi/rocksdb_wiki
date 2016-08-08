@@ -10,7 +10,6 @@
 * Memtable bloom filter
 * Single bloom filter covering the whole SST file
 * Write lock optimization
-* Avoid data copying when possible
 * Compression dictionary
 * Improved Iter::Prev() performance
 * Fewer comparator calls during SkipList searches
