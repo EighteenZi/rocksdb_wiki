@@ -1,5 +1,5 @@
 # Welcome to RocksDB
-RocksDB is a C++ library providing an embedded key-value store, where keys and values are arbitrary byte streams. It was developed at Facebook based on LevelDB and provides backwards-compatible support for LevelDB APIs. See [features not in LevelDB](https://github.com/facebook/rocksdb/wiki/Features-Not-in-LevelDB).
+RocksDB is a C++ library providing an embedded key-value store, where keys and values are arbitrary byte streams. It was developed at Facebook based on LevelDB and provides backwards-compatible support for LevelDB APIs.
 
 RocksDB is optimized for Flash with extremely low latencies. RocksDB uses a Log Structured Database Engine for storage, written entirely in C++. A Java version called RocksJava is currently in development.
 
@@ -9,6 +9,9 @@ RocksDB features highly flexible configuration settings that may be tuned to run
 * Designed for application servers wanting to store up to a few terabytes of data on locally attached Flash drives or in RAM
 * Optimized for storing small to medium size key-values on fast storage -- flash devices or in-memory
 * Scales linearly with number of CPUs so that it works well on processors with many cores
+
+## Features Not in LevelDB
+RocksDB introduces dozens of new major features. See [the list of features not in LevelDB](https://github.com/facebook/rocksdb/wiki/Features-Not-in-LevelDB).
 
 
 ## Getting Started
