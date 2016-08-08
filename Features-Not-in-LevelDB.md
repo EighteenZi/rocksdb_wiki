@@ -46,7 +46,7 @@
 * Option to keep all index and bloom filter blocks in block cache
 * Multiple WAL recovery modes
 * Fadvise hints for readahead and to avoid caching in OS page cache
-* Option to pin index and bloom filters of L0 files in memory
+* Option to pin indexes and bloom filters of L0 files in memory
 * More Compression Types: zlib, lz4, zstd
 * Compression Dictionary
 * Checksum Type: xxhash 
