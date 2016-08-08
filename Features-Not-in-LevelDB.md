@@ -10,7 +10,6 @@
 * Memtable bloom filter
 * Single bloom filter covering the whole SST file
 * Write lock optimization
-* Compression dictionary
 * Improved Iter::Prev() performance
 * Fewer comparator calls during SkipList searches
 * Allocate memtable memory using huge page.
@@ -46,9 +45,11 @@
 * Option to keep all files open
 * Option to keep all index and bloom filter blocks in block cache
 * Multiple WAL recovery modes
-* fadvise hints for readahead and to avoid caching in OS page cache
-* option to pin L0 and L1 files in memory
-* compression : zstd, zlib, dictionary encoding
+* Fadvise hints for readahead and to avoid caching in OS page cache
+* Option to pin L0 and L1 files in memory
+* More Compression Types: zlib, lz4, zstd
+* Compression Dictionary
+* Checksum Type: xxhash 
 
 ## Manageability
 
