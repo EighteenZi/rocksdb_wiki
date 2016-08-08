@@ -28,7 +28,8 @@
 * Persistent Cache
 * Bulk loading
 * Forward Iterators/ Tailing iterator
-* Single delete and range delete
+* Single delete
+* Delete files in range
 * Pin iterator key/value 
 
 ## Alternative Data Structures And Formats
