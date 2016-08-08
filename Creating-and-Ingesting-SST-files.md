@@ -57,8 +57,8 @@ std::string file_path1 = "/home/usr/file1.sst";
 std::string file_path2 = "/home/usr/file2.sst";
 Status s = db_->AddFile({file_path1, file_path2});
 if (!s.ok()) {
-  printf("Error while adding file %s and %s, Error %s\n", file_path1.c_str(), file_path2.c_str(),
-         s.ToString().c_str());
+  printf("Error while adding file %s and %s, Error %s\n",
+         file_path1.c_str(), file_path2.c_str(), s.ToString().c_str());
   return 1;
 }
 ```
