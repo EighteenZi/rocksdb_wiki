@@ -11,6 +11,7 @@ BlockBasedTable is the default SST table format in RocksDB.
     [data block N]
     [meta block 1: filter block]           (see section: "filter" Meta Block)
     [meta block 2: stats block]            (see section: "properties" Meta Block)
+    [meta block 3: compression dictionary block]            (see section: "compression dictionary" Meta Block)
     ...
     [meta block K: future extended block]  (we may add more meta blocks in the future)
     [metaindex block]
