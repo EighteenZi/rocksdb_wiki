@@ -49,7 +49,8 @@
 * Option to pin indexes and bloom filters of L0 files in memory
 * More Compression Types: zlib, lz4, zstd
 * Compression Dictionary
-* Checksum Type: xxhash 
+* Checksum Type: xxhash
+* Different level size multiplier and compression type for each level.
 
 ## Manageability
 
