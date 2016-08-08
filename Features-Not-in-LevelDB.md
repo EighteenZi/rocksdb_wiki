@@ -34,7 +34,7 @@
 
 * Plain Table format for memory-only use cases
 * Vector-based and hash-based memtable format
-* Clock-based cache
+* Clock-based cache (coming soon)
 * Pluggable information log
 * Annotate transaction log write with blob (for replication)
 
