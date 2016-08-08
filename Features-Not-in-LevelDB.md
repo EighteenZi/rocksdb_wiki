@@ -34,7 +34,7 @@
 ## Alternative Data Structures And Formats
 
 * Plain Table format for memory-only use cases
-* vector-based and hash-based memtable format
+* Vector-based and hash-based memtable format
 * Clock-based cache
 * Pluggable information log
 * Annotate transaction log write with blob (for replication)
