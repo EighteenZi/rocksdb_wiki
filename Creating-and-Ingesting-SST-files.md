@@ -68,6 +68,13 @@ Please notice there are some restrictions on the SST files that you can ingest i
 * Key ranges in the SST files don't overlap with each other or existing/deleted keys in the DB.
 * No snapshots are being held while ingesting the files.
 
+Note: The API `DB::AddFile(std::string file_path)` that accepts one file path is **deprecated** and should not be used. Please notice that when you need to ingest one file, do not call `DB:AddFile` with initialization list, but with an explicit vector because of the wrong implicit conversion from `std::initializer_list<std::string>` to `std::string`. 
+```cpp
+std::string file_path1 = "/home/usr/file1.sst";
+db_->AddFile(std::vector<std::string>(1,file_path1));
+db_->AddFile({file_path1}); // Error
+```
+
 You can learn more by checking DB::AddFile() in [include/rocksdb/db.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/db.h)
 
 ---
