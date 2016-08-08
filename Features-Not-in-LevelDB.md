@@ -40,9 +40,6 @@
 
 ## Tunability
 
-* Dynamic option changes
-* Get options from a string or map
-* Persistent options to option files
 * Rate limiting
 * Tunable Slowdown and Stop threshold
 * Option to keep all files open
@@ -62,3 +59,6 @@
 * User-defined table properties
 * Event listeners
 * More DB Properties
+* Dynamic option changes
+* Get options from a string or map
+* Persistent options to option files
