@@ -23,4 +23,4 @@ Similar to `Delete()` method, `SingleDelete()` removes the database entry for a 
 * Callers have to ensure that `SingleDelete` only applies to a _key_ having not been deleted using `Delete()` or written using `Merge()`.  Mixing `SingleDelete()` operations with `Delete()` and `Merge()` can result in undefined behavior.
 * `SingleDelete` is not supported by HashCuckooRep, which means you should not call `SingleDelete` if you set
 `options.memtable_factory` with [`NewHashCuckooRepFactory`](https://github.com/facebook/rocksdb/blob/522de4f59e6314698286cf29d8a325a284d81778/include/rocksdb/memtablerep.h#L325).
-* Consider setting `write_options.sync = true`([Asynchronous Writes](https://github.wom/facebook/rocksdb/wiki/Basic-Operations#asynchronous-writes)).
+* Consider setting `write_options.sync = true`([Asynchronous Writes](https://github.com/facebook/rocksdb/wiki/Basic-Operations#asynchronous-writes)).
