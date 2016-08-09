@@ -85,16 +85,17 @@ Checksum is calculated for any restored file and compared against the one stored
 ├── private
 │   └── 1
 │       ├── CURRENT
-│       └── MANIFEST-000008
+│       ├── MANIFEST-000008
+|       └── OPTIONS-000009
 └── shared_checksum
     └── 000007_1498774076_590.sst
 ```
 
-`LATEST_BACKUP` is a file containing the highest backup ID. In our example above, it contains "1".
+`LATEST_BACKUP` is a file containing the highest backup ID. In our example above, it contains "1". It was used to for getting latest backup number, but no longer needed since there're easier ways to get the number from META. The file will be removed in the future.
 
 `meta` directory contains a "meta-file" describing each backup, where its name is the backup ID. For example, a meta-file contains a listing of all files belonging to that backup. The format is described fully in the implementation file (`utilities/backupable/backupable_db.cc`).
 
-`private` directory always contains non-SST files (current, manifest, and WALs). In case `Options::share_table_files` is unset, it also contains the SST files.
+`private` directory always contains non-SST files (options, current, manifest, and WALs). In case `Options::share_table_files` is unset, it also contains the SST files.
 
 `shared` directory (not shown) contains SST files when `Options::share_table_files` is set and `Options::share_files_with_checksum` is unset. In this directory, files are named using only by their name in the original DB. So, it should only be used to backup a single RocksDB instance; otherwise, filenames can conflict.
 
@@ -106,13 +107,15 @@ Beware that backup engine's `Open()` takes time proportional to the number of ex
 
 Another way to keep engine initialization fast is to remove unnecessary backups. To delete unnecessary backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
+Also beware that performance is decided by reading from local db and copying to backup. Since you may use different environments for reading and copying, the parallelism bottleneck can be on one of the two side. For example, using more threads for backup (See Advanced usage) won't be helpful if local db is on HDD, because the bottleneck in this condition is disk reading capability, which is saturated. It'll be beneficial if local db is on SSD and backup target is HDFS. In our benchmarks, using 16 threads will reduce the backup time to 1/3 of single-thread job.
+
 ### Under the hood
 
 When you call `BackupEngine::CreateNewBackup()`, it does the following:
 
 1. Disable file deletions
-2. Get live files (this includes table files, current and manifest file).
-3. Copy live files to the backup directory. Since table files are immutable and filenames unique, we don't copy a table file that is already present in the backup directory. For example, if there is a file `00050.sst` already backed up and `GetLiveFiles()` returns `00050.sst`, we will not copy that file to the backup directory. However, checksum is calculated for all files regardless if a file needs to be copied or not. If a file is already present, the calculated checksum is compared against previously calculated checksum to make sure nothing crazy happened between backups. If a mismatch is detected, backup is aborted and the system is restored back to the state before `BackupEngine::CreateNewBackup()` is called. One thing to note is that a backup abortion could mean a corruption from a file in backup directory or the corresponding live file in current DB. Both manifest and current files are copied, since they are not immutable.
+2. Get live files (this includes table files, current, options and manifest file).
+3. Copy live files to the backup directory. Since table files are immutable and filenames unique, we don't copy a table file that is already present in the backup directory. For example, if there is a file `00050.sst` already backed up and `GetLiveFiles()` returns `00050.sst`, we will not copy that file to the backup directory. However, checksum is calculated for all files regardless if a file needs to be copied or not. If a file is already present, the calculated checksum is compared against previously calculated checksum to make sure nothing crazy happened between backups. If a mismatch is detected, backup is aborted and the system is restored back to the state before `BackupEngine::CreateNewBackup()` is called. One thing to note is that a backup abortion could mean a corruption from a file in backup directory or the corresponding live file in current DB. Options, manifest and current files are always copied to the private directory, since they are not immutable.
 4. If `flush_before_backup` was set to false, we also need to copy log files to the backup directory. We call `GetSortedWalFiles()` and copy all live files to the backup directory.
 5. Re-enable file deletions
 
@@ -120,7 +123,9 @@ When you call `BackupEngine::CreateNewBackup()`, it does the following:
 
 We can store user-defined metadata in the backups. Pass your metadata to `BackupEngine::CreateNewBackupWithMetadata()` and then read it back later using `BackupEngine::GetBackupInfo()`. For example, this can be used to identify backups using different identifiers from our auto-incrementing IDs.
 
-Let's say you want to backup your DB to HDFS. `BackupableDBOptions::backup_env` sets the environment that will be used for all file I/O related to `BackupableDBOptions::backup_dir` (writes when backuping, reads when restoring or getting info). If you set it to HDFS Env, all the backups will be stored in HDFS.
+We also backup and restore the options file now. After restore, you can load the options from db directory using `rocksdb::LoadLatestOptions()` or `rocksdb:: LoadOptionsFromFile()`. The limitation is that not everything in options object can be transformed to text in a file. You still need a few steps to manually set up missing items in options after restore and load. Good news is that you need much less than previously.
+
+You need to instantiate some env and initialize `BackupableDBOptions::backup_env` for backup_target. Put your backup root directory in `BackupableDBOptions::backup_dir`. Under the directory the files will be organized in the structure mentioned above.
 
 `BackupableDBOptions::share_table_files` controls whether backups are done incrementally. If true, SST files will go under a "shared/" subdirectory. Conflicts can arise when different SST files use the same name (e.g., when multiple databases have the same target backup directory).
 
