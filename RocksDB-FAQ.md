@@ -132,7 +132,7 @@ A: It is safe to read but not always safe to write to RocksDB inside compaction 
 
 **Q: Does RocksDB hold SST files and memtables for a snapshot?**
 
-A: No.
+A: No. See https://github.com/facebook/rocksdb/wiki/RocksDB-Basics#gets-iterators-and-snapshots for how snapshots work.
 
 **Q: With DBWithTTL, is there a time bound for the expired keys to be removed?**
 
@@ -198,4 +198,34 @@ A: No, currently DB::Flush() is not atomic across multiple column families. We d
 
 A: You cannot use the regular ldb tool in this case.  However, you can build your custom ldb tool by passing your own options using this function rocksdb::LDBTool::Run(argc, argv, options) and compile it.
 
+**Q: How RocksDB handles read or write I/O errors?**
+
+A:  If the I/O errors happen in the foreground operations such as Get() and Write(), then RocksDB will return rocksdb::IOError status.  If the error happens in background threads and options.paranoid_checks=true, we will switched to the read-only mode. All the writes will be rejected with the status code representing the background error. 
+
+**Q: Can I cancel a specific compaction?**
+
+A: No, you can't cancel one specific compaction.
+
+** Q: Can I close the DB when a manual compaction is in progress?**
+
+A: No, it's not safe to do that. However, you call CancelAllBackgroundWork(db, true) in another thread to abort the running compactions, so that you can close the DB sooner.
+
+**Q: What will happen if I open RocksDB with a different compaction style?**
+
+A: When opening a rocksdb database with a different compaction style or compaction settings, one of the following scenarios will happen:
+
+1. The database will refuse to open if the new configuration is incompatible with the current LSM layout.
+2. If the new configuration is compatible with the current LSM layout, then rocksdb will continue and open the database.  However, in order to make the new options take full effect, it might require a full compaction.
+
+**Q: What's the best way to delete a range of keys?**
+
+A: See https://github.com/facebook/rocksdb/wiki/Delete-A-Range-Of-Keys .
+
+**Q: What are column families used for?**
+
+A: The most common reasons of using column families: (1) use different compaction setting, comparators, compression types, merge operators, or compaction filters in different parts of data; (2) drop a column family to delete its data; (3) one column family to store metadata and another one to store the data.
+
+**Q: What's the difference between storing data in multiple column family and in multiple rocksdb database?**
+
+A: The main differences will be backup, atomic writes and performance of writes. The advantage of using multiple databases: database is the unit of backup or checkpoint. It's easier to copy a database to another host than a column family. Advantages of using multiple column families: (1) write batches are atomic across multiple column families on one database. You can't achieve this using multiple RocksDB databases. (2) If you issue sync writes to WAL, too many databases may hurt the performance.  
 
