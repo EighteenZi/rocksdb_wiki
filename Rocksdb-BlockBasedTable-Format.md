@@ -96,4 +96,8 @@ By default, each table provides the following properties.
 
 RocksDB also provides users the "callback" to collect their interested properties about this table. Please refer to `UserDefinedPropertiesCollector`.
 
-### `Compression Dictionary` Meta Block
+#### `Compression Dictionary` Meta Block
+
+This metablock contains the dictionary used to prime the compression library before compressing/decompressing each block. Its purpose is to address a fundamental problem with dynamic dictionary compression algorithms on small data blocks: the dictionary is built during a single pass over the block, so small data blocks always have ineffective dictionaries. Our solution is to initialize the compression library with a dictionary using data sampled from previously seen blocks. This dictionary is then stored in a file-level meta-block for use during decompression. The upper-bound on the size of this dictionary is configurable via `CompressionOptions::max_dict_bytes`.
+
+More specifically, the compression dictionary is built only during compaction to the bottommost level. To avoid iterating over input data multiple times, the dictionary includes samples from the subcompaction's first output file only. We do not know in advance the size of the output file so we assume it'll reach the maximum size when generating the sample intervals. In case the file is smaller, some sample intervals will refer beyond EOF, causing the dictionary to be smaller than `CompressionOptions::max_dict_bytes`. Then, the dictionary is applied to and stored in meta-blocks of all subsequent output files. Note the dictionary is not applied to or stored in the first file since it 
