@@ -14,7 +14,7 @@
 ** [[Prefix-Seek-API-Changes | Prefix seek]]
 ** [[Merge-Operator | Read-Modify-Write Operator]]
 ** [[Tailing-Iterator | Tailing Iterator]]
-** [[SingleDelete | SingleDelete]]
+** [[Single-Delete | SingleDelete]]
 ** [[Time-to-Live | Time to Live (TTL) Support]]
 ** [[Allocating-Some-Indexes-and-Bloom-Filters-using-Huge-Page-TLB | Huge Page TLB Support]]
 ** [[Column-Families | Column Families]]
