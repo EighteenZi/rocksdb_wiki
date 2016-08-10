@@ -91,7 +91,7 @@ Checksum is calculated for any restored file and compared against the one stored
     └── 000007_1498774076_590.sst
 ```
 
-`LATEST_BACKUP` is a file containing the highest backup ID. In our example above, it contains "1". It was used to for getting latest backup number, but no longer needed since there're easier ways to get the number from META. The file will be removed in the future.
+`LATEST_BACKUP` is a file containing the highest backup ID. In our example above, it contains "1". It was used to for getting latest backup number, but no longer needed since there're easier ways to get the number from META. The file will be removed in RocksDB 5.0.
 
 `meta` directory contains a "meta-file" describing each backup, where its name is the backup ID. For example, a meta-file contains a listing of all files belonging to that backup. The format is described fully in the implementation file (`utilities/backupable/backupable_db.cc`).
 
@@ -107,7 +107,7 @@ Beware that backup engine's `Open()` takes time proportional to the number of ex
 
 Another way to keep engine initialization fast is to remove unnecessary backups. To delete unnecessary backups, just call `PurgeOldBackups(N)`, where N is how many backups you'd like to keep. All backups except the N newest ones will be deleted. You can also choose to delete arbitrary backup with call `DeleteBackup(id)`.
 
-Also beware that performance is decided by reading from local db and copying to backup. Since you may use different environments for reading and copying, the parallelism bottleneck can be on one of the two side. For example, using more threads for backup (See Advanced usage) won't be helpful if local db is on HDD, because the bottleneck in this condition is disk reading capability, which is saturated. It'll be beneficial if local db is on SSD and backup target is HDFS. In our benchmarks, using 16 threads will reduce the backup time to 1/3 of single-thread job.
+Also beware that performance is decided by reading from local db and copying to backup. Since you may use different environments for reading and copying, the parallelism bottleneck can be on one of the two side. For example, using more threads for backup (See Advanced usage) won't be helpful if local db is on HDD, because the bottleneck in this condition is disk reading capability, which is saturated. Also a poor small HDFS cluster cannot show good parallelism. It'll be beneficial if local db is on SSD and backup target is a high-capacity HDFS. In our benchmarks, using 16 threads will reduce the backup time to 1/3 of single-thread job.
 
 ### Under the hood
 
@@ -123,7 +123,7 @@ When you call `BackupEngine::CreateNewBackup()`, it does the following:
 
 We can store user-defined metadata in the backups. Pass your metadata to `BackupEngine::CreateNewBackupWithMetadata()` and then read it back later using `BackupEngine::GetBackupInfo()`. For example, this can be used to identify backups using different identifiers from our auto-incrementing IDs.
 
-We also backup and restore the options file now. After restore, you can load the options from db directory using `rocksdb::LoadLatestOptions()` or `rocksdb:: LoadOptionsFromFile()`. The limitation is that not everything in options object can be transformed to text in a file. You still need a few steps to manually set up missing items in options after restore and load. Good news is that you need much less than previously.
+We also backup and restore the options file now. After restore, you can load the options from db directory using `rocksdb::LoadLatestOptions()` or `rocksdb:: LoadOptionsFromFile()`. The limitation is that not everything in options object can be transformed to text in a file. You still need a few steps to manually set up [missing items](https://github.com/facebook/rocksdb/wiki/RocksDB-Options-File) in options after restore and load. Good news is that you need much less than previously.
 
 You need to instantiate some env and initialize `BackupableDBOptions::backup_env` for backup_target. Put your backup root directory in `BackupableDBOptions::backup_dir`. Under the directory the files will be organized in the structure mentioned above.
 
