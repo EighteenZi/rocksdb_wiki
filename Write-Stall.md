@@ -45,7 +45,6 @@ If write stalls are triggered by too many level-0 files or too many pending comp
 * Increase `write_buffer_size` to have large memtable, to reduce write amplification.
 * Increase `min_write_buffer_number_to_merge`.
 
-You can also set stop/slowdown triggers and pending compaction bytes limits to huge number to avoid hitting write stall. 
-
+You can also set stop/slowdown triggers and pending compaction bytes limits to huge number to avoid hitting write stall. Also take a look at "What's the fastest way to load data into RocksDB?" in our [FAQ](https://github.com/facebook/rocksdb/wiki/RocksDB-FAQ) if you are bulk loading data to RocksDB.
 
 
