@@ -179,11 +179,7 @@ However, there are techniques to help reduce the temporary space doubling. If yo
 See [Universal Compaction](https://github.com/facebook/rocksdb/wiki/Universal-Compaction) page for more information on universal compaction.
 
 ## Write stalls
-RocksDB has extensive system to slow down writes when compaction can't keep up with the incoming write rate. Without such a system, short-lived write bursts would: 1) increase space amplification, which could lead to running out of disk space, and 2) increase read amplification, significantly degrading read performance. The idea is to smooth out write bursts by slowing down writes. Options that control write stalls are:
-
-**level0_slowdown_writes_trigger** and **level0_stop_writes_trigger** -- When the number of level 0 files is greater than the slowdown limit, writes are stalled. When the number is greater than stop limit, writes are fully stopped until compaction is done.
-
-**soft_rate_limit** and **hard_rate_limit (deprecated)** -- In level style compaction, each level has a compaction score. When a compaction score is greater than 1, compaction is triggered. If the score for any level exceeds the soft_rate_limit, writes are slowed down. If a score exceeds hard_rate_limit, writes are stopped until compaction for that level reduces its score. It's depreciated to two new options soft_pending_compaction_bytes_limit and hard_pending_compaction_bytes_limit.
+See [Write Stalls](https://github.com/facebook/rocksdb/wiki/Write-Stalls) page for more details.
 
 ## Prefix databases
 RocksDB keeps all data sorted and supports ordered iteration. However, some applications don't need the keys to be fully sorted. They are only interested in ordering keys with a common prefix.
