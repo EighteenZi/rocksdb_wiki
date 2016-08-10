@@ -154,7 +154,7 @@ https://github.com/facebook/rocksdb/blob/4.4.fb/include/rocksdb/db.h#L676-L687
 
 **Q: What is RocksDB's latest stable release?**
 
-A: All the releases in https://github.com/facebook/rocksdb/releases are stable.
+A: All the releases in https://github.com/facebook/rocksdb/releases are stable. For RocksJava, stable releases are available in https://oss.sonatype.org/#nexus-search;quick~rocksdb.
 
 **Q: Is block_size before compression , or after?**
 
@@ -168,12 +168,12 @@ A: There are limitations of options.prefix_extractor. If prefix iterating is use
 
 A:  Iterators hold both data blocks and memtables in memory.  The resource each iterator holds are:
 
-1. The data block in memory that the iterator is currently pointing to for each L0 SST file.
-2. The data block in memory that the iterator is currently pointing to for each non-level-0 SST file.
-3. The memtables that existed when the iterator was created, even after the memtables have been flushed.
-4. All the SST files on disk that existed when the iterator was created, even if they are compacted.
+1. The data blocks that the iterator is currently pointing to. See https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB#blocks-pinned-by-iterators
+2. The memtables that existed when the iterator was created, even after the memtables have been flushed.
+3. All the SST files on disk that existed when the iterator was created, even if they are compacted.
 
-These resources will be released when the iterator is deleted.  If forward iterator is used, then it will release resources when it's moving its cursor.
+These resources will be released when the iterator is deleted.
+
 
 **Q: Can I put log files and sst files in different directories? How about information logs?**
 
@@ -228,4 +228,33 @@ A: The most common reasons of using column families: (1) use different compactio
 **Q: What's the difference between storing data in multiple column family and in multiple rocksdb database?**
 
 A: The main differences will be backup, atomic writes and performance of writes. The advantage of using multiple databases: database is the unit of backup or checkpoint. It's easier to copy a database to another host than a column family. Advantages of using multiple column families: (1) write batches are atomic across multiple column families on one database. You can't achieve this using multiple RocksDB databases. (2) If you issue sync writes to WAL, too many databases may hurt the performance.  
+
+**Q: Does RocksDB have columns? If it doesn't have column, why there are column families?**
+
+A: No, RocksDB doesn't have columns. See https://github.com/facebook/rocksdb/wiki/Column-Families for what is column family.
+
+**Q: Is RocksDB really “lockless” in reads?**
+
+A: Reads might hold mutex in the following situations:
+(1) access the sharded block cache 
+(2) access table cache if options.max_open_files != -1
+(3) if a read happens just after flush or compaction finishes, it may briefly hold the global mutex to fetch the latest metadata of the LSM tree.
+(4) the memory allocators RocksDB relies on (e.g. jemalloc), may sometimes hold locks
+These locks are only held rarely, or in fine granularity.
+
+**Q: If I update multiple keys, should I issue multiple Put(), or put them in one write batch and issue Write()?**
+
+A: Using write batch to batch more keys usually performs better than single Put().
+
+**Q: What's the best practice to iterate all the keys?**
+
+A: If it's a small or read-only database, just create an iterator and iterate all the keys. Otherwise consider to recreate iterators once a while, because an iterator will hold all the resources from being released. If you need to read from consistent view, create a snapshot and iterate using it.
+
+**Q: I have different key spaces. Should I separate them by prefixes, or use different column families?**
+
+A: If each key space is reasonably large, it's a good idea to put them in different column families. If it can be small, then you should consider to pack multiple key spaces into one column family, to avoid the trouble of maintaining too many column families.
+
+**Q: How to estimate space can be reclaimed If I issue a full manual compaction?**
+
+A: There is no easy way to predict it accurately, especially when there is a compaction filter. If the database size is steady, DB property "rocksdb.estimate-live-data-size" is the best estimation.
 
