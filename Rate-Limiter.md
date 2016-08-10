@@ -1,4 +1,4 @@
-When using RocksDB, some users maybe want to throttle the maximum write speed to a certain limit for lots of reasons. For example, flash writes cause terrible spikes in read latency if they exceed a certain threshold. Since you've been reading this site, I believe you already know why you need a rate limiter. Actually, 
+When using RocksDB, users maybe want to throttle the maximum write speed within a certain limit for lots of reasons. For example, flash writes cause terrible spikes in read latency if they exceed a certain threshold. Since you've been reading this site, I believe you already know why you need a rate limiter. Actually, 
 RocksDB contains a native [RateLimiter](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/rate_limiter.h) which should be adequate for most use cases. 
 
 ## How to use
@@ -22,8 +22,7 @@ Then each time token should be requested before writes happen. If this request c
 rate_limiter->Request(1024 /* bytes */, rocksdb::Env::IO_HIGH); 
 Status s = db->Flush();
 ```
-
-Users could also dynamically change rate limiter's bytes per second with `SetBytesPerSecond()` when they need.
+Users could also dynamically change rate limiter's bytes per second with `SetBytesPerSecond()` when they need. see [include/rocksdb/rate_limiter.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/rate_limiter.h) for more API details.
 
 ## Customization
-For the users whose requirements are beyond the functions provided by RocksDB native Ratelimiter, they can implement there own Ratelimiter class by extending [rocksdb/include/rocksdb/rate_limiter.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/rate_limiter.h)
+For the users whose requirements are beyond the functions provided by RocksDB native Ratelimiter, they can implement there own Ratelimiter by extending [include/rocksdb/rate_limiter.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/rate_limiter.h)
