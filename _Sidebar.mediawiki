@@ -23,6 +23,7 @@
 ** [[Write Ahead Log File Format | Write Ahead Log File Format]]
 ** [[WAL Recovery Modes | WAL Recovery Modes]]
 ** [[EventListener | EventListener]]
+** [[Rate-Limiter | Rate Limiter]]
 ** [[RocksDB-Options-File | RocksDB Options File]]
 ** [[Transactions | Transactions]]
 ** [[Creating-and-Ingesting-SST-files | Creating and Ingesting SST files]]
