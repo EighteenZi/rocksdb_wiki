@@ -1,4 +1,4 @@
-RocksDB has extensive system to slow down writes when flush or compaction can't keep up with the incoming write rate. Without such a system, if users keep write more than the hardware can handle, the database will:
+RocksDB has extensive system to slow down writes when flush or compaction can't keep up with the incoming write rate. Without such a system, if users keep writing more than the hardware can handle, the database will:
 
 * Increase space amplification, which could lead to running out of disk space;
 * Increase read amplification, significantly degrading read performance.
