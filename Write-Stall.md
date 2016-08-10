@@ -3,7 +3,7 @@ RocksDB has extensive system to slow down writes when flush or compaction can't 
 * Increase space amplification, which could lead to running out of disk space;
 * Increase read amplification, significantly degrading read performance.
 
-The idea is to slowdown incoming write to the speed that the database can handle. However, sometimes the database can be too sensitive to a temporary write burst, or underestimate what the hardware can handle.
+The idea is to slowdown incoming write to the speed that the database can handle. However, sometimes the database can be too sensitive to a temporary write burst, or underestimate what the hardware can handle, so that you may get unexpected slowness.
 
 To find out whether your DB is suffer from write stalls, you can look at:
 
