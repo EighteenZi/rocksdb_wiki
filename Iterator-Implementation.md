@@ -5,6 +5,8 @@ RocksDB Iterator allows users to iterate over the DB forward and backward in a s
 RocksDB Iterator implementation class is named `DBIter`, In this wiki page we will discuss how `DBIter` works and what is it composed of. In the following figure, you can see the design of `DBIter` and what it's composed of.
 
 ![](https://s10.postimg.org/423rteck9/Screen_Shot_2016_08_09_at_4_57_40_PM.png)
+
+[Higher quality diagram](https://s10.postimg.org/423rteck9/Screen_Shot_2016_08_09_at_4_57_40_PM.png)
 ## DBIter
 > Implementation: [db/db_iter.cc](https://github.com/facebook/rocksdb/blob/master/db/db_iter.cc)
 
