@@ -1,0 +1,51 @@
+RocksDB has extensive system to slow down writes when flush or compaction can't keep up with the incoming write rate. Without such a system, short-lived write bursts would:
+
+* Increase space amplification, which could lead to running out of disk space;
+* Increase read amplification, significantly degrading read performance.
+
+The idea is to smooth out write bursts by slowing down writes. However, write stall harms write latency. To find out whether your DB is suffer from write stalls, you can look at:
+
+* LOG file, which will contain info log when write stalls are triggered;
+* [Compaction stats](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#compaction-stats) found in LOG file.
+
+Stalls may be triggered for the following reasons:
+
+**Too many memtables.** When the number of memtables waiting to flush is greater or equal to `max_write_buffer_number`, writes are fully stopped to wait for flush finishes. In addition, if `max_write_buffer_number` is greater than 3, and the number of memtables waiting for flush is greater or equal to `max_write_buffer_number - 1`, writes are stalled. In these cases, you will get info logs in LOG file similar to:
+
+> Stopping writes because we have 5 immutable memtables (waiting for flush), max_write_buffer_number is set to 5
+
+or
+
+> Stalling writes because we have 4 immutable memtables (waiting for flush), max_write_buffer_number is set to 5
+
+**Too many level-0 SST files.** When the number of level-0 SST files reaches `level0_slowdown_writes_trigger`, writes are stalled. When the number of level-0 SST files reaches `level0_stop_writes_trigger`, writes are fully stopped to wait for level-0 to level-1 compaction reduce the number of level-0 files. In these cases, you will get info logs in LOG file similar to
+
+> Stalling writes because we have 4 level-0 files
+
+or
+
+> Stopping writes because we have 20 level-0 files
+
+**Too many pending compaction bytes.** When estimated bytes pending for compaction reaches `soft_pending_compaction_bytes`, writes are stalled. When estimated bytes pending for compaction reaches `hard_pending_compaction_bytes`, write are fully stopped to wait for compaction. In these cases, you will get info logs in LOG file similar to
+
+> Stalling writes because of estimated pending compaction bytes 500000000
+
+or
+
+> Stopping writes because of estimated pending compaction bytes 1000000000
+
+There are multiple options you can tune to mitigate write stalls. If write stalls are triggered by pending flushes, you can try:
+
+* Increase `max_background_flushes` to have more flush threads.
+* Increase `max_write_buffer_number` to have smaller memtable to flush.
+
+If write stalls are triggered by too many level-0 files or too many pending compaction bytes, compaction is not fast enough to catch up with writes. Note that anything reduce write amplification will reduce the bytes need to write by compactions, thus speeds up compaction.Options to try:
+
+* Increase `max_background_compactions` to have more compaction threads.
+* Increase `write_buffer_size` to have large memtable, to reduce write amplification.
+* Increase `min_write_buffer_number_to_merge`.
+
+You can also set stop/slowdown triggers and pending compaction bytes limits to huge number to avoid hitting write stall. 
+
+
+
