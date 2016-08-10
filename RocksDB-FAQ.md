@@ -258,3 +258,68 @@ A: If each key space is reasonably large, it's a good idea to put them in differ
 
 A: There is no easy way to predict it accurately, especially when there is a compaction filter. If the database size is steady, DB property "rocksdb.estimate-live-data-size" is the best estimation.
 
+**Q: What's the difference between a snapshot, a checkpoint and a backup?**
+
+A: Snapshot is a logical concept. Users can query data using program interface, but underlying compactions still rewrite existing files.
+
+A checkpoint will create a physical mirror of all the database files using the same Env. This operation is very cheap if the file system hard-link can be used to create mirrored files.
+
+A backup can move the physical database files to another Env (like HDFS). The backup engine also supports incremental copy between different backups.
+
+**Q: Which compression type should I use?**
+
+A: Start with LZ4 (Snappy if LZ4 is not available) for all levels for good performance. If you want to further reduce data size, try to use Zlib in the last level.
+
+**Q: Is compaction needed if no key is deleted or overwritten?**
+
+A: Even if there is no need to clear out-of-date data, compaction is needed to ensure read performance.
+
+**Q: After a write following option.disableWAL=true, I write another record with options.sync=true, will it persist the previous write too?**
+
+A: No. After the program crashes, writes with option.disableWAL=true will be lost, if they are not flushed to SST files.
+
+**Q: What is options.target_file_size_multiplier useful for?**
+
+A: It's a rarely used feature. For example, you can use it to reduce the number of the SST files.
+
+**Q: How to distinguish type of exceptions thrown by RocksJava?**
+
+A: Yes, RocksJava throws RocksDBException for every RocksDB related exceptions.
+
+**Q: I observed burst write I/Os. How can I eliminate that?**
+
+A: Try to use the rate limiter: https://github.com/facebook/rocksdb/blob/v4.9/include/rocksdb/options.h#L875-L879
+
+**Q: Can I change the compaction filter without reopening the DB?**
+
+A: It's not supported. However, you can achieve it by implementing your CompactionFilterFactory which returns different compaction filters.
+
+**Q: Is the performance of iterator Next() the same as Prev()?**
+
+A: The performance of reversed iterating is usually much worse than forward iterating. There are various reasons for that: 1. delta encoding in data blocks is more friendly to Next(); 2. the skip list used in the memtable is single-direction, so Prev() is another binary search; 3. the internal key order is optimized for Next().
+
+**Q: How many column families can  a single db support?**
+
+A: Users should be able to run at least thousands of column families without seeing any error. However, too many column families don't usually perform well. We don't recommend users to use more than a few hundreds of column families.
+
+**Q: Can rocksdb tell us the total number of keys in the database? Or the total number of keys within a range?**
+
+A: RocksDB can estimate number of keys through DB property “rocksdb.estimate-num-keys”. Note this estimation can be far off when there are merge operators, existing keys overwritten, or deleting non-existing keys.
+
+The best way to estimate total number of keys within a range is to first estimate size of a range by calling DB::GetApproximateSizes(), and then estimate number of keys from that.
+
+**Q: RocksDB repair: when can I use it? Best-practices?**
+
+A: Check https://github.com/facebook/rocksdb/wiki/RocksDB-Repairer
+
+**Q: If I want to retrieve 10 keys from rocksdb, is it better to batch them and use MultiGet() versus issuing 10 individual Get() calls?**
+
+A: The performance is similar. MultiGet() reads from the same consistent view, but it is not faster.
+
+**Q: How should I implement multiple data shards/partitions.**
+
+A: You can start with using one RocksDB database per shard/partition.
+
+**Q: What's the default value of the block cache?**
+
+A: 8MB.
