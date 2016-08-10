@@ -1,9 +1,11 @@
-RocksDB has extensive system to slow down writes when flush or compaction can't keep up with the incoming write rate. Without such a system, short-lived write bursts would:
+RocksDB has extensive system to slow down writes when flush or compaction can't keep up with the incoming write rate. Without such a system, if users keep write more than the hardware can handle, the database will:
 
 * Increase space amplification, which could lead to running out of disk space;
 * Increase read amplification, significantly degrading read performance.
 
-The idea is to smooth out write bursts by slowing down writes. However, write stall harms write latency. To find out whether your DB is suffer from write stalls, you can look at:
+The idea is to slowdown incoming write to the speed that the database can handle. However, sometimes the database can be too sensitive to a temporary write burst, or underestimate what the hardware can handle.
+
+To find out whether your DB is suffer from write stalls, you can look at:
 
 * LOG file, which will contain info log when write stalls are triggered;
 * [Compaction stats](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#compaction-stats) found in LOG file.
