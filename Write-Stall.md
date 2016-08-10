@@ -12,29 +12,23 @@ To find out whether your DB is suffer from write stalls, you can look at:
 
 Stalls may be triggered for the following reasons:
 
-**Too many memtables.** When the number of memtables waiting to flush is greater or equal to `max_write_buffer_number`, writes are fully stopped to wait for flush finishes. In addition, if `max_write_buffer_number` is greater than 3, and the number of memtables waiting for flush is greater or equal to `max_write_buffer_number - 1`, writes are stalled. In these cases, you will get info logs in LOG file similar to:
+* **Too many memtables.** When the number of memtables waiting to flush is greater or equal to `max_write_buffer_number`, writes are fully stopped to wait for flush finishes. In addition, if `max_write_buffer_number` is greater than 3, and the number of memtables waiting for flush is greater or equal to `max_write_buffer_number - 1`, writes are stalled. In these cases, you will get info logs in LOG file similar to:
 
-> Stopping writes because we have 5 immutable memtables (waiting for flush), max_write_buffer_number is set to 5
+    > Stopping writes because we have 5 immutable memtables (waiting for flush), max_write_buffer_number is set to 5
 
-or
+    > Stalling writes because we have 4 immutable memtables (waiting for flush), max_write_buffer_number is set to 5
 
-> Stalling writes because we have 4 immutable memtables (waiting for flush), max_write_buffer_number is set to 5
+* **Too many level-0 SST files.** When the number of level-0 SST files reaches `level0_slowdown_writes_trigger`, writes are stalled. When the number of level-0 SST files reaches `level0_stop_writes_trigger`, writes are fully stopped to wait for level-0 to level-1 compaction reduce the number of level-0 files. In these cases, you will get info logs in LOG file similar to
 
-**Too many level-0 SST files.** When the number of level-0 SST files reaches `level0_slowdown_writes_trigger`, writes are stalled. When the number of level-0 SST files reaches `level0_stop_writes_trigger`, writes are fully stopped to wait for level-0 to level-1 compaction reduce the number of level-0 files. In these cases, you will get info logs in LOG file similar to
+    > Stalling writes because we have 4 level-0 files
 
-> Stalling writes because we have 4 level-0 files
+    > Stopping writes because we have 20 level-0 files
 
-or
+* **Too many pending compaction bytes.** When estimated bytes pending for compaction reaches `soft_pending_compaction_bytes`, writes are stalled. When estimated bytes pending for compaction reaches `hard_pending_compaction_bytes`, write are fully stopped to wait for compaction. In these cases, you will get info logs in LOG file similar to
 
-> Stopping writes because we have 20 level-0 files
+    > Stalling writes because of estimated pending compaction bytes 500000000
 
-**Too many pending compaction bytes.** When estimated bytes pending for compaction reaches `soft_pending_compaction_bytes`, writes are stalled. When estimated bytes pending for compaction reaches `hard_pending_compaction_bytes`, write are fully stopped to wait for compaction. In these cases, you will get info logs in LOG file similar to
-
-> Stalling writes because of estimated pending compaction bytes 500000000
-
-or
-
-> Stopping writes because of estimated pending compaction bytes 1000000000
+    > Stopping writes because of estimated pending compaction bytes 1000000000
 
 There are multiple options you can tune to mitigate write stalls. If write stalls are triggered by pending flushes, you can try:
 
