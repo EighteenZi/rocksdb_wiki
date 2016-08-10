@@ -206,7 +206,7 @@ A:  If the I/O errors happen in the foreground operations such as Get() and Writ
 
 A: No, you can't cancel one specific compaction.
 
-** Q: Can I close the DB when a manual compaction is in progress?**
+**Q: Can I close the DB when a manual compaction is in progress?**
 
 A: No, it's not safe to do that. However, you call CancelAllBackgroundWork(db, true) in another thread to abort the running compactions, so that you can close the DB sooner.
 
