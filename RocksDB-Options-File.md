@@ -32,6 +32,8 @@ First, we call LoadLatestOptions() to load the latest set of options used by the
     LoadLatestOptions(path_to_db, Env::Default(), &loaded_db_opt,
                       &loaded_cf_descs);
 
+## Unsupported Options
+
 Since C++ does not have reflection, the following user-defined functions and pointer-typed options will only be initialized with default values.  Detailed information can be found in rocksdb/utilities/options_util.h:
 
     * env
