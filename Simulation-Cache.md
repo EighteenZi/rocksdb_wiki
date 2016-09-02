@@ -24,7 +24,7 @@ options.table_factory.reset(new BlockBasedTableFactory(bbt_opts));
 ```
 Finally, open the DB with `options`.
 Then the HIT/MISS value of SimCache can be acquired by calling
-`sim_cache->get_hit_counter()` and `sim_cache->get_miss_counter`, respectively. Alternatively, if you don't want to store sim_cache and using Rocksdb (>= v4.12), you can get these statistics through Tickers SIM_BLOCK_CACHE_HIT and SIM_BLOCK_CACHE_MISS in [rocksdb::Statistics](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/statistics.h).
+`sim_cache->get_hit_counter()` and `sim_cache->get_miss_counter()`, respectively. Alternatively, if you don't want to store sim_cache and using Rocksdb (>= v4.12), you can get these statistics through Tickers SIM_BLOCK_CACHE_HIT and SIM_BLOCK_CACHE_MISS in [rocksdb::Statistics](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/statistics.h).
 
 ## Memory Overhead
 People may concern the actual memory usage of SimCache, which can be estimated as:
