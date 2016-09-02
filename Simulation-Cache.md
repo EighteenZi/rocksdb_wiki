@@ -32,4 +32,4 @@ People may concern the actual memory usage of SimCache, which can be estimated a
 * 76 <= entry_size (key_size + other) <= 104,
 * BlockBasedTableOptions.block_size = 4096 by default but is configurable
 
-Therefore, generally the actual memory overhead of SimCache is around **sim_capacity \* 2%**
+Therefore, by default the actual memory overhead of SimCache is around **sim_capacity \* 2%**.
