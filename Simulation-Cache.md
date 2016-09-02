@@ -1,5 +1,4 @@
-# Simulation Cache
-We now have a feature called *Simulation Cache(SimCache)* that can help users to predict the block cache performance metrics, e.t. hit, miss, of a specific simulation capacity (memory) under current work load, without actually using that much of memory.
+*Simulation Cache(SimCache)* can help users to predict the block cache performance metrics, e.t. hit, miss, of a specific simulation capacity (memory) under current work load, without actually using that much of memory.
 ## Motivation
 It is able to help users tune their current block cache size, and determine how efficient they are using the memory. Also, it helps understand the cache performance with fast storage.
 
