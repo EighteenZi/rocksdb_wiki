@@ -318,8 +318,43 @@ We use level style compaction with high concurrency. Memtable size is 64MB and t
 ### Database on Spinning Disks
 Coming soon...
 
+### In-memory database with full functionalities
+In this example, database is mounted in tmpfs file system.
+
+Use mmap read:
+
+   options.allow_mmap_reads = true;
+
+Disable block cache, enable bloom fitlers and reduce the delta encoding restart interval:
+
+    BlockBasedTableOptions table_options;
+    table_options.filter_policy.reset(NewBloomFilterPolicy(10, true));
+    table_options.no_block_cache = true;
+    table_options.block_restart_interval = 4;
+    options.table_factory.reset(NewBlockBasedTableFactory(table_options));
+
+If you want to prioritize speed. You can disable compression:
+
+    options.compression = rocksdb::CompressionType::kNoCompression;
+
+Otherwise, enable a lightweight compression, LZ4 or Snappy.
+
+Set up compression more aggressively and allocate more threads for flush and compaction:
+
+    options.level0_file_num_compaction_trigger = 1;
+    options.max_background_flushes = 8;
+    options.max_background_compactions = 8;
+    options.max_subcompactions = 4;
+
+Keep all the files open:
+
+    options.max_open_files = -1;
+
+When reading data, consider to turn ReadOptions.verify_checksums = false.
+
+
 ### In-memory prefix database
-In this example, database is mounted in tmpfs file system. We support only Get() and prefix range scans. Transational logs are stored on hard drive to avoid consuming memory not used for querying.
+In this example, database is mounted in tmpfs file system. We support only Get() and prefix range scans. Write-ahead logs are stored on hard drive to avoid consuming memory not used for querying. Prev() is not supported. Total order iterating is partially supported. 
 
 Since this database is in-memory, we don't care about write amplification. We do, however, care a lot about read amplification and space amplification. This is an interesting example because we tune the compaction to an extreme so that usually only one SST table exists in the system. We therefore decrease read and space amplification, while write amplification is extremely high.
 
