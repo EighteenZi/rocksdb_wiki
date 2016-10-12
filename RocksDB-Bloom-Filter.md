@@ -28,9 +28,9 @@ We are working on a new Bloom filter for block based tables that contains a filt
 ### New Bloom filter format
 [Our original](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format#filter-meta-block) Bloom filter scheme creates a filter for each data block, and therefore does not require a lot of memory for construction. 
 
-We are working on a new Bloom filter option called "full filter" which contains a filter for all keys in the SST file. This may improve read performance, because it avoids traveling in a complicated SST format. However, it requires more memory to build, because all keys must be in-memory for a given SST file. 
+The Bloom filter has an option called "full filter" which contains a filter for all keys in the SST file. This may improve read performance, because it avoids traveling in a complicated SST format. However, it requires more memory to build, because all keys must be in-memory for a given SST file. 
 
-Users will be able to specify which kind of Bloom filter to use in `tableOptions::FilterBlockType`. RocksDB will use the original Bloom filter format by default.
+Users are able to specify which kind of Bloom filter to use in `tableOptions::FilterBlockType`. RocksDB will use the original Bloom filter format by default.
 
 The full filter block is formatted as follows:
 
