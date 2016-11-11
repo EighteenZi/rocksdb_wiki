@@ -1,6 +1,6 @@
 ## Overview
 
-Write ahead log (WAL) serializes memtable operations to persistent medium as log files. In the event of a failure, WAL files can be used to recover the database to its consistent state, by reconstructing the memtable from the logs. When a memtable is flushed out to persistent medium safely, the corresponding WAL log(s) become obsolete and are achieved. Eventually the archived logs are purged from disk after a certain period of time.
+Write ahead log (WAL) serializes memtable operations to persistent medium as log files. In the event of a failure, WAL files can be used to recover the database to its consistent state, by reconstructing the memtable from the logs. When a memtable is flushed out to persistent medium safely, the corresponding WAL log(s) become obsolete and are archived. Eventually the archived logs are purged from disk after a certain period of time.
 
 ## WAL Manager
 
