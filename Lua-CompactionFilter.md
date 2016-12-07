@@ -160,3 +160,12 @@ Note that for each compaction job, we only log the first few Lua errors in error
  // to error_log.
  int error_limit_per_filter = 1;
 ```
+
+## Dynamic Updating Lua Script
+To update the Lua script while the RocksDB database is running, simply call the `SetScript()` API of your RocksLuaCompactionFilterFactory:
+
+```cpp
+  // Change the Lua script so that the next compaction after this
+  // function call will use the new Lua script.
+  void SetScript(const std::string& new_script);
+``` 
