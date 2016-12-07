@@ -23,10 +23,10 @@ Using RocksLuaCompactionFilter is simple.  All you need to do is the following s
 
 Here's a simple RocksLuaCompactionFilter that filter out any keys whose initial is less than `r`:
 
-<code>
-  lua::RocksLuaCompactionFilterOptions lua_opt;
-  // removes all keys whose initial is less than 'r'
-  lua_opt.lua_script =
+
+    lua::RocksLuaCompactionFilterOptions lua_opt;
+    // removes all keys whose initial is less than 'r'
+    lua_opt.lua_script =
       "function Filter(level, key, existing_value)\n"
       "  if key:sub(1,1) < 'r' then\n"
       "    return true, false, \"\"\n"
@@ -56,7 +56,7 @@ Here's a simple RocksLuaCompactionFilter that filter out any keys whose initial 
     // open FbRocksDB with the above options
     rocksdb::DB* db;
     auto status = openRocksDB(options, "RocksDBWithLua", &db);
-</code>
+
 
 ## Config RocksLuaCompactionFilterOptions 
 
@@ -65,68 +65,67 @@ Here we introduce how to config RocksLuaCompactionFilterOptions in more detail. 
 ### Config the Lua Script (RocksLuaCompactionFilter::script) 
 The first and the most important parameter is RocksLuaCompactionFilterOptions::script, which is where your Lua compaction filter will be implemented.  Your Lua script must implement the required functions, which are Name() and Filter().
 
-<code>
-  // The lua script in string that implements all necessary CompactionFilter
-  // virtual functions.  The specified lua_script must implement the following
-  // functions, which are Name and Filter, as described below.
-  //
-  // 0. The Name function simply returns a string representing the name of
-  //    the lua script.  If there's any erorr in the Name function, an
-  //    empty string will be used.
-  //    --- Example
-  //      function Name()
-  //        return "DefaultLuaCompactionFilter"
-  //      end
-  //
-  //
-  // 1. The script must contains a function called Filter, which implements
-  //    CompactionFilter::Filter() , takes three input arguments, and returns
-  //    three values as the following API:
-  //
-  //   function Filter(level, key, existing_value)
-  //     ...
-  //     return is_filtered, is_changed, new_value
-  //   end
-  //
-  //   Note that if ignore_value is set to true, then Filter should implement
-  //   the following API:
-  //
-  //   function Filter(level, key)
-  //     ...
-  //     return is_filtered
-  //   end
-  //
-  //   If there're any error in the Filter() function, then it will keep
-  //   the input key / value pair.
-  //
-  //   -- Input
-  //   The function must take three arguments (integer, string, string),
-  //   which map to "level", "key", and "existing_value" passed from
-  //   RocksDB.
-  //
-  //   -- Output
-  //   The function must return three values (boolean, boolean, string).
-  //     - is_filtered: if the first return value is true, then it indicates
-  //       the input key / value pair should be filtered.
-  //     - is_changed: if the second return value is true, then it indicates
-  //       the existing_value needs to be changed, and the resulting value
-  //       is stored in the third return value.
-  //     - new_value: if the second return value is true, then this third
-  //       return value stores the new value of the input key / value pair.
-  //
-  //   -- Examples
-  //     -- a filter that keeps all key-value pairs
-  //     function Filter(level, key, existing_value)
-  //       return false, false, ""
-  //     end
-  //
-  //     -- a filter that keeps all keys and change their values to "Rocks"
-  //     function Filter(level, key, existing_value)
-  //       return false, true, "Rocks"
-  //     end
 
-  std::string lua_script;
-</code>
+    // The lua script in string that implements all necessary CompactionFilter
+    // virtual functions.  The specified lua_script must implement the following
+    // functions, which are Name and Filter, as described below.
+    //
+    // 0. The Name function simply returns a string representing the name of
+    //    the lua script.  If there's any erorr in the Name function, an
+    //    empty string will be used.
+    //    --- Example
+    //      function Name()
+    //        return "DefaultLuaCompactionFilter"
+    //      end
+    //
+    //
+    // 1. The script must contains a function called Filter, which implements
+    //    CompactionFilter::Filter() , takes three input arguments, and returns
+    //    three values as the following API:
+    //
+    //   function Filter(level, key, existing_value)
+    //     ...
+    //     return is_filtered, is_changed, new_value
+    //   end
+    //
+    //   Note that if ignore_value is set to true, then Filter should implement
+    //   the following API:
+    //
+    //   function Filter(level, key)
+    //     ...
+    //     return is_filtered
+    //   end
+    //
+    //   If there're any error in the Filter() function, then it will keep
+    //   the input key / value pair.
+    //
+    //   -- Input
+    //   The function must take three arguments (integer, string, string),
+    //   which map to "level", "key", and "existing_value" passed from
+    //   RocksDB.
+    //
+    //   -- Output
+    //   The function must return three values (boolean, boolean, string).
+    //     - is_filtered: if the first return value is true, then it indicates
+    //       the input key / value pair should be filtered.
+    //     - is_changed: if the second return value is true, then it indicates
+    //       the existing_value needs to be changed, and the resulting value
+    //       is stored in the third return value.
+    //     - new_value: if the second return value is true, then this third
+    //       return value stores the new value of the input key / value pair.
+    //
+    //   -- Examples
+    //     -- a filter that keeps all key-value pairs
+    //     function Filter(level, key, existing_value)
+    //       return false, false, ""
+    //     end
+    //
+    //     -- a filter that keeps all keys and change their values to "Rocks"
+    //     function Filter(level, key, existing_value)
+    //       return false, true, "Rocks"
+    //     end
+    
+    std::string lua_script;
 
 An optimization without using value (RocksLuaCompactionFilter::ignore_value) 
 In case your CompactionFilter never uses value to determine whether to keep or discard a key / value pair, then setting RocksLuaCompactionFilterOptions::ignore_value=true and implement the simplified Filter() API.   Our result shows that this optimization can save up to 40% CPU overhead introduced by LuaCompactionFilter:
