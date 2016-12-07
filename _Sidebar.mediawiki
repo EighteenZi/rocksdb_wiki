@@ -30,7 +30,6 @@
 ** [[Statistics | Statistics]]
 ** [[Perf-Context-and-IO-Stats-Context | Perf Context and IO Stats Context]]
 ** [[Logger | Logger]]
-** [[Lua CompactionFilter | Lua CompactionFilter]]
 * '''Tools / Utilities'''
 ** [[Administration-and-Data-Access-Tool | Administration and Data Access Tool]]
 ** [https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F How to Backup RocksDB?] <!-- note this link must use an external link format bec MediaWiki markup doesn't support special characters in its native namespace -->
@@ -50,6 +49,8 @@
 ** [[RocksJava-Performance-on-Flash-Storage | RocksJava Performance on Flash Storage]]
 ** [[JNI-Debugging | JNI Debugging]]
 ** [[RocksJava-API-TODO | RocksJava API TODO]]
+* '''Lua'''
+** [[Lua CompactionFilter | Lua CompactionFilter]]
 * '''Performance'''
 ** [[Performance-Benchmarks | Performance on Flash Storage]]
 ** [[RocksDB-In-Memory-Workload-Performance-Benchmarks | In Memory Workload Performance]]
