@@ -145,7 +145,7 @@ In case your CompactionFilter never uses value to determine whether to keep or d
 
 The simplified Filter() API only takes two input arguments and returns only one boolean flag indicating whether to keep or discard the input key.
 
-[edit]Error Log Configuration (RocksLuaCompactionFilterOptions::error_log) 
+### Error Log Configuration (RocksLuaCompactionFilterOptions::error_log) 
 When RocksLuaCompactionFilter hit any error, it will act as no-op and always return false for any key / value pair that cause errors.  Developers can config RocksLuaCompactionFilterOptions::error_log to log any Lua errors:
 
 ```cpp
