@@ -23,10 +23,10 @@ Using RocksLuaCompactionFilter is simple.  All you need to do is the following s
 
 Here's a simple RocksLuaCompactionFilter that filter out any keys whose initial is less than `r`:
 
-
-    lua::RocksLuaCompactionFilterOptions lua_opt;
-    // removes all keys whose initial is less than 'r'
-    lua_opt.lua_script =
+```cpp
+  lua::RocksLuaCompactionFilterOptions lua_opt;
+  // removes all keys whose initial is less than 'r'
+  lua_opt.lua_script =
       "function Filter(level, key, existing_value)\n"
       "  if key:sub(1,1) < 'r' then\n"
       "    return true, false, \"\"\n"
@@ -41,22 +41,22 @@ Here's a simple RocksLuaCompactionFilter that filter out any keys whose initial 
       "  return \"KeepsAll\"\n"
       "end\n";
 
-    // specify error log.
-    auto* rocks_logger = new facebook::rocks::RocksLogger(
+  // specify error log.
+  auto* rocks_logger = new facebook::rocks::RocksLogger(
       "RocksLuaTest",
       true,  // print error message in GLOG
       true,  // print error message to scribe, available in LogView `RocksDB ERROR`
       nullptr);
 
-    // Create RocksLuaCompactionFilter with the above lua_opt and pass it to Options
-    rocksdb::Options options;
-    options.compaction_filter_factory =
-        std::make_shared<rocksdb::lua::RocksLuaCompactionFilterFactory>(lua_opt);
-    ...
-    // open FbRocksDB with the above options
-    rocksdb::DB* db;
-    auto status = openRocksDB(options, "RocksDBWithLua", &db);
-
+  // Create RocksLuaCompactionFilter with the above lua_opt and pass it to Options
+  rocksdb::Options options;
+  options.compaction_filter_factory =
+      std::make_shared<rocksdb::lua::RocksLuaCompactionFilterFactory>(lua_opt);
+  ...
+  // open FbRocksDB with the above options
+  rocksdb::DB* db;
+  auto status = openRocksDB(options, "RocksDBWithLua", &db);
+```
 
 ## Config RocksLuaCompactionFilterOptions 
 
