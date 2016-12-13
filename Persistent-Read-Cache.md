@@ -2,7 +2,7 @@
 
 For a very long time, disks were the means of persistent for datastores. With the introduction of SSD, we now have a persistent medium that is significantly faster than the traditional disks but with limited write endurance and capacity, enabling us to explore the opportunities of tiered storage architecture. Open source implementations like flash cache used SSD and disk as tiered storage outperforming disk for server applications. RocksDB Persistent read cache is an effort to take advantage of the tiered storage architecture in a device agnostic and operating system independent manner for the RocksDB ecosystem. 
 
-![](https://s28.postimg.org/sa45v6wn1/Motivation.jpg)
+![](https://s30.postimg.org/f32jlwu9t/Motivation.jpg)
 
 # Tiered Storage Vs Tiered Cache
 
@@ -10,7 +10,7 @@ RocksDB users can take advantage of the tiered storage architecture either by ad
 
 Tiered cache has a few advantage in terms of data mobility since the cache is an add-on for performance. The store can continue to function without the cache. 
 
-![](https://s23.postimg.org/4au9oj51n/Tiered_Storage.jpg)
+![](https://s24.postimg.org/i17qh73th/Tiered_Storage.jpg)
 
 # Key Features
 
@@ -22,11 +22,13 @@ Write code path can be described using the formula
 
 _{ Block Size, Queue depth, Access/Caching Technique }_
 
+![](https://s23.postimg.org/5ri8jpojf/Write_IOPath.jpg)
+
 Read code path can be described using the formula
 
-
-
 _{ Access/Caching Technique }_
+
+![](https://s23.postimg.org/vf9z27baz/Read_IOPath.jpg)
 
 **Block Size** describes the size to read/write. In the case of SSDs, this would typically be erasure block size.
 
@@ -50,13 +52,19 @@ The implementation of Persistent Read Cache has three fundamental components.
 
 This is a scalable in-memory hash index that maps a given LSM block address to a cache record locator. The cache record locator helps locate the block data in the cache. The cache record can be described as { file-id, offset, size }.
 
+![](https://s24.postimg.org/6nd0rx19x/Block_Index.jpg)
+
 ### File Lookup Index / LRU
 
 The is a scalable in-memory hash index which allows for eviction based on LRU. This index maps a given file identifier to its reference object abstraction. The object abstraction can be used for reading data from the cache. When we run out of space on the persistent cache, we evict the least recently used file from this index.
 
+![](https://s28.postimg.org/wlo6c4nkd/File_Index.jpg)
+
 ### File System
 
 The cache is stored in the file system as a sequence of files. Each file contains a sequence of records which contain data corresponding to a block on RocksDB LSM.
+
+![](https://s23.postimg.org/jshgdqsrv/File_Layout.jpg)
 
 # API
 
