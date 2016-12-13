@@ -38,5 +38,10 @@ Since this is a cache implementation, the cache may not be supplied on a restart
 
 # Design and Implementation Details
 
+The implementation of Persistent Read Cache has three fundamental components.
+
+### Block Lookup Index
+### File Lookup Index / LRU
+### File System
 
 # API
