@@ -60,7 +60,7 @@ The is a scalable in-memory hash index which allows for eviction based on LRU. T
 
 ![](https://s28.postimg.org/wlo6c4nkd/File_Index.jpg)
 
-### File System
+### File Layout
 
 The cache is stored in the file system as a sequence of files. Each file contains a sequence of records which contain data corresponding to a block on RocksDB LSM.
 
