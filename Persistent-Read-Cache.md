@@ -14,7 +14,7 @@ Tiered cache has a few advantage in terms of data mobility since the cache is an
 
 # Key Features
 
-### Hardware agnostic
+#### Hardware agnostic
 
 The persistent read cache is a generic implementation and is not specifically designed for any kind of device in particular. Instead of designing for specific types of hardware, we have taken the approach of designing the cache to provide the user with a mechanism to describe the best way to access the device, and the IO paths will be configured to work as per the description.
 
@@ -30,17 +30,17 @@ _{ Access/Caching Technique }_
 
 ![](https://s23.postimg.org/vf9z27baz/Read_IOPath.jpg)
 
-**Block Size** describes the size to read/write. In the case of SSDs, this would typically be erasure block size.
+_Block Size_ describes the size to read/write. In the case of SSDs, this would typically be erasure block size.
 
-**Queue depth** is the parallelism at which the device exhibits the best performance.
+_Queue depth_ is the parallelism at which the device exhibits the best performance.
 
-**Access/Caching Technique** is used to describes the best way to access the device. Using direct IO access for example is suitable for certain devices/applications and buffered access is preferred for others.
+_Access/Caching Technique_ is used to describes the best way to access the device. Using direct IO access for example is suitable for certain devices/applications and buffered access is preferred for others.
 
-### OS agnostic
+#### OS agnostic
 
 Persistent read cache is build using RocksDB abstraction and is supported on all platforms where RocksDB is supported.
 
-### Pluggable
+#### Pluggable
 
 Since this is a cache implementation, the cache may or may not be supplied on a restart. 
 
