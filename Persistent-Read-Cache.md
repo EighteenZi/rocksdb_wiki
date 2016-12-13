@@ -28,7 +28,7 @@ Read code path can be described using the formula
 
 _{ Access/Caching Technique }_
 
-![](https://s23.postimg.org/vf9z27baz/Read_IOPath.jpg)
+![](https://s27.postimg.org/430w7z077/Read_IOPath.jpg)
 
 _Block Size_ describes the size to read/write. In the case of SSDs, this would typically be erasure block size.
 
