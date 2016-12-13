@@ -10,7 +10,7 @@ RocksDB users can take advantage of the tiered storage architecture either by ad
 
 Tiered cache has a few advantage in terms of data mobility since the cache is an add-on for performance. The store can continue to function without the cache. 
 
-![](https://s24.postimg.org/i17qh73th/Tiered_Storage.jpg)
+![](https://s27.postimg.org/ae63oe1fn/Tiered_Storage.jpg)
 
 # Key Features
 
