@@ -2,6 +2,7 @@
 * Data encryption
 * Warm block cache after flush and compactions in a smart way
 * Queryable Backup
+* Improve sub-compaction by making data partition more evenly
 * Tools to collect operations to a database and replay them
 * Customized bloom filter for data blocks
 * Build a new compaction style optimized for time series data
