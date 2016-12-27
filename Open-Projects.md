@@ -13,4 +13,3 @@
 * expose merge operator in MongoDB + RocksDB
 * SQLite + RocksDB
 * Snappy compression for WAL writes. Maybe this is only done for large writes and maybe we add a field to WriteOptions so a user can request it.
-* Improve performance of statistics by making use of thread local storage
