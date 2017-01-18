@@ -154,3 +154,48 @@ In addition to Rollback(), Transactions can also be partially rolled back if Sav
 	s = txn->Commit()
 	// Since RollbackToSavePoint() was called, this transaction will only write key A and not write key B.
 
+## Under the hood
+
+A high-level, succinct overview of how transactions work under the hood.
+
+### Read Snapshot
+
+Each update in RocksDB is done by inserting an entry tagged with a monotonically increasing sequence number. Assigning a seq to read_options.snapshot will be used by (transactional or non-transactional) db to read only values with seq smaller than that, i.e., read snapshots → DBImpl::GetImpl
+
+That aside, transactions can call TransactionBaseImpl::SetSnapshot which will invoke DBImpl::GetSnapshot. It achieves two goals:
+
+1. Return the current seq: transactions will use the seq (instead of the seq of its written value) to check for write-write conflicts → TransactionImpl::TryLock → TransactionImpl::ValidateSnapshot → TransactionUtil::CheckKeyForConflicts
+2. Makes sure that values with smaller seq will not be erased by compaction jobs, etc. ([snapshots_.GetAll](https://github.com/facebook/rocksdb/search?utf8=%E2%9C%93&q=snapshots_.GetAll)). Such marked snapshots must be released by the callee (DBImpl::ReleaseSnapshot)
+
+### Read-Write conflict detection
+
+Read-Write conflicts can be prevented by escalating them to write-write conflict: doing reads via GetForUpdate (instead of Get).
+
+### Write-Write conflict detection: pessimistic approach
+
+Write-write conflicts are detected at the write time using a lock table.
+
+Non-transactional updates (put, merge, delete) are internally run under a transaction. So every update is through transactions → TransactionDBImpl::Put
+
+Every update acquires a lock beforehand →  TransactionImpl::TryLock
+TransactionLockMgr::TryLock has only 16 locks per column family → size_t num_stripes = 16
+
+Commit simply writes the write batch to WAL as well as to Memtable by calling DBImpl::Write → TransactionImpl::Commit
+
+To support distributed transactions, the clients can call Prepare after performing the writes. It writes the value to WAL but not to the MemTable, which allows recovery in the case of machine crash → TransactionImpl::Prepare
+If Prepare is invoked, Commit writes a commit marker to the WAL and writes values to MemTable. This is done by calling MarkWalTerminationPoint() before adding value to the write batch.
+
+
+### Write-Write conflict detection: optimistic approach
+
+Write-write conflicts are detected using seq of the latest values at the commit time.
+
+Each update adds the key to an in-memory vector →  TransactionDBImpl::Put and OptimisticTransactionImpl::TryLock
+
+Commit links OptimisticTransactionImpl::CheckTransactionForConflicts as a callback to the write batch → OptimisticTransactionImpl::Commit
+which will be invoked in DBImpl::WriteImpl via write->CheckCallback
+
+The conflict detection logic is implemented at TransactionUtil::CheckKeysForConflicts
+
+* only checks for conflicts against keys present in memory and fails otherwise.
+* conflict detection is done by checking the latest seq of each key (DBImpl::GetLatestSequenceForKey) against the seq used for writing it.
