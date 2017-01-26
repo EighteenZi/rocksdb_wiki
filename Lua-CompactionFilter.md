@@ -58,7 +58,7 @@ Here's a simple RocksLuaCompactionFilter that filter out any keys whose initial 
 
 ## Config RocksLuaCompactionFilterOptions 
 
-Here we introduce how to config RocksLuaCompactionFilterOptions in more detail.  The definition of RocksLuaCompactionFilterOptions can be found in fbcode/rocks/lua/RocksLuaCompactionFilter.h.
+Here we introduce how to config RocksLuaCompactionFilterOptions in more detail.  The definition of RocksLuaCompactionFilterOptions can be found in include/rocksdb/utilities/lua/rocks_lua_compaction_filter.h.
 
 ### Config the Lua Script (RocksLuaCompactionFilter::script) 
 The first and the most important parameter is RocksLuaCompactionFilterOptions::script, which is where your Lua compaction filter will be implemented.  Your Lua script must implement the required functions, which are Name() and Filter().
