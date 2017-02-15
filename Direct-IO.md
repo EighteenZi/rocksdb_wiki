@@ -6,14 +6,14 @@ With buffered I/O, the data is copied twice between storage and memory because o
 
 ## API
 It is easy to use Direct I/O as two new options are provided in [options.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h#L1124-L1128):
-```
-  // Use O_DIRECT for reading file
-  // Default: false
-  bool use_direct_reads = false;
+```cpp
+// Use O_DIRECT for reading file
+// Default: false
+bool use_direct_reads = false;
 
-  // Use O_DIRECT for writing file
-  // Default: false
-  bool use_direct_writes = false;
+// Use O_DIRECT for writing file
+// Default: false
+bool use_direct_writes = false;
 ```
 The code is self-explanatory.
 
