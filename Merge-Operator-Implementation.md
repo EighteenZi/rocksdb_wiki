@@ -9,7 +9,7 @@ Here is a high-level overview of the code-changes that we needed in order to imp
 * We updated that Get(), iteration, and Compaction() call paths to call the MergeOperator's FullMerge() and PartialMerge() functions when neccessary. 
 * The major change needed was to implement "stacking" of merge operands, which we describe below. 
 * We introduced some other interface changes (i.e.: updated the Options class and DB class to support MergeOperator) 
-* We created a simpler AssociativeMergeOperator to make the user's lives easier under a very common use-case. 
+* We created a simpler AssociativeMergeOperator to make the user's lives easier under a very common use-case. Note this can be much more inefficient.
 
 For the reader, if any of the above statements do not make sense at a high level, YOU PROBABLY SHOULD READ THE [Client Interface page first](Merge-Operator). Otherwise, we dive directly into the details below, and also talk about some design decisions and rationale for picking the implementations we did.
 
