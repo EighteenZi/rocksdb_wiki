@@ -2,6 +2,7 @@
 * [[Home | RocksDB Wiki]]
 * [[RocksDB-Basics | Overview]]
 * [[RocksDB FAQ | RocksDB FAQ]]
+* [[Terminology|Terminology]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
 ** [[Known-Issues | Known Issues]]
