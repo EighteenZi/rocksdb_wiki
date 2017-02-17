@@ -71,3 +71,5 @@
 **forward iterator / tailing iterator**: A special iterator option that optimizes for very specific use cases. See https://github.com/facebook/rocksdb/wiki/Tailing-Iterator
 
 **single delete**: a special delete operation which only works when users never update an existing key: https://github.com/facebook/rocksdb/wiki/Single-Delete
+
+**rate limiter**: it is used to limit the rate of bytes written to the file system by flush and compaction. See https://github.com/facebook/rocksdb/wiki/Rate-Limiter
