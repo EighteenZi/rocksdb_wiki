@@ -6,6 +6,7 @@ With buffered I/O, the data is copied twice between storage and memory because o
 
 ### Implementation
 The way to enable direct I/O depends on the operating system and the support of direct I/O depends on the file system. Before using this feature, please check whether the file system supports direct I/O. RocksDB has dealt with these OS-dependent complications for you, but we are glad to share some implementation details here.
+
 1. File Open
 For LINUX, the `O_DIRECT` flag has to be included.
 For Mac OSX, `O_DIRECT` is not available. Instead, `fcntl(fd, F_NOCACHE, 1)` looks to be the canonical solution where `fd` is the file descriptor of the file.
