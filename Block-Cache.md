@@ -16,7 +16,7 @@ To set compressed block cache:
 
     table_options.block_cache_compressed = another_cache;
 
-RocksDB will create the default block cache if `block_cache` is set to `nullptr`. To disable block cache completly:
+RocksDB will create the default block cache if `block_cache` is set to `nullptr`. To disable block cache completely:
 
     table_options.no_block_cache = true;
 
