@@ -1,8 +1,10 @@
-**iterator**: iterators are used by users to query keys in a range in sorted order. See https://github.com/facebook/rocksdb/wiki/Basic-Operations#iteration
+**Iterator**: iterators are used by users to query keys in a range in sorted order. See https://github.com/facebook/rocksdb/wiki/Basic-Operations#iteration
 
-**point lookup** and **range lookup**: In RocksDB, point lookup means Get() and range lookup means reading data using a iterator.
+**Point lookup**: In RocksDB, point lookup means reading one key using Get().
 
-**SST File** or **data file**: SST stands for Sorted Sequence Table. They are persistent files storing data. In the file keys are usually organized in sorted order so that a key or iterating position can be identifies through a binary search.
+**Range lookup**: Range lookup means reading a range of keys using an Iterator.
+
+**SST File** (**data file** - **SST table**): SST stands for Sorted Sequence Table. They are persistent files storing data. In the file keys are usually organized in sorted order so that a key or iterating position can be identifies through a binary search.
 
 **LSM-tree**: See the definition in https://en.wikipedia.org/wiki/Log-structured_merge-tree RocksDB is LSM-tree-based storage engine.
 
@@ -12,7 +14,7 @@
 
 **mem table switch**: During this process, the current **active memtable** (the one current writes go to) is closed and turned into an **immutable memtable**. At the same time, we will close the current WAL file and start a new one. 
 
-**sequence number (SeqNum)**: each write to the database will be assigned an auto-incremented ID number. The number is attached with the key-value pair in WAL file, memtable, and SST files. The sequence number is used to implement snapshot read, garbage collection in compactions, MVCC in transactions, and some other purposes.
+**sequence number (SeqNum / Seqno)**: each write to the database will be assigned an auto-incremented ID number. The number is attached with the key-value pair in WAL file, memtable, and SST files. The sequence number is used to implement snapshot read, garbage collection in compactions, MVCC in transactions, and some other purposes.
 
 **recovery**: the process of restarting a database after it failed or was closed.
 
@@ -34,9 +36,9 @@
 
 **backup**: RocksDB has a backup tool to help users backup the DB state to a different location, like HDFS. See https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F
 
-“**Version**”: An internal concept of RocksDB. A version consists of all the live SST files in one point of the time. Once a flush or compaction finishes, a new “version” will be created because the list of live SST files has changed. An old “version” can continue being used by on-going read requests or compaction jobs. Old versions will eventually be garbage collected.
+**Version**: An internal concept of RocksDB. A version consists of all the live SST files in one point of the time. Once a flush or compaction finishes, a new “version” will be created because the list of live SST files has changed. An old “version” can continue being used by on-going read requests or compaction jobs. Old versions will eventually be garbage collected.
 
-“**Super Version**”: An internal concept of RocksDB. A version consists the list SST files (a “version”) and the list of live mem tables in one point of the time. Either a compaction or flush, or a mem table switch will cause a new “super version” to be created. An old “super version” can continue being used by on-going read requests. Old super versions will eventually be garbage collected after it is not needed anymore.
+**Super Version**: An internal concept of RocksDB. A version consists the list SST files (a “version”) and the list of live mem tables in one point of the time. Either a compaction or flush, or a mem table switch will cause a new “super version” to be created. An old “super version” can continue being used by on-going read requests. Old super versions will eventually be garbage collected after it is not needed anymore.
 
 **block cache**: in-memory data structure that cache the hot data blocks from the SST files. See See https://github.com/facebook/rocksdb/wiki/Block-Cache
 
