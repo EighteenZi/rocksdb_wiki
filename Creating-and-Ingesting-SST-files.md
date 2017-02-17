@@ -63,3 +63,21 @@ if (!s.ok()) {
 ```
 
 You can learn more by checking DB::IngestExternalFile() in [include/rocksdb/db.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/db.h)
+## What happens when you ingest a file
+
+**When you call DB::IngestExternalFile() We will**
+- Copy the file into the DB directory
+- Stop writes to the DB
+- If file key range overlap with memtable key range, flush memtable
+- Assign the file to the best level possible in the LSM-tree
+- Assign the file a global sequence number
+- Resume writes to the DB
+
+**We pick the lowest level in the LSM-Tree that satisfies these conditions**
+- The file can fit in the level
+- The file key range don't overlap with any keys in upper layers
+- The file don't overlap with the outputs of running compactions going to this level
+
+**Global sequence number**
+
+Files created using SstFileWriter have a special field in their metablock called global sequence number, when this field is used, all the keys inside this file start acting as if they have such sequence number. When we ingest a file, we assign a sequence number to all the keys in this file by updating this global sequence number field in the metablock
