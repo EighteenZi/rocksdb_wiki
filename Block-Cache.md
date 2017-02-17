@@ -33,7 +33,7 @@ Out of box, RocksDB will use LRU-based block cache implementation with 8MB capac
 
 `ClockCache` implements the [CLOCK algorithm](https://en.wikipedia.org/wiki/Page_replacement_algorithm#Clock). Each shard of clock cache maintains a circular list of cache entries. A clock handle runs over the circular list looking for unpinned entries to evict, but also giving each entry a second chance to stay in cache if it has been used since last scan. A `tbb::concurrent_hash_map` is used for lookup.
 
-The benefit over `LRUCache` is it has finer-granularity locking. In case of LRU cache, the per-shard mutex has to be lock even on lookup, since it needs to update its LRU-list. Looking up from a clock cache won't require locking per-shard mutex, but only looking up the concurrent hash map, which has fine-granularity locking. Only inserts needs to lock the per-shard mutex. With clock cache we see boost of read throughput over LRU cache (see inline comments in `util/clock_cache.cc` for benchmark setup):
+The benefit over `LRUCache` is it has finer-granularity locking. In case of LRU cache, the per-shard mutex has to be lock even on lookup, since it needs to update its LRU-list. Looking up from a clock cache won't require locking per-shard mutex, but only looking up the concurrent hash map, which has fine-granularity locking. Only inserts needs to lock the per-shard mutex. With clock cache we see boost of read throughput over LRU cache in contented environment (see inline comments in `util/clock_cache.cc` for benchmark setup):
 
     Threads Cache     Cache               ClockCache               LRUCache
             Size  Index/Filter Throughput(MB/s)   Hit Throughput(MB/s)    Hit
