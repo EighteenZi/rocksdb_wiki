@@ -1,0 +1,1 @@
+Optimizing Space Amplification in RocksDB, CIDR 2017, Siying Dong, Mark Callaghan, Leonidas Galanis, Dhruba Borthakur, Tony Savor, Michael Stumm [link](https://research.fb.com/publications/optimizing-space-amplification-in-rocksdb/)
