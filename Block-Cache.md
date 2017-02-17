@@ -1,29 +1,41 @@
-Blocks of block-based table are cached in memory in a sharded LRU cache. By default the highest `kNumShardBits` (which is 4) of hash of keys is used as shard id, so there will be `2^kNumShardBits` shards. Capacity is split evenly to each of the shards. Each shard maintains its own hash table for lookup and a linked-list of cached blocks for eviction. Operations on a shard need to lock the whole shard. As a result, shards with hot blocks (such as index blocks and filter blocks) can have lock contention.
+Block cache is where RocksDB caches data in memory for reads. User can set a `Cache` object to a RocksDB instance with desire capacity (size). A `Cache` object can be shared by multiple RocksDB instance in the same process, allowing users to control the overall cache capacity. The block cache stores uncompressed blocks. Optionally user can set a second block cache storing compressed blocks. Reads will fetch data blocks first from uncompressed block cache, then compressed block cache. The compressed block cache can be a replacement of OS page cache, if direct IO is used.
 
-See also: [[Memory-usage-in-RocksDB#block-cache]]
+There are two cache implementations in RocksDB, namely `LRUCache` and `ClockCache`. Both types of the cache are sharded to mitigate lock contention. Capacity is divided evenly to each shard and shards don't share capacity. By default each cache will be sharded into at most 64 shards, with each shard has no less than 512k bytes of capacity.
 
 ### Usage
 
-To use block cache, call `NewLRUCache()` and set the result to `BlockBasedTableOptions.block_cache`. Example:
+Out of box, RocksDB will use LRU-based block cache implementation with 8MB capacity. To set a customized block cache, call `NewLRUCache()` or `NewClockCache()` to create a cache object, and set it to block based table options. Users can also has their own cache implementation by implementing the `Cache` interface.
 
+    std::shared_ptr<Cache> cache = NewLRUCache(capacity);
     BlockBasedTableOptions table_options;
-    table_options.block_cache = NewLRUCache(capacity, num_shard_bits);
+    table_options.block_cache = cache;
     Options options;
     options.table_factory.reset(new BlockBasedTableFactory(table_options));
 
-If `BlockBasedTableOptions.block_cache` is null, a default 8MB cache will be used. To disable block cache, set `BlockBasedTableOptions.no_block_cache` to true.
+To set compressed block cache:
 
-Block cache stores uncompressed block contents. Optionally, you can have a second layer block cache which stores compressed block content. It can be enable via `BlockBasedTableOptions.compressed_block_cache`. It is disabled by default since OS page cache is playing the role.
+    table_options.block_cache_compressed = another_cache;
 
-By default insert to block cache will succeed even when the cache reaches its capacity and no blocks can be evicted from it. To enforce a strict capacity, call `NewLRUCache()` with a third parameter equal to true:
-    
-    block_cache = NewLRUCache(capacity, num_shard_bits, true/*strict_capacity_limit*/);
+RocksDB will create the default block cache if `block_cache` is set to `nullptr`. To disable block cache completly:
 
-There are two more options to control whether to cache index blocks and filter blocks:
+    table_options.no_block_cache = true;
 
-* `BlockBasedTableOptions.cache_index_and_filter_blocks`: Cache index blocks and filter blocks in block cache. Defaults to false, where index and filter blocks will be pre-loaded by `BlockBasedTableReader` and stored separately from block cache.
+### LRU Cache
 
-* `BlockBasedTableOptions.pin_l0_filter_and_index_blocks_in_cache`: For L0 block based tables, avoid index blocks and filter blocks being swap out of block cache. Instead, `BlockBasedTableReader` holds a reference of these blocks, and further access will not hit block cache. This option can help reduce lock contention on block cache.
+Out of box, RocksDB will use LRU-based block cache implementation with 8MB capacity. Each shard of the cache maintain its own LRU list and its own hash table for lookup. Synchronization is done via a per-shard mutex. Both reading and writing to the cache would require locking mutex of the shard. User can create a LRU cache by calling `NewLRUCache()`. The function provide several useful options to set to the cache:
+
+* `capacity`: Total size of the cache.
+* `num_shard_bits`: The number of bits from cache keys to be use as shard id. The cache will be sharded into `2^num_shard_bits` shards.
+* `strict_capacity_limit`: In rare case, block cache size can go larger than its capacity. This is when ongoing reads or iterations over DB pin blocks in block cache, and the total size of pinned blocks exceed the cpacity. If there are further reads which try to insert blocks into block cache, if `strict_capacity_limit=false`(default), the cache will fail to respect its capacity limit and allow the insertion. This can create undesired OOM error that crashes the DB if the host don't have enough memory. Setting the option to `true` will reject further insertion to the cache and fail the read or iteration. The option works on per-shard basis, means it is possible one shard is rejecting insert when it is full, while another shard still have extra unpinned space.
+* `high_pri_pool_ratio`: The ratio of capacity reserve for high priority blocks. See [[Caching index and filter blocks|Block-Cache#caching-index-and-filter-blocks]] section below.
+
+### Clock Cache
+
+`ClockCache` implements the [CLOCK algorithm](https://en.wikipedia.org/wiki/Page_replacement_algorithm#Clock).
+
+### Caching Index and Filter Blocks
+
+By default index and filter blocks is cached outside of block cache, but optionally they can be managed by block cache. 
 
 ### Statistics
 
@@ -59,3 +71,5 @@ A list of block cache counters can be accessed through `Options.statistics` if i
     BLOCK_CACHE_BYTES_READ,
     // # of bytes written into cache.
     BLOCK_CACHE_BYTES_WRITE,
+
+See also: [[Memory-usage-in-RocksDB#block-cache]]
