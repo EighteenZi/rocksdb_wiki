@@ -13,7 +13,7 @@ For Mac OSX, `O_DIRECT` is not available. Instead, `fcntl(fd, F_NOCACHE, 1)` loo
 For Windows, there is a flag called `FILE_FLAG_NO_BUFFERING` as the counterpart in Windows of `O_DIRECT`.
 2. File R/W
 Direct I/O requires file R/W to be aligned, which means, the position indicator (offset), #bytes and the buffer address must be aligned to the _logical sector size_ of the underlying storage device. So the position indicator should and the buffer pointer must be aligned on a _logical sector size_ boundary and the number of bytes to be read or written must be in multiples of the _logical sector size_.
-RocksDB implements all the alignment logic inside `FileReader/FileWriter`, one layer higher abstraction on top of File classes to make the alignment ignorant to the OS. Thus, different Operating systems could have their own implementations of File Classes.
+RocksDB implements all the alignment logic inside `FileReader/FileWriter`, one layer higher abstraction on top of File classes to make the alignment ignorant to the OS. Thus, different OSs could have their own implementations of File Classes.
 
 ## API
 It is easy to use Direct I/O as two new options are provided in [options.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h#L1124-L1128):
