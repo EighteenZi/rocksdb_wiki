@@ -1,10 +1,20 @@
 ### 2016.12 8th RocksDB Meetup [playlist](https://www.youtube.com/playlist?list=PLb0IAmt7-GS2DTBGK1JS31JuDoQDuXbZp)
-* [Lightning Talks](https://www.youtube.com/watch?v=rsbrRTqUkjY)
-* [RocksDB Future](https://www.youtube.com/watch?v=6_2SUc1Mlzw)
-* [The updated state of MyRocks, MongoRocks and RocksDB](https://www.youtube.com/watch?v=p6-HljaB2fs)
-* [Talk from Percona](https://www.youtube.com/watch?v=VLsBSX4yRq4)
-* [Rocksplicator](https://www.youtube.com/watch?v=9TxJma5NmjM)
-* [RocksOS: Plug-in RocksDB Into ObjectStore](https://www.youtube.com/watch?v=jwXNr3nqSqA)
+* [Lightning Talks](https://www.youtube.com/watch?v=rsbrRTqUkjY) (Facebook Engineers)
+
+    * Yueh-Hsuan Chiang -- Lua Compaction Filters
+    * Karthikeyan Radhakrishnan -- Read Cache
+    * Andrew Kryczka -- Improved Statistics/Delete Range
+    * Yi Wu -- Iterator Assited Inserts
+    * Anirban Rahut -- Large Value support
+    * Aaron Gao -- New iterator features
+    * Islam AbdelRahman -- Bulk loading
+    * Laurent Demailly -- RocksDB cloning at the speed of light with WDT
+    * Arun Sharma -- Iterlib: A zero copy iterator library 
+* [RocksDB Future](https://www.youtube.com/watch?v=6_2SUc1Mlzw) (Siying Dong @ Faceboook)
+* [The updated state of MyRocks, MongoRocks and RocksDB](https://www.youtube.com/watch?v=p6-HljaB2fs) (Mark Callaghan @ Facebook)
+* [Talk from Percona](https://www.youtube.com/watch?v=VLsBSX4yRq4) (George Lorch @ Percona)
+* [Rocksplicator](https://www.youtube.com/watch?v=9TxJma5NmjM) (Bo Liu @ Pinterest)
+* [RocksOS: Plug-in RocksDB Into ObjectStore](https://www.youtube.com/watch?v=jwXNr3nqSqA) (Praveen Rao @ Microsoft)
 
 ### 2016.06 6th RocksDB Meetup [video](http://www.heavybit.com/library/blog/improving-rocksdbs-write-scalability-counting-things-at-smyte/)
 * [Improving RocksDB’s Write Scalability](https://github.com/facebook/rocksdb/blob/gh-pages/talks/rocksdb_write_scalability.pdf) (Nathan Bronson @ Facebook)
