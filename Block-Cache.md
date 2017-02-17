@@ -74,7 +74,7 @@ By putting index and filter blocks in block cache, these blocks has to compete a
     // This is the simulated cache.
     std::shared_ptr<Cache> sim_cache = NewSimCache(cache, sim_capacity, sim_num_shard_bits);
     BlockBasedTableOptions table_options;
-    table_options.block_cache = cache;
+    table_options.block_cache = sim_cache;
     
 The extra memory overhead of the simulated cache is less than 2% of `sim_capacity`.
 
