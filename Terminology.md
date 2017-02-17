@@ -4,15 +4,17 @@
 
 **Range lookup**: Range lookup means reading a range of keys using an Iterator.
 
-**SST File** (**data file** - **SST table**): SST stands for Sorted Sequence Table. They are persistent files storing data. In the file keys are usually organized in sorted order so that a key or iterating position can be identifies through a binary search.
+**SST File** (**Data file** / **SST table**): SST stands for Sorted Sequence Table. They are persistent files storing data. In the file keys are usually organized in sorted order so that a key or iterating position can be identifies through a binary search.
 
 **LSM-tree**: See the definition in https://en.wikipedia.org/wiki/Log-structured_merge-tree RocksDB is LSM-tree-based storage engine.
 
 **Write-Ahead-Log (WAL)** or **log**: A log file used to recover data that is not yet flushed to SST files, during DB recovery. See https://github.com/facebook/rocksdb/wiki/Write-Ahead-Log-File-Format
 
-**mem table** / **write buffer**: the in-memory data structure that stores the most recent updates of the database. Usually it is organized in sorted order and includes a binary searchable index. See https://github.com/facebook/rocksdb/wiki/Basic-Operations#memtable-and-table-factories
+**memtable** / **write buffer**: the in-memory data structure that stores the most recent updates of the database. Usually it is organized in sorted order and includes a binary searchable index. See https://github.com/facebook/rocksdb/wiki/Basic-Operations#memtable-and-table-factories
 
-**mem table switch**: During this process, the current **active memtable** (the one current writes go to) is closed and turned into an **immutable memtable**. At the same time, we will close the current WAL file and start a new one. 
+**memtable switch**: During this process, the current **active memtable** (the one current writes go to) is closed and turned into an **immutable memtable**. At the same time, we will close the current WAL file and start a new one. 
+
+**immutable memtable**: A closed **memtable** that is waiting to be flushed.
 
 **sequence number (SeqNum / Seqno)**: each write to the database will be assigned an auto-incremented ID number. The number is attached with the key-value pair in WAL file, memtable, and SST files. The sequence number is used to implement snapshot read, garbage collection in compactions, MVCC in transactions, and some other purposes.
 
