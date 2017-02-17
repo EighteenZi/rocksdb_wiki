@@ -69,3 +69,5 @@
 **PlainTable**: An alternative format of SST file format, optimized for ramfs. See https://github.com/facebook/rocksdb/wiki/PlainTable-Format
 
 **forward iterator / tailing iterator**: A special iterator option that optimizes for very specific use cases. See https://github.com/facebook/rocksdb/wiki/Tailing-Iterator
+
+**single delete**: a special delete operation which only works when users never update an existing key: https://github.com/facebook/rocksdb/wiki/Single-Delete
