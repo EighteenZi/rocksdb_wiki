@@ -27,7 +27,7 @@ Out of box, RocksDB will use LRU-based block cache implementation with 8MB capac
 * `capacity`: Total size of the cache.
 * `num_shard_bits`: The number of bits from cache keys to be use as shard id. The cache will be sharded into `2^num_shard_bits` shards.
 * `strict_capacity_limit`: In rare case, block cache size can go larger than its capacity. This is when ongoing reads or iterations over DB pin blocks in block cache, and the total size of pinned blocks exceed the cpacity. If there are further reads which try to insert blocks into block cache, if `strict_capacity_limit=false`(default), the cache will fail to respect its capacity limit and allow the insertion. This can create undesired OOM error that crashes the DB if the host don't have enough memory. Setting the option to `true` will reject further insertion to the cache and fail the read or iteration. The option works on per-shard basis, means it is possible one shard is rejecting insert when it is full, while another shard still have extra unpinned space.
-* `high_pri_pool_ratio`: The ratio of capacity reserve for high priority blocks. See [[Caching index and filter blocks|Block-Cache#caching-index-and-filter-blocks]] section below.
+* `high_pri_pool_ratio`: The ratio of capacity reserve for high priority blocks. See [[Caching index and filter blocks|Block-Cache#caching-index-and-filter-blocks]] section below for more information.
 
 ### Clock Cache
 
@@ -54,7 +54,14 @@ To create a clock cache, call `NewClockCache()`. To make clock cache available, 
 
 ### Caching Index and Filter Blocks
 
-By default index and filter blocks is cached outside of block cache, but optionally they can be managed by block cache. 
+By default index and filter blocks is cached outside of block cache, and users won't be able to control how much  memory should be use to cache these blocks, other than setting `max_open_files`. Users can opt for cache index and filter blocks in block cache, which allows for better control of memory used by RocksDB. To cache index and filter blocks in block cache:
+
+    BlockBasedTableOptions table_options;
+    table_options.cache_index_and_filter_blocks = true;
+
+By putting index and filter blocks in block cache, these blocks has to complete against data blocks for staying in cache. Although index and filter blocks are being access more frequently than data block, there are scenarios where these blocks can be thrashing. This is undesired because index and filter blocks tend to be much larger than data blocks, and they are usually more useful. There are two options to tune to mitigate the problem:
+
+* `cache_index_and_filter_blocks_with_high_priority`: Set priority to high for index and filter blocks in block cache. It only affect `LRUCache` so far, and need to use together with `high_pri_pool_ratio` when calling `NewLRUCache()`. If the feature is enabled, LRU-list in LRU cache will be split into two parts, one for high-pri blocks and one for low-pri blocks. Data blocks will be inserted to the head of low-pri pool. Index and filter blocks will be inserted to the head of high-pri pool. If the total usage in the high-pri pool exceed `capacity * high_pri_pool_ratio`, the block at the tail of high-pri pool will overflow to the head of low-pri pool, after which it will compete against data blocks.
 
 ### Statistics
 
