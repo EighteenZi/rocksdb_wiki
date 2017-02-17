@@ -10,7 +10,7 @@
 ** [[Block-Cache | Block Cache]]
 ** [[PlainTable-Format | PlainTable Format]]
 ** [[Rocksdb-Bloom-Filter | Bloom Filter]]
-** [[Hash-based-memtable-implementations | Hash-Based Memtable]]
+** [[MemTable | MemTable]]
 ** [[Prefix-Seek-API-Changes | Prefix seek]]
 ** [[Merge-Operator | Read-Modify-Write Operator]]
 ** [[Tailing-Iterator | Tailing Iterator]]
