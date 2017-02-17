@@ -1,6 +1,5 @@
 ### 2016.12 8th RocksDB Meetup [playlist](https://www.youtube.com/playlist?list=PLb0IAmt7-GS2DTBGK1JS31JuDoQDuXbZp)
 * [Lightning Talks](https://www.youtube.com/watch?v=rsbrRTqUkjY) (Facebook Engineers)
-
     * Yueh-Hsuan Chiang -- Lua Compaction Filters
     * Karthikeyan Radhakrishnan -- Read Cache
     * Andrew Kryczka -- Improved Statistics/Delete Range
