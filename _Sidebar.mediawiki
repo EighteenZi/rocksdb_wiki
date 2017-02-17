@@ -66,6 +66,7 @@
 * '''Misc'''
 ** [[Open-Projects | Open Projects]]
 ** [[ Talks | Talks ]]
+** [[ Publication | Publication ]]
 ** [[Features-Not-in-LevelDB |Features Not in LevelDB]]
 ** [[How-to-ask-a-performance-related-question|How to ask a performance-related question?]]
 ** [[ Articles-about-Rocks | Articles about Rocks]]
