@@ -44,6 +44,7 @@
 ** [[How-we-keep-track-of-live-SST-files | How we keep track of live SST files]]
 ** [[Indexing-SST-Files-for-Better-Lookup-Performance | How we index SST]]
 ** [[Merge-Operator-Implementation | Merge Operator Implementation]]
+** [[Choose-Compaction-Files | How we choose compaction files]]
 ** [[RocksDB Repairer | RocksDB Repairer]]
 ** [[Two-Phase-Commit-Implementation | Two Phase Commit]]
 ** [[Iterator-Implementation | Iterator's Implementation]]
