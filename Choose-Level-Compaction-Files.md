@@ -24,4 +24,4 @@ Level compaction style is the default compaction style of RocksDB so it is also 
     If we initially pick f2 in step 3, now we will compact f2(**inputs**) and f6(**output_level_inputs** in step 4). But we can safely compact f2, f3 and f6 without expanding the output level.
 8. The files in **inputs** and **output_level_inputs** are the candidate files for this level compaction.
 
-Cheers!
+Cheers!:beers::beers::beers:
