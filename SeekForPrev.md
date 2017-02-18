@@ -1,5 +1,5 @@
 ## SeekForPrev API
-Start from 4.13, Rocksdb ddded Iterator::SeekForPrev(). This new API will seek to the last key that less than or equal to the target key.
+Start from 4.13, Rocksdb added Iterator::SeekForPrev(). This new API will seek to the last key that less than or equal to the target key.
 ```cpp
 // Suppose we have keys "a1", "a3", "b1", "b2", "c2", "c4".
 auto iter = db->NewIterator(ReadOptions());
