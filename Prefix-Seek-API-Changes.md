@@ -10,11 +10,11 @@ iter->SeekForPrev("c3"); // iter->Key() == "c2";
 ```
 Basically, the behavior of SeekForPrev() is like the code snippet below:
 ```cpp
-Seek(_target_); 
+Seek(target); 
 if (!Valid()) {
   SeekToLast();
 } 
-if (Valid() && key() > _target_) { 
+if (Valid() && key() > target) { 
   Prev(); 
 }
 ```
