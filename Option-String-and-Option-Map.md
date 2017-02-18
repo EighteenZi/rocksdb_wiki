@@ -75,4 +75,10 @@ In both of option string and option map, option name maps the variable names in 
 
 Note, although most of the options in the option class are supported in the option string, there are exceptions. You can find the list of supported options in variable `db_options_type_info`, `cf_options_type_info` and `block_based_table_type_info` in the source file [[util/options_helper.h|https://github.com/facebook/rocksdb/blob/master/util/options_helper.h]] of the source code of your release.
 
-If the option is a plug-in class, e.g. comparators, compaction filter, and merge operators, the option usually is not supported through the option string or string map. Users need to set those non-supported options in program, after the option is constructed.
+If the option is a callback class, e.g. comparators, compaction filter, and merge operators, you will usually need to pass the pointer of the callback class as the value, which will be casted in to an object.
+
+There are exception. Some special callback classes are supported by the option string or map:
+* Prefix extractor (option name `prefix_extractor`), whose value can be passed as `rocksdb.FixedPrefix.<prefix_length>` or `rocksdb.CappedPrefix.<prefix_length>`.
+* Filter policy (option name `filter_poilcy`), whose value can be passed as `bloomfilter:<bits_per_key>:<use_block_based>`
+* Table factory (option name `table_factory`). The values will be either `BlockBasedTable` or `PlainTable`. Other than that, two special option string name is used to provide the options, `block_based_table_factory` or `plain_table_factory`. The value of the options will be the option string of BlockBasedTableOptions or PlainTableOptions.
+* Memtable Factory (option name `memtable_factory`). It can take value of `skip_list`, `prefix_hash`, `hash_linkedlist`, `vector` or `cuckoo`.
