@@ -13,6 +13,7 @@
 ** [[Rocksdb-Bloom-Filter | Bloom Filter]]
 ** [[MemTable | MemTable]]
 ** [[Prefix-Seek-API-Changes | Prefix seek]]
+** [[SeekForPrev | SeekForPrev]]
 ** [[Merge-Operator | Read-Modify-Write Operator]]
 ** [[Tailing-Iterator | Tailing Iterator]]
 ** [[Single-Delete | Single Delete]]
