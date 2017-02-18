@@ -34,6 +34,8 @@ As a result, a memtable can be flushed before it is full. This is one reason the
 
 ### Concurrent Insert
 
+Without support of concurrent insert to memtables, concurrent writes to RocksDB from multiple threads will apply to memtable sequentially. Concurrent memtable insert is defaults to on and can be turn off via `allow_concurrent_memtable_write` option, although only skiplist-based memtable supports the feature.
+
 ### Insert with Hint
 
 ### In-place Update
@@ -46,7 +48,7 @@ As a result, a memtable can be flushed before it is full. This is one reason the
 | Index type                            | binary search                         | hash + binary search                                                                         | hash + linear search                                                                               | linear search |
 | Support totally ordered full db scan? | naturally                             | very costly (copy and sort to create a temporary totally-ordered view)                       | very costly (copy and sort to create a temporary totally-ordered view)                             | very costly (copy and sort to create a emporary totally-ordered view) |
 | Memory Overhead                       | Average (multiple pointers per entry) | High (Hash Buckets + Skip List Metadata for non-empty buckets + multiple pointers per entry) | Lower (Hash buckets + pointer per entry)                                                           | Low (pre-allocated space at the end of vector) |
-| MemTable Flush                        | Fast with constant extra memory       | Slow with high temporary memory usage                                                        | Slow with high temporary memory usage                                                              | Fast with constant extra memory |
+| MemTable Flush                        | Fast with constant extra memory       | Slow with high temporary memory usage                                                        | Slow with high temporary memory usage                                                              | Slow with constant extra memory |
 | Concurrent Insert | Support | Not support | Not support | Not support|
 | Insert with Hint | Support (in case there are no concurrent insert) | Not support | Not support | Not support |
 
