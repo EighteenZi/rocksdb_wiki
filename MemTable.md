@@ -20,6 +20,8 @@ As a result, a memtable can be flushed before it is full. This is one reason the
 
 ### Skiplist-based MemTable
 
+The default implementation of memtable is based on skiplist. The implementation provides general good performance to both read and write, random access and sequential scan. Besides, it provides some other useful features that other memtable implementations don't currently support, like [[Concurrent Insert|memtable#concurrent-insert]] and [[Insert with Hint|memtable#insert-with-hint]]
+
 ### HashSkiplist MemTable
 
 Other than the default memtable implementation using skip lists, users can use other types of memtable implementation, for example HashLinkList and HashSkipList, to speed-up some queries.
@@ -28,14 +30,22 @@ As their names imply, HashSkipList organizes data in a hash table with each hash
 
 When doing a look-up or inserting a key, target key's prefix is retrieved using Options.prefix_extractor, which is used to find the hash bucket. Inside a hash bucket, all the comparisons are done using whole (internal) keys, just as SkipList based memtable.
 
+### Concurrent Insert
+
+### Insert with Hint
+
+### In-place Update
+
 ### Comparison
 
-| Mem Table Type                        | SkipList                              | HashSkipList                                                                                 | HashLinkList                                                                                       |
-|---------------------------------------|---------------------------------------|----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| Optimized Use Case                    | General                               | Range query within a specific key prefix                                                     | Range query within a specific key prefix and there are only a small number of rows for each prefix |
+| Mem Table Type | SkipList | HashSkipList | HashLinkList | Vector |
+|----------------|----------|--------------|--------------|--------|
+| Optimized Use Case                    | General                               | Range query within a specific key prefix                                                     | Range query within a specific key prefix and there are only a small number of rows for each prefix | Random write heavy workload |
 | Index type                            | binary search                         | hash + binary search                                                                         | hash + linear search                                                                               |
 | Support totally ordered full db scan? | naturally                             | very costly (copy and sort to create a temporary totally-ordered view)                       | very costly (copy and sort to create a temporary totally-ordered view)                             |
 | Memory Overhead                       | Average (multiple pointers per entry) | High (Hash Buckets + Skip List Metadata for non-empty buckets + multiple pointers per entry) | Lower (Hash buckets + pointer per entry)                                                           |
 | MemTable Flush                        | Fast with constant extra memory       | Slow with high temporary memory usage                                                        | Slow with high temporary memory usage                                                              |
+| Concurrent Insert | Support | Not support | Not support |
+| Insert with Hint | Support (in case there are no concurrent insert) | Not support | Not support |
 
 The biggest limitation of the hash based memtables is that doing scan across multiple prefixes requires copy and sort, which is very slow and memory costly.
