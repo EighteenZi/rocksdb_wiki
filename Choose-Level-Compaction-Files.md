@@ -4,7 +4,7 @@ Level compaction style is the default compaction style of RocksDB so it is also 
 ## Steps
 1. Go from level 0 to highest level to pick the first level, L<sub>b</sub>, that the score of this level larger than 1 as the compaction base level.
 2. Determine the compaction output level L<sub>o</sub> = L<sub>b</sub> + 1
-3. Depends on different [compaction priority option](http://rocksdb.org/blog/2016/01/29/compaction_pri.html), find the first file that should be compacted with the highest priority. If the file or its parents on L<sub>o</sub>(The files the key ranges of which overlap) are being compacted by another compaction job, skip to the file with the secondary highest priority until find **one** candidate file. Adds this file into compaction **inputs**.
+3. According to different [compaction priority options](http://rocksdb.org/blog/2016/01/29/compaction_pri.html), find the first file that should be compacted with the highest priority. If the file or its parents on L<sub>o</sub>(The files the key ranges of which overlap) are being compacted by another compaction job, skip to the file with the secondary highest priority until find **one** candidate file. Adds this file into compaction **inputs**.
 4. Keep expanding inputs until we are sure that there is a "clean cut" boundary between the files in input and the surrounding files. This will ensure that no parts of a key are lost during compaction. For example, we have five files with key range:
    <pre>
        f1[a1 a2] f2[a3 a4] f3[a4 a6] f4[a6 a7] f5[a8 a9]
