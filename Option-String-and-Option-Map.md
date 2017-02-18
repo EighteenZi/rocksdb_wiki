@@ -12,7 +12,7 @@ An example of an option string will like this:
 ```
 table_factory=PlainTable;prefix_extractor=rocksdb.CappedPrefix.13;comparator=leveldb.BytewiseComparator;compression_per_level=kBZip2Compression:kBZip2Compression:kBZip2Compression:kNoCompression:kZlibCompression:kBZip2Compression:kSnappyCompression;max_bytes_for_level_base=986;bloom_locality=8016;target_file_size_base=4294976376;memtable_huge_page_size=2557;max_successive_merges=5497;max_sequential_skip_in_iterations=4294971408;arena_block_size=1893;target_file_size_multiplier=35;min_write_buffer_number_to_merge=9;max_write_buffer_number=84;write_buffer_size=1653;max_compaction_bytes=64;max_bytes_for_level_multiplier=60;memtable_factory=SkipListFactory;compression=kNoCompression;bottommost_compression=kDisableCompressionOption;min_partial_merge_operands=7576;level0_stop_writes_trigger=33;num_levels=99;level0_slowdown_writes_trigger=22;level0_file_num_compaction_trigger=14;compaction_filter=urxcqstuwnCompactionFilter;soft_rate_limit=530.615385;soft_pending_compaction_bytes_limit=0;max_write_buffer_number_to_maintain=84;verify_checksums_in_compaction=false;merge_operator=aabcxehazrMergeOperator;memtable_prefix_bloom_size_ratio=0.4642;memtable_insert_with_hint_prefix_extractor=rocksdb.CappedPrefix.13;paranoid_file_checks=true;force_consistency_checks=true;inplace_update_num_locks=7429;optimize_filters_for_hits=false;level_compaction_dynamic_level_bytes=false;inplace_update_support=false;compaction_style=kCompactionStyleFIFO;purge_redundant_kvs_while_flush=true;hard_pending_compaction_bytes_limit=0;disable_auto_compactions=false;report_bg_io_stats=true;compaction_filter_factory=mpudlojcujCompactionFilterFactory;
 ```
-Each option will be given as `<option_name>:<option_value>` separated by `;`. To find the list of options supported, check [the section below](#Find the supported options in option string and option map)
+Each option will be given as `<option_name>:<option_value>` separated by `;`. To find the list of options supported, check [the section below](#find-the-supported-options-in-option-string-and-option-map)
 
 ### Options map
 Similarly, users can get option classes from a string map, by calling helper function `GetColumnFamilyOptionsFromMap()`, `GetDBOptionsFromMap()`, `GetBlockBasedTableOptionsFromMap()` or `GetPlainTableOptionsFromMap()`. The string to string map is passed in, which maps from the option name and the option value, as a plain text string. An example of string map for an option is like this:
@@ -68,7 +68,7 @@ Similarly, users can get option classes from a string map, by calling helper fun
       {"optimize_filters_for_hits", "true"},
   };
 ```
-To find the list of options supported, check [the section below](#Find the supported options in option string and option map)
+To find the list of options supported, check [the section below](#find-the-supported-options-in-option-string-and-option-map)
 
 ### Find the supported options in option string and option map
 In both of option string and option map, option name maps the variable names in the target class, `DBOptions`, `ColumnFamilyOptions`, `BlockBasedTableOptions`, or `PlainTableOptions`. For `DBOptions` and `ColumnFamilyOptions`, you can find the list of them and their descriptions in two respective classes in the source file [[options.h|https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h]] of the source code of your release. For the other two options, you can find them in file [[table.h|https://github.com/facebook/rocksdb/blob/master/include/rocksdb/table.h]]
