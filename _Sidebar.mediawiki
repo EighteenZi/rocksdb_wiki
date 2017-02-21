@@ -26,6 +26,7 @@
 ** [[WAL Recovery Modes | WAL Recovery Modes]]
 ** [[EventListener | EventListener]]
 ** [[Rate-Limiter | Rate Limiter]]
+** [[Option-String-and-Option-Map | Option String and Option Map]]
 ** [[RocksDB-Options-File | RocksDB Options File]]
 ** [[Transactions | Transactions]]
 ** [[Creating-and-Ingesting-SST-files | Creating and Ingesting SST files]]
