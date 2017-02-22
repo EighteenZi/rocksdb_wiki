@@ -47,7 +47,7 @@ See [this document](https://developers.google.com/protocol-buffers/docs/encoding
        index_handle:     char[q];      // Block handle for index
        padding:          char[40-p-q]; // zeroed bytes to make fixed length
                                        // (40==2*BlockHandle::kMaxEncodedLength)
-       magic:            fixed64;      // == 0xdb4775248b80fb57 (little-endian)
+       magic:            fixed64;      // == 0x88e241b785f4cff7 (little-endian)
 
 #### `Filter` Meta Block
 
