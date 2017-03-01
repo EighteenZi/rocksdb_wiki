@@ -31,8 +31,27 @@ bool use_direct_writes = false;
 ```
 The code is self-explanatory.
 
+You may also need other options to optimize direct I/O performance.
+```cpp
+// option to enable readahead in compaction
+size_t compaction_readahead_size = 2 * 1024 * 1024; // recommend at least 2MB
+// option to tune write buffer for direct writes
+// Note: we set a max bound of 64KB, will be removed soon.
+size_t writable_file_max_buffer_size = 1024 * 1024; // 1MB by default
+
+BlockedBasedTableOptions bbto;
+// For the users who want to cache compressed blocks by themselves,
+// they can use compressed block cache
+// options to enable LRU to compressed block cache
+boto.block_cache_compressed = NewLRUCache(capacity)
+```
+
+
+
+* options to enable LRU to cache compressed blocks
+* options to tune writes done by compaction to avoid page at a time direct IO writes
 ###Notes 
 1. Please set **`skip_table_builder_flush = true`** in `BlockBasedTableOptions` to optimize writes in Direct I/O mode, otherwise the writes may be slow. You may also consider to set `compaction_readahead_size > 0`.
 2.  `allow_mmap_reads/use_direct_reads` and `allow_mmap_writes/use_direct_writes` are mutually exclusive, i.e., they cannot be set to true at the same time.
 3.  Direct I/O options will only be applied to sst file I/O but not WAL I/O or MANIFEST I/O because the I/O pattern of these files are not suitable for direct I/O.
-4. After enable direct I/O, compaction writes will no longer be in the OS page cache, so first read will do real IO. For the users who want to cache compressed blocks by themselves, they can use compressed block cache by configuring `std::shared_ptr<Cache> block_cache_compressed`.
+4. After enable direct I/O, compaction writes will no longer be in the OS page cache, so first read will do real IO. 
