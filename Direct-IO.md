@@ -34,10 +34,9 @@ The code is self-explanatory.
 You may also need other options to optimize direct I/O performance.
 ```cpp
 // options.h
-// option to enable readahead in compaction
+// Option to enable readahead in compaction
 size_t compaction_readahead_size = 2 * 1024 * 1024; // recommend at least 2MB
-// option to tune write buffer for direct writes
-// Note: we set a max bound of 64KB, will be removed soon.
+// Option to tune write buffer for direct writes
 size_t writable_file_max_buffer_size = 1024 * 1024; // 1MB by default
 ```
 ```cpp
@@ -45,7 +44,7 @@ size_t writable_file_max_buffer_size = 1024 * 1024; // 1MB by default
 BlockedBasedTableOptions bbto;
 // For the users who want to cache compressed blocks by themselves,
 // they can use compressed block cache
-// options to enable LRU to compressed block cache
+// Option to enable compressed block cache
 bbto.block_cache_compressed = NewLRUCache(capacity);
 
 // If true, block will not be explicitly flushed to disk during building
