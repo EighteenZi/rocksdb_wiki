@@ -32,6 +32,6 @@ bool use_direct_writes = false;
 The code is self-explanatory.
 
 ###Notes 
-1. Please set **`skip_table_builder_flush = true`** in `BlockBasedTableOptions` to optimize writes in Direct I/O mode.
+1. Please set **`skip_table_builder_flush = true`** in `BlockBasedTableOptions` to optimize writes in Direct I/O mode, otherwise the writes may be slow.
 2.  `allow_mmap_reads/use_direct_reads` and `allow_mmap_writes/use_direct_writes` are mutually exclusive, i.e., they cannot be set to true at the same time.
 3.  Direct I/O options will only be applied to sst file I/O but not WAL I/O or MANIFEST I/O because the I/O pattern of these files are not suitable for direct I/O.
