@@ -35,21 +35,17 @@ You may also need other options to optimize direct I/O performance.
 ```cpp
 // options.h
 // Option to enable readahead in compaction
+// If not set, it will be set to 2MB internally
 size_t compaction_readahead_size = 2 * 1024 * 1024; // recommend at least 2MB
 // Option to tune write buffer for direct writes
 size_t writable_file_max_buffer_size = 1024 * 1024; // 1MB by default
 ```
 ```cpp
 // table.h
-BlockedBasedTableOptions bbto;
-// For the users who want to cache compressed blocks by themselves,
-// they can use compressed block cache
-// Option to enable compressed block cache
-bbto.block_cache_compressed = NewLRUCache(capacity);
-
 // If true, block will not be explicitly flushed to disk during building
 // a SstTable. Instead, buffer in WritableFileWriter will take
 // care of the flushing when it is full.
+// This option will be deprecated and always be true
 bbto.skip_table_builder_flush = true;
 ```
 
