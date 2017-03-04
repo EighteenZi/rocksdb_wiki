@@ -13,7 +13,7 @@ Basically, the behavior of SeekForPrev() is like the code snippet below:
 Seek(target); 
 if (!Valid()) {
   SeekToLast();
-} else if (Valid() && key() > target) { 
+} else if (key() > target) { 
   Prev(); 
 }
 ```
