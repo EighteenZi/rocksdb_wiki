@@ -412,7 +412,6 @@ Multiple DBs sharing the same compaction pool of 2:
 
 Settings for WAL logs:
 
-    options.disableDataSync = 1;
     options.bytes_per_sync = 2 << 20;
 
 ### Suggestion for in memory block table
