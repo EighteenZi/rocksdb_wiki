@@ -119,7 +119,6 @@ Asynchronous writes can often be used safely. For example, when loading a large 
 
 We also provide a way to completely disable Write Ahead Log for a particular write. If you set write_option.disableWAL to true, the write will not go to the log at all and may be lost in an event of process crash.
 
-When opening a DB, you can disable syncing of data files by setting Options::disableDataSync to true. This can be useful when doing bulk-loading or big idempotent operations. Once the operation is finished, you can manually call sync() to flush all dirty buffers to stable storage.
 
 RocksDB by default uses faster fdatasync() to sync files. If you want to use fsync(), you can set Options::use_fsync to true. You should set this to true on filesystems like ext3 that can lose files after a reboot.
 
