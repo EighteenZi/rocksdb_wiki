@@ -3,20 +3,20 @@
 Herein we try and maintain a list of relevant 3rd-party articles about RocksDB.
 
 ## Getting Started
-[Migrating from LevelDB to RocksDB](http://rocksdb.org/blog/1811/migrating-from-leveldb-to-rocksdb-2/) by Leonidas Galanis. 16th January 2015.
+[Migrating from LevelDB to RocksDB](http://rocksdb.org/blog/2015/01/16/migrating-from-leveldb-to-rocksdb-2.html) by Leonidas Galanis. 16th January 2015.
 
 [The Journey from Faster to Better](https://scs.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f4e0eb37-ae18-468f-9248-cb73edad3e56) by Mark Callaghan and Igor Canadi. 22nd October 2015.
 
 ## Working with RocksDB
-[Integrating RocksDB with MongoDB](http://rocksdb.org/blog/author/icanadi/) by Igor Canadi. 22nd April 2015.
+[Integrating RocksDB with MongoDB](http://rocksdb.org/blog/2015/04/22/integrating-rocksdb-with-mongodb-2.html) by Igor Canadi. 22nd April 2015.
 
-[WriteBatchWithIndex: Utility for Implementing Read-Your-Own-Writes](http://rocksdb.org/blog/1901/write-batch-with-index/) by Siying Dong. 27th February 2015.
+[WriteBatchWithIndex: Utility for Implementing Read-Your-Own-Writes](http://rocksdb.org/blog/2015/02/27/write-batch-with-index.html) by Siying Dong. 27th February 2015.
 
-[How to persist in-memory RocksDB database?](http://rocksdb.org/blog/245/how-to-persist-in-memory-rocksdb-database/) by Igor Canadi. 27th March 2014.
+[How to persist in-memory RocksDB database?](http://rocksdb.org/blog/2014/03/27/how-to-persist-in-memory-rocksdb-database.html) by Igor Canadi. 27th March 2014.
 
-[Reading RocksDB options from a file](http://rocksdb.org/blog/1883/reading-rocksdb-options-from-a-file/) by Leonidas Galanis. 24th February 2015.
+[Reading RocksDB options from a file](http://rocksdb.org/blog/2015/02/24/reading-rocksdb-options-from-a-file.html) by Leonidas Galanis. 24th February 2015.
 
-[How to backup RocksDB?](http://rocksdb.org/blog/191/how-to-backup-rocksdb/) by Igor Canadi. 27th March 2014.
+[How to backup RocksDB?](http://rocksdb.org/blog/2014/03/27/how-to-backup-rocksdb.html) by Igor Canadi. 27th March 2014.
 
 ## Internals
 [State of RocksDB](https://www.youtube.com/watch?v=NJ6QgMH2KPU) by Igor Canadi. 4th December 2014.
