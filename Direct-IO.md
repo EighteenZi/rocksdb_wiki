@@ -21,13 +21,16 @@ RocksDB implements all the alignment logic inside `FileReader/FileWriter`, one l
 ## API
 It is easy to use Direct I/O as two new options are provided in [options.h](https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h#L1124-L1128):
 ```cpp
-// Use O_DIRECT for reading file
-// Default: false
-bool use_direct_reads = false;
+  // Use O_DIRECT for user reads
+  // Default: false
+  // Not supported in ROCKSDB_LITE mode!
+  bool use_direct_reads = false;
 
-// Use O_DIRECT for writing file
-// Default: false
-bool use_direct_writes = false;
+  // Use O_DIRECT for both reads and writes in background flush and compactions
+  // When true, we also force new_table_reader_for_compaction_inputs to true.
+  // Default: false
+  // Not supported in ROCKSDB_LITE mode!
+  bool use_direct_io_for_flush_and_compaction = false;
 ```
 The code is self-explanatory.
 
@@ -45,13 +48,13 @@ size_t writable_file_max_buffer_size = 1024 * 1024; // 1MB by default
 // If true, block will not be explicitly flushed to disk during building
 // a SstTable. Instead, buffer in WritableFileWriter will take
 // care of the flushing when it is full.
-// This option will be deprecated and always be true
+// This option will is deprecated and always be true
 bbto.skip_table_builder_flush = true;
 ```
 
 ###Notes 
-1.  `allow_mmap_reads/use_direct_reads` and `allow_mmap_writes/use_direct_writes` are mutually exclusive, i.e., they cannot be set to true at the same time.
-2.  Direct I/O options will only be applied to sst file I/O but not WAL I/O or MANIFEST I/O because the I/O pattern of these files are not suitable for direct I/O.
+1.  `allow_mmap_reads` cannot be used with `use_direct_reads` or `use_direct_io_for_flush_and_compaction. `allow_mmap_writes` cannot be used with `use_direct_io_for_flush_and_compaction`, i.e., they cannot be set to true at the same time.
+2.  `use_direct_io_for_flush_and_compaction` and `use_direct_reads` will only be applied to SST file I/O but not WAL I/O or MANIFEST I/O because the I/O pattern of these files are not suitable for direct I/O.
 3. After enable direct I/O, compaction writes will no longer be in the OS page cache, so first read will do real IO. Some users may know RocksDB has a feature called compressed block cache which is supposed to be able to replace page cache with direct I/O enabled. But please read the following comments before enable it:
   * Fragmentation. RocksDB's compressed block is not aligned to page size. A compressed block resides in malloc'ed memory in RocksDB's compressed block cache. It usually means a fragmentation in memory usage. OS page cache does slightly better, since it caches the whole physical page. If some continuous blocks are all hot, OS page cache uses less memory to cache them.
   * OS page cache provides read ahead. By default this is turned off in RocksDB but users can choose turn it on. This is going to be useful in range-loop dominated workloads. RocksDB compressed cache doesn't have anything to match the functionality.
