@@ -120,7 +120,7 @@ A: No, unless the RocksDB instance is opened in read-only mode.
 
 **Q: Can I open RocksDB with a different compression type and still read old data?**
 
-A:  Yes, since rocksdb stored the compression information in each SST file and performs decompression accordingly,  you can change the compression and the db will still be able to read existing files.  In addition, you can also specify different compression for different level by specifying ColumnFamilyOptions::compression_per_level.
+A:  Yes, since rocksdb stored the compression information in each SST file and performs decompression accordingly,  you can change the compression and the db will still be able to read existing files.  In addition, you can also specify a different compression for the last level by specifying ColumnFamilyOptions::bottommost_compression.
 
 **Q: How can I configure RocksDB to backup to HDFS?**
 
