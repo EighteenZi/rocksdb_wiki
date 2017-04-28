@@ -44,11 +44,12 @@ size_t compaction_readahead_size = 2 * 1024 * 1024; // recommend at least 2MB
 size_t writable_file_max_buffer_size = 1024 * 1024; // 1MB by default
 ```
 ```cpp
+// DEPRECATED!
 // table.h
 // If true, block will not be explicitly flushed to disk during building
 // a SstTable. Instead, buffer in WritableFileWriter will take
 // care of the flushing when it is full.
-// This option will is deprecated and always be true
+// This option is deprecated and always be true
 bbto.skip_table_builder_flush = true;
 ```
 
