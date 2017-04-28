@@ -53,7 +53,7 @@ size_t writable_file_max_buffer_size = 1024 * 1024; // 1MB by default
 bbto.skip_table_builder_flush = true;
 ```
 
-###Notes 
+### Notes 
 1.  `allow_mmap_reads` cannot be used with `use_direct_reads` or `use_direct_io_for_flush_and_compaction. `allow_mmap_writes` cannot be used with `use_direct_io_for_flush_and_compaction`, i.e., they cannot be set to true at the same time.
 2.  `use_direct_io_for_flush_and_compaction` and `use_direct_reads` will only be applied to SST file I/O but not WAL I/O or MANIFEST I/O because the I/O pattern of these files are not suitable for direct I/O.
 3. After enable direct I/O, compaction writes will no longer be in the OS page cache, so first read will do real IO. Some users may know RocksDB has a feature called compressed block cache which is supposed to be able to replace page cache with direct I/O enabled. But please read the following comments before enable it:
