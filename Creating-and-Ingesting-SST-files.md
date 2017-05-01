@@ -67,7 +67,7 @@ You can learn more by checking DB::IngestExternalFile() in [include/rocksdb/db.h
 
 **When you call DB::IngestExternalFile() We will**
 - Copy the file into the DB directory
-- block (not skip) writes to the DB because we have to keep a consistent db state
+- block (not skip) writes to the DB because we have to keep a consistent db state so we have to make sure we can safely assign the right sequence number to all the keys in the file we are gonna ingest
 - If file key range overlap with memtable key range, flush memtable
 - Assign the file to the best level possible in the LSM-tree
 - Assign the file a global sequence number
