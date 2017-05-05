@@ -1,0 +1,1 @@
+Documentation license [here](https://github.com/facebook/rocksdb/blob/master/docs/LICENSE-DOCUMENTATION).
