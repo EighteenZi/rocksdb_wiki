@@ -5,7 +5,7 @@
 * [[Terminology|Terminology]]
 * '''Developer's Guide''' 
 ** [[Basic-Operations | Basic Operations]]
-** [[Set-Options | Set Options]]
+** [[Set-Options | Set-up Options]]
 ** [[Known-Issues | Known Issues]]
 ** [[Compaction | Compaction]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
