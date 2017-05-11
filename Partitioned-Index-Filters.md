@@ -38,4 +38,4 @@ With partitioning, the index/filter of a SST file is partitioned into smaller bl
 ## Current limitations
 - Partitioned filters cannot be enabled without having partitioned index enabled as well.
 - We have the same number of filter and index partitions. In other words, whenever an index block is cut, the filter block is cut as well. We might change it in future if it shows to be causing deficiencies.
-- The filter block size is determined by when the index block is cut. We will soon extend `metadata_block_size` to be enforce the maximum size on both filter and index blocks, i.e., a filter block is cut either when an index block is cut or when its size is about to exceed `metadata_block_size`.
+- The filter block size is determined by when the index block is cut. We will soon extend `metadata_block_size` to be enforce the maximum size on both filter and index blocks, i.e., a filter block is cut either when an index block is cut or when its size is about to exceed `metadata_block_size` (TODO).
