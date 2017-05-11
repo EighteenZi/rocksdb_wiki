@@ -302,6 +302,11 @@ You can [[Creating and Ingesting SST files]] to bulk load a large amount of data
 
 [[Checkpoints]] provides the ability to take a snapshot of a running RocksDB database in a separate directory. Files are hardlinked, rather than copied, if possible, so it is a relatively lightweight operation.
 
+## I/O
+By default, RocksDB's I/O go through operating system's page cache. Setting [[Rate Limiter]] can limit the speed that RocksDB issues file writes, to make room for read I/Os.
+
+Users can also choose to by pass by page cache, using [Direct I/O](https://github.com/facebook/rocksdb/wiki/Direct-IO).
+
 ## Backwards compatibility
 
 The result of the comparator's <code>Name</code> method is attached to the database when it is created, and is checked on every subsequent database open. If the name changes, the <code>rocksdb::DB::Open</code> call will fail. Therefore, change the name if and only if the new key format and comparison function are incompatible with existing databases, and it is ok to discard the contents of all existing databases.
