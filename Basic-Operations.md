@@ -399,7 +399,7 @@ For example:
    private:
     FilterPolicy* builtin_policy_;
    public:
-    CustomFilterPolicy() : builtin_policy_(NewBloomFilter(10)) { }
+    CustomFilterPolicy() : builtin_policy_(NewBloomFilter(10, false)) { }
     ~CustomFilterPolicy() { delete builtin_policy_; }
 
     const char* Name() const { return "IgnoreTrailingSpacesFilter"; }
