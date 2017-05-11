@@ -6,7 +6,7 @@ Currently, CompactRange() function just manually triggers the compaction and del
 
 Since we never rewrite the key-value pair, we also don't ever apply the compaction filter on the keys.
 
-Please use FIFO compaction style with caution. It's still an experimental feature not tested in production. It also doesn't honor database snapshots (yet).
+Please use FIFO compaction style with caution. Unlike other compaction style, it can drop data without informing users.
 
 ## Future work
 
