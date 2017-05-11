@@ -339,6 +339,7 @@ When performing a bulk read, the application may wish to disable caching so that
 
 You can also disable block cache by setting <code>options.no_block_cache</code> to true.
 
+See [[Block Cache]] for more details.
 
 ## Key Layout
 
