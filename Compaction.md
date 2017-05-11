@@ -1,5 +1,5 @@
 You can read more on Compactions here:
-<a href="https://github.com/facebook/rocksdb/wiki/Rocksdb-Architecture-Guide#multi-threaded-compactions">Multi-threaded compactions</a>
+<a href="https://github.com/facebook/rocksdb/wiki/RocksDB-Basics#multi-threaded-compactions">Multi-threaded compactions</a>
 
 Here we give overview of the options that impact behavior of Compactions:
 <ul>
