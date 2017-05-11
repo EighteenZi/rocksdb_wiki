@@ -165,6 +165,16 @@ iteration may be somewhat slower than forward iteration.)
   }
 ```
 
+This is an example of processing entries in range (limit, start] in revers order from one specific key:
+
+```cpp
+  for (it->SeekForPrev(start);
+       it->Valid() && it->key().ToString() > limit;
+       it->Prev()) {
+    ...
+  }
+```
+
 
 ## Snapshots
 
