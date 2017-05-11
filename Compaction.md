@@ -65,7 +65,7 @@ See [[FIFO compaction style]]
 
 ## Thread pools
 
-A thread pool is associated with Env environment object. The client has to create a thread pool by setting the number of background threads using method <code>Env::SetBackgroundThreads()</code> defined in <code>rocksdb/env.h</code>. We use the thread pool for compactions and memtable flushes. Since memtable flushes are in critical code path (stalling memtable flush can stall writes, increasing p99), we suggest having two thread pools - with priorities HIGH and LOW. Memtable flushes can be set up to be scheduled on HIGH thread pool. There are two options available for configuration of background compactions and flushes:
+Compactions and flushes are executed in thread pools. A thread pool is associated with Env environment object. The client has to create a thread pool by setting the number of background threads using method <code>Env::SetBackgroundThreads()</code> defined in <code>rocksdb/env.h</code>. We use the thread pool for compactions and memtable flushes. Since memtable flushes are in critical code path (stalling memtable flush can stall writes, increasing p99), we suggest having two thread pools - with priorities HIGH and LOW. Memtable flushes can be set up to be scheduled on HIGH thread pool. There are two options available for configuration of background compactions and flushes:
 <ul>
 
 <li> <code>Options::max_background_compactions</code> - Maximum number of concurrent background jobs, submitted to the default LOW priority thread pool
