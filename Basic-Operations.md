@@ -294,7 +294,7 @@ Performance can be tuned by changing the default values of the types defined in 
 
 <code>Options::write_buffer_size</code> specifies the amount of data to build up in memory before converting to a sorted on-disk file. Larger values increase performance, especially during bulk loads. Up to max_write_buffer_number write buffers may be held in memory at the same time, so you may wish to adjust this parameter to control memory usage. Also, a larger write buffer will result in a longer recovery time the next time the database is opened.
 
-Related option is <code>Options::max_write_buffer_number</code>, which is maximum number of write buffers that are built up in memory. The default is 2, so that when 1 write buffer is being flushed to storage, new writes can continue to the other write buffer.
+Related option is <code>Options::max_write_buffer_number</code>, which is maximum number of write buffers that are built up in memory. The default is 2, so that when 1 write buffer is being flushed to storage, new writes can continue to the other write buffer. The flush operation is executed in a [[Thread Pool]].
 
 <code>Options::min_write_buffer_number_to_merge</code> is the minimum number of write buffers that will be merged together before writing to storage. If set to 1, then all write buffers are flushed to L0 as individual files and this increases read amplification because a get request has to check in all of these files. Also, an in-memory merge may result in writing lesser data to storage if there are duplicate records in each of these individual write buffers. Default: 1
 
