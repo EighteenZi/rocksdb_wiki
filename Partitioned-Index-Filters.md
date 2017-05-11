@@ -39,3 +39,27 @@ With partitioning, the index/filter of a SST file is partitioned into smaller bl
 - Partitioned filters cannot be enabled without having partitioned index enabled as well.
 - We have the same number of filter and index partitions. In other words, whenever an index block is cut, the filter block is cut as well. We might change it in future if it shows to be causing deficiencies.
 - The filter block size is determined by when the index block is cut. We will soon extend `metadata_block_size` to be enforce the maximum size on both filter and index blocks, i.e., a filter block is cut either when an index block is cut or when its size is about to exceed `metadata_block_size` (TODO).
+
+# Under the hood
+
+Here we present the implementation details for the developers.
+
+## BlockBasedTable Format
+
+You can study the BlockBasedTable format [here](https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format). With partitioning the difference would be that the index block
+
+    [index block]
+
+is stored as
+
+    [index block - partition 1]
+    [index block - partition 2]
+    ...
+    [index block - partition N]
+    [index block - top-level index]
+
+and the footer of SST points to the top-level index block (which by itself is an index on index partition blocks). Each individual index block partition conforms the same format as kBinarySearch. The top-level index format also conforms with that of kBinarySearch and hence can be read using the normal data block readers.
+
+Similar structure is used for partitioning the filter blocks. The format of each individual filter  block conforms with that of kFullFilter. The top-level index format conforms with that of kBinarySearch, similar to top-level index of index blocks.
+
+Note that with partitioning the SST inspection tools such sst_dump report the size of top-level index on index/filters rather than the collective size of index/filter blocks.
