@@ -380,7 +380,7 @@ Because of the way <code>rocksdb</code> data is organized on disk, a single <cod
 
 ```cpp
    rocksdb::Options options;
-   options.filter_policy = NewBloomFilter(10);
+   options.filter_policy = NewBloomFilter(10, false /* use block based filter */);
    rocksdb::DB* db;
    rocksdb::DB::Open(options, "/tmp/testdb", &db);
    ... use the database ...
