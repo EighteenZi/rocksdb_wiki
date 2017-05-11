@@ -23,3 +23,19 @@ With partitioning, the index/filter of a SST file is partitioned into smaller bl
 - Additional space for the top-level index: its quite small 0.1-1% of index/filter size.
 - More disk IO: if the top-level index is not already in cache it would result to one additional IO. To avoid that they can be either stored in heap or stored in cache with hi priority (TODO work)
 - Losing spatial locality: if a workload requires frequent, yet random reads from the same SST file it would result into loading a separate index/filter partition upon each read, which is less efficient than reading the index/filter at once. Although we did not observe this pattern in our benchmarks, it is only likely to happen for L0/L1 layers of LSM, for which partitioning can be disabled (TODO work)
+
+## How to use it?
+- `index_type` = `IndexType::kTwoLevelIndexSearch`
+  * This is to enable partitioned indexes
+- `metadata_block_size` = 4096
+  * This is the block size for index partitions.
+- `cache_index_and_filter_blocks` = `false`
+  * The partitions are stored in the cache anyway. This to control the location of top-level indexes, which easily fit into memory. Having them stored in block cache is less experimented with.
+- `cache_index_and_filter_blocks_with_high_priority` = `true`
+  * Recommended setting
+- block cache size: if you used to store the filter/index into heap, do not forget to increase the block cache size with the amount of memory that you are saving from the heap.
+
+## Current limitations
+- Partitioned filters cannot be enabled without having partitioned index enabled as well.
+- We have the same number of filter and index partitions. In other words, whenever an index block is cut, the filter block is cut as well. We might change it in future if it shows to be causing deficiencies.
+- The filter block size is determined by when the index block is cut. We will soon extend `metadata_block_size` to be enforce the maximum size on both filter and index blocks, i.e., a filter block is cut either when an index block is cut or when its size is about to exceed `metadata_block_size`.
