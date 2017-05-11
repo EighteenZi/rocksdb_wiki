@@ -63,3 +63,13 @@ and the footer of SST points to the top-level index block (which by itself is an
 Similar structure is used for partitioning the filter blocks. The format of each individual filter  block conforms with that of kFullFilter. The top-level index format conforms with that of kBinarySearch, similar to top-level index of index blocks.
 
 Note that with partitioning the SST inspection tools such sst_dump report the size of top-level index on index/filters rather than the collective size of index/filter blocks.
+
+## Builder
+
+Partitioned index and filters are built by `PartitionedIndexBuilder` and `PartitionedFilterBlockBuilder` respectively. 
+
+`PartitionedIndexBuilder` maintains `sub_index_builder_`, a pointer to `ShortenedIndexBuilder`, to build the current index partition. When determined by `flush_policy_`, the builder saves the pointer along with the last key in the index block, and creates a new active `ShortenedIndexBuilder`. When `::Finish` is called on the builder, it calls `::Finish` on the earliest sub index builder and returns the resulting partition block. Next calls to `PartitionedIndexBuilder::Finish` will also include the offset of previously returned partition on the SST, which is used as the values of the top-level index.  The last call to `PartitionedIndexBuilder::Finish` will finish the top-level index and return that instead. After storing the top-level index on SST, its offset will be used as the offset of the index block.
+
+`PartitionedFilterBlockBuilder` inherits from `FullFilterBlockBuilder` which has a `FilterBitsBuilder` for building bloom filters. It also has a pointer to `PartitionedIndexBuilder` and invokes `ShouldCutFilterBlock` on it to determine when a filter block should be cut (right after when an index block is cut). To cut a filter block, it finishes the `FilterBitsBuilder` and stores the resulting block along with a partitioning key provided by  `PartitionedIndexBuilder::GetPartitionKey()`, and reset the `FilterBitsBuilder` for the next partition. At the end each time `PartitionedFilterBlockBuilder::Finish` is invoked one of the partitions is returned, and also the offset of the previous partition is used to build the top-level index. The last call to `::Finish` will return the top-level index block.
+
+The reasons for making `PartitionedFilterBlockBuilder` depend on `PartitionedIndexBuilder` was to enable an optimization for interleaving index/filter partitions on the SST file. That optimization not being pursed we are likely to cut this dependency in future.
