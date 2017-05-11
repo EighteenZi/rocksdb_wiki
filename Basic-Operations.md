@@ -189,6 +189,7 @@ This is an example of processing entries in range (limit, start] in revers order
     ...
   }
 ```
+See [[SeekForPrev]].
 
 To know about implementation details, see [Iterator's Implementation](https://github.com/facebook/rocksdb/wiki/Iterator-Implementation)
 
