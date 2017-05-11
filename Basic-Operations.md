@@ -36,6 +36,21 @@ If you are porting code from <code>leveldb</code> to <code>rocksdb</code>, you c
   rocksdb::Options options = rocksdb::ConvertOptions(leveldb_options);
 ```
 
+## RocksDB Options
+Users can choose to always set options fields explicitly in code, as shown above. Alternatively, you can also set it though a string to string map, or an option string. See [[Option String and Option Map]]
+
+Some options can be changed dynamically while DB is running. For example:
+
+```
+rocksdb::Status s;
+s = db->SetOptions({{"write_buffer_size", "131072"}});
+assert(s.ok());
+s = db->SetDBOptions({{"max_background_flushes", "2"}});
+assert(s.ok());
+```
+
+RocksDB automatically keeps options used in the database in OPTIONS-xxxx files under the DB directory. Users can choose to preserve the option values after DB restart by extracting options from these option files. See [[RocksDB Options File]].
+
 ## Status
 
 You may have noticed the <code>rocksdb::Status</code> type above. Values of this type are returned by most functions in <code>rocksdb</code> that may encounter an error. You can check if such a result is ok, and also print an associated error message:
