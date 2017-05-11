@@ -325,7 +325,7 @@ You can also read more about memtables [here](https://github.com/facebook/rocksd
 
 ## Performance
 
-Performance can be tuned by changing the default values of the types defined in <code>include/rocksdb/options.h</code>.
+Start with [[Set Up Options]]. For more information about RocksDB performance, see the "Performance" section in the sidebar in the right side.
 
 
 ## Block size
