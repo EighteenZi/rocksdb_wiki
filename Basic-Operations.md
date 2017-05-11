@@ -245,6 +245,8 @@ Be careful when using Slices since it is up to the caller to ensure that the ext
 
 When the <code>if</code> statement goes out of scope, <code>str</code> will be destroyed and the backing storage for <code>slice</code> will disappear.
 
+## Transactions
+RocksDB now supports multi-operation transactions. See [[Transactions]]
 
 ## Comparators
 
