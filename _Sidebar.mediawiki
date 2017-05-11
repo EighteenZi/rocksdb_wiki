@@ -7,6 +7,7 @@
 ** [[Basic-Operations | Basic Operations]]
 ** [[Set-Options | Set Options]]
 ** [[Known-Issues | Known Issues]]
+** [[Compaction | Compaction]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 ** [[MANIFEST | MANIFEST]]
 ** [[Block-Cache | Block Cache]]
