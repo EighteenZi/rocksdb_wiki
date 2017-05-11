@@ -2,7 +2,7 @@ Besides writing code to operate on RocksDB to achieve your functionality, using 
 
 RocksDB have tons of options, but most users should ignore most of them, because they are for very specific workloads. Try to leave most RocksDB options as defaults, except what is mentioned below.
 
-First, you need to think about options related resource limitation:
+First, you need to think about options related resource limitation (which are also mentioned in [Basic Options](https://github.com/facebook/rocksdb/wiki/Basic-Operations)):
 
 **cf_options.write_buffer_size**: this is the maximum write buffer size used for this column family. You need to budget the worst case double that amount of memory usage. If you don't have enough memory for this, you need to reduce this value. Otherwise, it is not recommended to change.
 
