@@ -33,7 +33,7 @@ See [this document](https://developers.google.com/protocol-buffers/docs/encoding
 (3) A `metaindex` block contains one entry for every other meta block, where the key is the name of the meta block and the value is a `BlockHandle` pointing to that meta block.
 
 (4) An `index` block contains one entry per data block, where the key is a string `>=` last key in that data block and before the first key in the successive data block. The value is the `BlockHandle` for the data block. 
-**Experimental Feature:** If kTwoLevelIndexSearch is used as IndexType the `index` block is a 2nd level index on index partitions, i.e., each entry points to another `index` block that contains one entry per data block. In this case, the format will be
+ **Experimental Feature:** If kTwoLevelIndexSearch is used as IndexType the `index` block is a 2nd level index on index partitions, i.e., each entry points to another `index` block that contains one entry per data block. In this case, the format will be
 
     [index block - 1st level]
     [index block - 1st level]
