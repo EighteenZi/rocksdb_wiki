@@ -2,7 +2,6 @@
 
 The <code>rocksdb</code> library provides a persistent key value store. Keys and values are arbitrary byte arrays. The keys are ordered within the key value store according to a user-specified comparator function.
 
-
 ## Opening A Database
 
 A <code>rocksdb</code> database has a name which corresponds to a file system directory. All of the contents of database are stored in this directory. The following example shows how to open a database, creating it if necessary:
@@ -36,7 +35,6 @@ If you are porting code from <code>leveldb</code> to <code>rocksdb</code>, you c
   ...
   rocksdb::Options options = rocksdb::ConvertOptions(leveldb_options);
 ```
-
 
 ## Status
 
@@ -264,6 +262,8 @@ Now create a database using this custom comparator:
   ...
 ```
 
+## Column Families
+[[Column Families]] provide a way to logically partition the database. Users can provide atomic writes of multiple keys across multiple column families and read a consistent view from them.
 
 ## Backwards compatibility
 
