@@ -507,7 +507,7 @@ If both are not 0, WAL files will be checked every 10 min and both checks will b
 
 ## Other Information
 To set up RocksDB options:
-* [Set Options](https://github.com/facebook/rocksdb/wiki/Set-Options)
+* [Set Up Options](https://github.com/facebook/rocksdb/wiki/Set-Up-Options)
 * Some detailed [Tuning Guide](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide)
 
 Details about the <code>rocksdb</code> implementation may be found in the following documents:
