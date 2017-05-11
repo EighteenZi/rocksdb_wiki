@@ -308,6 +308,7 @@ Each block is individually compressed before being written to persistent storage
   ... rocksdb::DB::Open(options, name, ...) ....
 ```
 
+Also [[Dictionary Compression]] is also available.
 
 ## Cache
 
