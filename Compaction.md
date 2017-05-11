@@ -40,6 +40,8 @@ You can learn more about all of those options in <code>rocksdb/options.h</code>
 
 ##  Universal style compaction specific settings
 
+For description about universal style compaction, see [Universal compaction style](https://github.com/facebook/rocksdb/wiki/Universal-Compaction)
+
 If you're using Universal style compaction, there is an object <code>CompactionOptionsUniversal</code> that hold all the different options for that compaction. The exact definition is in <code>rocksdb/universal_compaction.h</code> and you can set it in <code>Options::compaction_options_universal</code>. Here we give short overview of options in <code>CompactionOptionsUniversal</code>: <ul>
 
 <li> <code>CompactionOptionsUniversal::size_ratio</code> - Percentage flexibility while comparing file size. If the candidate file(s) size is 1% smaller than the next file's size, then include next file into this candidate set. Default: 1
