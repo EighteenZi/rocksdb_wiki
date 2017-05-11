@@ -54,7 +54,7 @@ bbto.skip_table_builder_flush = true;
 ```
 
 ### Notes 
-1.  `allow_mmap_reads` cannot be used with `use_direct_reads` or `use_direct_io_for_flush_and_compaction. `allow_mmap_writes` cannot be used with `use_direct_io_for_flush_and_compaction`, i.e., they cannot be set to true at the same time.
+1.  `allow_mmap_reads` cannot be used with `use_direct_reads` or `use_direct_io_for_flush_and_compaction`. `allow_mmap_writes` cannot be used with `use_direct_io_for_flush_and_compaction`, i.e., they cannot be set to true at the same time.
 2.  `use_direct_io_for_flush_and_compaction` and `use_direct_reads` will only be applied to SST file I/O but not WAL I/O or MANIFEST I/O because the I/O pattern of these files are not suitable for direct I/O.
 3. After enable direct I/O, compaction writes will no longer be in the OS page cache, so first read will do real IO. Some users may know RocksDB has a feature called compressed block cache which is supposed to be able to replace page cache with direct I/O enabled. But please read the following comments before enable it:
   * Fragmentation. RocksDB's compressed block is not aligned to page size. A compressed block resides in malloc'ed memory in RocksDB's compressed block cache. It usually means a fragmentation in memory usage. OS page cache does slightly better, since it caches the whole physical page. If some continuous blocks are all hot, OS page cache uses less memory to cache them.
