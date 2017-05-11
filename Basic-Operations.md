@@ -265,6 +265,9 @@ Now create a database using this custom comparator:
 ## Column Families
 [[Column Families]] provide a way to logically partition the database. Users can provide atomic writes of multiple keys across multiple column families and read a consistent view from them.
 
+## Bulk Load
+You can [[Creating and Ingesting SST files]] to bulk load a large amount of data directly into DB with minimum impacts on the live traffic.
+
 ## Backwards compatibility
 
 The result of the comparator's <code>Name</code> method is attached to the database when it is created, and is checked on every subsequent database open. If the name changes, the <code>rocksdb::DB::Open</code> call will fail. Therefore, change the name if and only if the new key format and comparison function are incompatible with existing databases, and it is ok to discard the contents of all existing databases.
