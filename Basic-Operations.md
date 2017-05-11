@@ -84,7 +84,7 @@ The database provides <code>Put</code>, <code>Delete</code>, and <code>Get</code
   if (s.ok()) s = db->Put(rocksdb::WriteOptions(), key2, value);
   if (s.ok()) s = db->Delete(rocksdb::WriteOptions(), key1);
 ```
-
+RocksDB also allows [[Single Delete]] which is useful in some special cases.
 
 ## Atomic Updates
 
