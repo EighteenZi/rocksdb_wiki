@@ -496,7 +496,7 @@ In addition, the new platform may need a new default <code>rocksdb::Env</code> i
 
 ## Statistics
 
-To be able to efficiently tune your application, it is always helpful if you have access to usage statistics. You can collect those statistics by setting <code>Options::table_properties_collectors</code> or <code>Options::statistics</code>. For more information, refer to <code>rocksdb/table_properties.h</code> and <code>rocksdb/statistics.h</code>. These should not add significant overhead to your application and we recommend exporting them to other monitoring tools.
+To be able to efficiently tune your application, it is always helpful if you have access to usage statistics. You can collect those statistics by setting <code>Options::table_properties_collectors</code> or <code>Options::statistics</code>. For more information, refer to <code>rocksdb/table_properties.h</code> and <code>rocksdb/statistics.h</code>. These should not add significant overhead to your application and we recommend exporting them to other monitoring tools. See [[Statistics]]. You can also profile single requests using [[Perf Context and IO Stats Context]]
 
 
 ## Purging WAL files
