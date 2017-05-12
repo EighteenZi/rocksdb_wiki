@@ -22,13 +22,7 @@ Other options impacting performance of compactions and when they get triggered a
 
 <li> <code>Options::target_file_size_base</code> and <code>Options::target_file_size_multiplier</code> - Target file size for compaction. target_file_size_base is per-file size for level-1. Target file size for level L can be calculated by target_file_size_base * (target_file_size_multiplier ^ (L-1)) For example, if target_file_size_base is 2MB and target_file_size_multiplier is 10, then each file on level-1 will be 2MB, and each file on level 2 will be 20MB, and each file on level-3 will be 200MB. Default target_file_size_base is 2MB and default target_file_size_multiplier is 1.
 
-<li> <code>Options::expanded_compaction_factor</code> - Maximum number of bytes in all compacted files. We avoid expanding the lower level file set of a compaction if it would make the total compaction cover more than (expanded_compaction_factor * targetFileSizeLevel()) many bytes.
-
-<li> <code>Options::source_compaction_factor</code> - Maximum number of bytes in all source files to be compacted in a single compaction run. We avoid picking too many files in the source level so that we do not exceed the total source bytes for compaction to exceed (source_compaction_factor * targetFileSizeLevel()) many bytes. Default:1, i.e. pick maxfilesize amount of data as the source of a compaction.
-
-<li> <code>Options::max_grandparent_overlap_factor</code> - Control maximum bytes of overlaps in grandparent (i.e., level+2) before we stop building a single file in a level->level+1 compaction.
-
-<li> <code>Options::disable_seek_compaction</code> - Disable compaction triggered by seek. With bloomfilter and fast storage, a miss on one level is very cheap if the file handle is cached in table cache (which is true if max_open_files is large).
+<li> <code>Options::max_compaction_bytes</code> - Maximum number of bytes in all compacted files. We avoid expanding the lower level file set of a compaction if it would make the total compaction cover more than this amount.
 
 <li> <code>Options::max_background_compactions</code> - Maximum number of concurrent background jobs, submitted to the default LOW priority thread pool
 <li> <code>Options::compaction_readahead_size</code> - If non-zero, we perform bigger reads when doing compaction. If you're running RocksDB on spinning disks, you should set this to at least 2MB. We enforce it to be 2MB if you don't set it with direct I/O. 
@@ -37,7 +31,11 @@ Other options impacting performance of compactions and when they get triggered a
 
 You can learn more about all of those options in <code>rocksdb/options.h</code>
 
-##  Universal style compaction specific settings
+##  Leveled style compaction
+
+See [[Leveled Compaction]].
+
+##  Universal style compaction
 
 For description about universal style compaction, see [Universal compaction style](https://github.com/facebook/rocksdb/wiki/Universal-Compaction)
 
