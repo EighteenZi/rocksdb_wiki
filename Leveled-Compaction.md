@@ -57,3 +57,20 @@ When multiple levels trigger the compaction condition, RocksDB needs to pick whi
 We compare the score of each level, and the level with highest score takes the priority to compact.
 
 Which file(s) to compact from the level are explained in [[Choose Level Compaction Files]].
+
+## Levels' Target Size
+### `level_compaction_dynamic_level_bytes` is `false`
+If `level_compaction_dynamic_level_bytes` is false, then level targets are determined as following: L1's target will be `max_bytes_for_level_base`. And then `Target_Size(Ln+1) = Target_Size(Ln) * max_bytes_for_level_multiplier * max_bytes_for_level_multiplier_additional[n]`. `max_bytes_for_level_multiplier_additional` is by default all 1.
+
+For example, if `max_bytes_for_level_base = 123456`, `max_bytes_for_level_multiplier = 10` and `max_bytes_for_level_multiplier_additional` is not set, then size of L1, L2, L3 and L4 will be 16384, 163840, 1638400, and 16384000, respectively.  
+
+### `level_compaction_dynamic_level_bytes` is `true`
+Target size of the last level (`num_levels`-1) will always be actual size of the level. And then `Target_Size(Ln-1) = Target_Size(Ln) / max_bytes_for_level_multiplier`. We won't fill any level whose target will be lower than `max_bytes_for_level_base / max_bytes_for_level_multiplier `. These levels will be kept empty and all L0 compaction will skip those levels and directly go to the first level with valid target size.
+
+For example, if `max_bytes_for_level_base` is 1GB, `num_levels=6` and the actual size of last level is 276GB, then the target size of L1-L6 will be 0, 0, 0.276GB, 2.76GB, 27.6GB and 276GB, respectively.
+
+This is to guarantee a stable LSM-tree structure, which can't be guaranteed if `level_compaction_dynamic_level_bytes` is `false`. For example, in the previous example:
+
+![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/dynamic_level.png)
+
+We can guarantee 90% of data is stored in the last level, 9% data in the second last level. There will be multiple benefits to it. 
