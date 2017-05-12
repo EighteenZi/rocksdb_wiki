@@ -331,3 +331,11 @@ A: It will operate only the default column family.
 **Q: DB operations fail because of out-of-space. How can I unblock myself?**
 
 A: First clear up some free space. And then you need to restart the DB to get it back to normal. Now there isn't a way to unblock the DB without restarting it.
+
+**Q: Can I reuse ReadOptions, WriteOptions, etc, across multiple threads?**
+
+A: As long as they are const, you are free to reuse them.
+
+**Q: Can I reuse DBOptions or ColumnFamilyOptions to open multiple DBs or column families?**
+
+A: Yes. Internally, RocksDB always makes a copy to those options, so you can freely change them and reuse these objects.
