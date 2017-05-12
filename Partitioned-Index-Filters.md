@@ -34,7 +34,7 @@ With partitioning, the index/filter of a SST file is partitioned into smaller bl
 - `cache_index_and_filter_blocks_with_high_priority` = `true`
   * Recommended setting
 - `pin_l0_filter_and_index_blocks_in_cache` = `true`
-  * Recommended setting. This property is extended to the index/filter partitions as well.
+  * Recommended setting as this property is extended to the index/filter partitions as well.
 - block cache size: if you used to store the filter/index into heap, do not forget to increase the block cache size with the amount of memory that you are saving from the heap.
 
 ## Current limitations
@@ -75,3 +75,9 @@ Partitioned index and filters are built by `PartitionedIndexBuilder` and `Partit
 `PartitionedFilterBlockBuilder` inherits from `FullFilterBlockBuilder` which has a `FilterBitsBuilder` for building bloom filters. It also has a pointer to `PartitionedIndexBuilder` and invokes `ShouldCutFilterBlock` on it to determine when a filter block should be cut (right after when an index block is cut). To cut a filter block, it finishes the `FilterBitsBuilder` and stores the resulting block along with a partitioning key provided by  `PartitionedIndexBuilder::GetPartitionKey()`, and reset the `FilterBitsBuilder` for the next partition. At the end each time `PartitionedFilterBlockBuilder::Finish` is invoked one of the partitions is returned, and also the offset of the previous partition is used to build the top-level index. The last call to `::Finish` will return the top-level index block.
 
 The reasons for making `PartitionedFilterBlockBuilder` depend on `PartitionedIndexBuilder` was to enable an optimization for interleaving index/filter partitions on the SST file. That optimization not being pursed we are likely to cut this dependency in future.
+
+## Reader
+
+Partitioned Indexes are read via `PartitionIndexReader` which operates on the top-level index block. When `NewIterator` is invoked a `TwoLevelIterator` on the the top-level index block. This simple implementation is feasible since each index partition has kBinarySearch format which is the same format as data blocks, and thus can be easily plugged as the lower level iterator. If `pin_l0_filter_and_index_blocks_in_cache` is set the lower level iterators are pinned to `PartitionIndexReader` so their corresponding index partitions will be pinned in block cache as long as `PartitionIndexReader` is alive. `BlockEntryIteratorState` uses a set of the pinned partition offsets to avoid unpinning an index partition twice.
+
+`PartitionedFilterBlockReader` uses the top-level index to find the offset of the filter partition. It then invokes `GetFilter` on `BlockBasedTable` object to load the `FilterBlockReader` object on the filter partition from the block cache (or load it to the cache if it is not already there) and then releases the `FilterBlockReader` object. To extend `table_options.pin_l0_filter_and_index_blocks_in_cache` to filter partitions, `PartitionedFilterBlockReader` does not release the cache handles for such blocks (i.e., keep them pinned in block cache). It instead maintains `filter_cache_`, a map of pinned `FilterBlockReader`, which is also used to release the cache entries when `PartitionedFilterBlockReader` is destructed.
