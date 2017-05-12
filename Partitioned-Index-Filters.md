@@ -24,6 +24,16 @@ With partitioning, the index/filter of a SST file is partitioned into smaller bl
 - More disk IO: if the top-level index is not already in cache it would result to one additional IO. To avoid that they can be either stored in heap or stored in cache with hi priority (TODO work)
 - Losing spatial locality: if a workload requires frequent, yet random reads from the same SST file it would result into loading a separate index/filter partition upon each read, which is less efficient than reading the index/filter at once. Although we did not observe this pattern in our benchmarks, it is only likely to happen for L0/L1 layers of LSM, for which partitioning can be disabled (TODO work)
 
+## Success stories
+
+### HDD, 100TB DB
+In this example we have a DB of size 86G on HDD and emulate the small memory that is present to a node with 100TB of data by using direct IO (skipping OS file cache) and a very small block cache of size 60MB. Partitioning improves throughput by 11x from 5 op/s to 55 op/s.
+
+> ./db_bench --benchmarks="readwhilewriting[X3],stats" --use_direct_reads=1 -compaction_readahead_size 1048576 --use_existing_db --num=2000000000 --duration 600 --cache_size=62914560 -cache_index_and_filter_blocks=false -statistics -histogram -bloom_bits=10 -target_file_size_base=268435456 -block_size=32768 -threads 32 -partition_filters -partition_indexes -index_per_partition 100 -pin_l0_filter_and_index_blocks_in_cache -benchmark_write_rate_limit 204800 -max_bytes_for_level_base 134217728 -cache_high_pri_pool_ratio 0.9
+
+### SSD, Linkbench
+In this example we have a DB of size 300G on SSD and emulate the small memory that would be available in presence of other DBs on the same node by by using direct IO (skipping OS file cache) and block cache of size 6G and 2G. Without partitioning the linkbench throughput drops from 38k tps to 23k when reducing memory from 6G to 2G. With partitioning the throughput drops from 38k to only 30k.
+
 ## How to use it?
 - `index_type` = `IndexType::kTwoLevelIndexSearch`
   * This is to enable partitioned indexes
