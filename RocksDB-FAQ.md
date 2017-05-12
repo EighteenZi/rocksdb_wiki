@@ -323,3 +323,7 @@ A: You can start with using one RocksDB database per shard/partition.
 **Q: What's the default value of the block cache?**
 
 A: 8MB.
+
+**Q: If I have multiple column families and call the DB functions without a column family handle, what the result will be?**
+
+A: It will operate only the default column family.
