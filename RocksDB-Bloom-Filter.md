@@ -63,3 +63,7 @@ Original filter policy interface is too fixed and not suitable for new filter fo
 In this way, the new filter policy would function as a factory for FilterBitsBuilder and FilterBitsReader (also defined in include/rocksdb/filter_policy.h). FilterBitsBuilder provides interface for key storage and filter generation and FilterBitsReader provides interface to check if a key may exist in filter.
 
 Notice: This two new interface just works for new filter format. Original filter format still use original method to customize.
+
+### Partitioned Bloom Filter
+
+Read [here](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters).
