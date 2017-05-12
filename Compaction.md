@@ -33,6 +33,7 @@ Other options impacting performance of compactions and when they get triggered a
 <li> <code>Options::disable_seek_compaction</code> - Disable compaction triggered by seek. With bloomfilter and fast storage, a miss on one level is very cheap if the file handle is cached in table cache (which is true if max_open_files is large).
 
 <li> <code>Options::max_background_compactions</code> - Maximum number of concurrent background jobs, submitted to the default LOW priority thread pool
+<li> <code>Options::compaction_readahead_size</code> - If non-zero, we perform bigger reads when doing compaction. If you're running RocksDB on spinning disks, you should set this to at least 2MB. We enforce it to be 2MB if you don't set it with direct I/O. 
 </ul>
 
 
