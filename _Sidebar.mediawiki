@@ -39,6 +39,7 @@
 ** [[Dictionary-Compression | Dictionary Compression]]
 * '''Tools / Utilities'''
 ** [[Administration-and-Data-Access-Tool | Administration and Data Access Tool]]
+** [[Benchmarking-Tools | Benchmarking Tools]]
 ** [https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F How to Backup RocksDB?] <!-- note this link must use an external link format bec MediaWiki markup doesn't support special characters in its native namespace -->
 ** [[Checkpoints | Checkpoints]]
 ** [https://github.com/facebook/rocksdb/wiki/How-to-persist-in-memory-RocksDB-database%3F How to persist in-memory RocksDB database] <!-- note this link must use an external link format bec MediaWiki markup doesn't support special characters in its native namespace -->
