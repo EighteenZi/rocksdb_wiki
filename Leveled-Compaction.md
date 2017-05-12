@@ -47,3 +47,13 @@ However, L0 to L1 compaction cannot be parallelized. In some cases, it may becom
 
 ![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/subcompaction.png)
 
+## Compaction Picking
+When multiple levels trigger the compaction condition, RocksDB needs to pick which level to compact first. A score is generated for each level:
+
+* For non-zero levels, the score is total size of the level divided by the target size. If there is already files picked that are being compacted into the next level, the size of those files are not included into the total size, because they will soon go away.
+
+* for level-0, the score is the total number of files, divided by `level0_file_num_compaction_trigger`, or total size over `max_bytes_for_level_base`, which ever is larger. (if the file size is smaller than `level0_file_num_compaction_trigger`, compaction won't trigger from level 0, no matter how big the score is)
+
+We compare the score of each level, and the level with highest score takes the priority to compact.
+
+Which file(s) to compact from the level are explained in [[Choose Level Compaction Files]].
