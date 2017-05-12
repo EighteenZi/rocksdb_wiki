@@ -32,8 +32,7 @@ See [this document](https://developers.google.com/protocol-buffers/docs/encoding
 
 (3) A `metaindex` block contains one entry for every other meta block, where the key is the name of the meta block and the value is a `BlockHandle` pointing to that meta block.
 
-(4) An `index` block contains one entry per data block, where the key is a string `>=` last key in that data block and before the first key in the successive data block. The value is the `BlockHandle` for the data block. 
- **Experimental Feature:** If kTwoLevelIndexSearch is used as IndexType the `index` block is a 2nd level index on index partitions, i.e., each entry points to another `index` block that contains one entry per data block. In this case, the format will be
+(4) An `index` block contains one entry per data block, where the key is a string `>=` last key in that data block and before the first key in the successive data block. The value is the `BlockHandle` for the data block. If [kTwoLevelIndexSearch](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters) is used as IndexType the `index` block is a 2nd level index on index partitions, i.e., each entry points to another `index` block that contains one entry per data block. In this case, the format will be
 
     [index block - 1st level]
     [index block - 1st level]
@@ -50,6 +49,17 @@ See [this document](https://developers.google.com/protocol-buffers/docs/encoding
        magic:            fixed64;      // 0x88e241b785f4cff7 (little-endian)
 
 #### `Filter` Meta Block
+
+##### Full filter
+
+In this filter there is one filter block for the entire SST file.
+
+##### Partitioned Filter
+
+The full filter is partitioned into multiple blocks. A top-level index block is added to map keys to corresponding filter partitions. Read more (here)[https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters]
+
+##### Block-based filter
+> Note: the below explains block based filter, which is deprecated.
 
 If a "FilterPolicy" was specified when the database was opened, a filter block is stored in each table. The "metaindex" block contains an entry that maps from "filter.<N>" to the BlockHandle for the filter block, where "<N>" is the string returned by the filter policy's `Name()` method.
 
