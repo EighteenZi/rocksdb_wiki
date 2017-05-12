@@ -37,4 +37,13 @@ and then
 
 ![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/post_l2_compaction.png) 
 
+Multiple compactions can be executed in parallel if needed:
+
+![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/multi_thread_compaction.png)
+
+Maximum number of compactions allowed is controlled by `max_background_compactions`.
+
+However, L0 to L1 compaction cannot be parallelized. In some cases, it may become a bottleneck that limit the total compaction speed. In this case, users can set `max_compactions` to more than 1. In this case, we'll try to partition the range and use multiple threads to execute it:
+
+![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/subcompaction.png)
 
