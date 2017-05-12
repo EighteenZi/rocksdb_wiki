@@ -327,3 +327,7 @@ A: 8MB.
 **Q: If I have multiple column families and call the DB functions without a column family handle, what the result will be?**
 
 A: It will operate only the default column family.
+
+**Q: DB operations fail because of out-of-space. How can I unblock myself?**
+
+A: First clear up some free space. And then you need to restart the DB to get it back to normal. Now there isn't a way to unblock the DB without restarting it.
