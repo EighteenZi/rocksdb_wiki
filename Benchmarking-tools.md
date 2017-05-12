@@ -1,5 +1,25 @@
 # db_bench
-`db_bench` is main tool that is used to benchmark the RocksDB's performance. RocksDB inherited db_bench from LevelDB, and enhanced it to support many additional options. db_bench supports many benchmarks to generate different types of workloads, and its various options can be used to control the tests. 
+`db_bench` is the main tool that is used to benchmark RocksDB's performance. RocksDB inherited db_bench from LevelDB, and enhanced it to support many additional options. db_bench supports many benchmarks to generate different types of workloads, and its various options can be used to control the tests. 
+
+If you are just getting started with db_bench, here are a few things you can try:
+1. Start with a simple benchmark like fillseq (or fillrandom) to create a database and fill it with some data
+```bash
+./db_bench --benchmarks="fillseq"
+```
+If you want more stats, add the meta operator "stats" and --statistics flag. 
+```bash
+./db_bench --benchmarks="fillseq,stats" --statistics
+```
+2. Read the data back
+```bash
+./db_bench --benchmarks="readrandom" --use_existing_db
+```
+
+You can also combine multiple benchmarks to the string that is passed to `--benchmarks` so that they run sequentially. Example:
+```bash
+./db_bench --benchmarks="fillseq,readrandom,readseq"
+```
+More in-depth example of db_bench usage can be found [here](https://github.com/facebook/rocksdb/wiki/performance-benchmarks) and [here](https://github.com/facebook/rocksdb/wiki/RocksDB-In-Memory-Workload-Performance-Benchmarks).
 
 Benchmarks List:
 ```
