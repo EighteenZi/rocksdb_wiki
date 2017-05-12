@@ -49,6 +49,8 @@ In MongoRocks, just call this API from the mongo shell:
 
     > db.serverStatus()["rocksdb"]["estimate-table-readers-mem"]
 
+In [partitioned index/filters](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters) the partitions are alwasy stored in block cache. The top-level index can be configured to be stored in heap or block cache via `cache_index_and_filter_blocks`.
+
 ## Memtable
 
 You can think of memtables as in-memory write buffers. Each new key-value pair is first written to the memtable. Memtable size is controlled by the option `write_buffer_size`. It's usually not a big memory consumer. However, memtable size is inversely proportional to write amplification -- the more memory you give to the memtable, the less the write amplification is. If you increase your memtable size, be sure to also increase your L1 size! L1 size is controlled by the option `max_bytes_for_level_base`.
