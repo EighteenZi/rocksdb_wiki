@@ -23,4 +23,18 @@ After the compaction, it may push the size of L1 to exceed its target:
 
 In this case, we will pick at least one file and merge it with the overlapping range of L2. The result files will be placed in L2:
 
+![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/pre_l1_compaction.png)
+
+If the results push the next level's size exceeds the target, we do the same as previously -- pick up a file and merge it into the next level:
+
+![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/post_l1_compaction.png)
+
+and then
+
+![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/pre_l2_compaction.png) 
+
+and then
+
+![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/post_l2_compaction.png) 
+
 
