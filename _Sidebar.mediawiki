@@ -22,6 +22,7 @@
 ** [[Time-to-Live | Time to Live (TTL) Support]]
 ** [[Allocating-Some-Indexes-and-Bloom-Filters-using-Huge-Page-TLB | Huge Page TLB Support]]
 ** [[Column-Families | Column Families]]
+** [[Leveled Compaction]]
 ** [[Universal-Compaction | Universal compaction style]]
 ** [[FIFO-compaction-style | FIFO compaction style]]
 ** [[Write Ahead Log File Format | Write Ahead Log File Format]]
