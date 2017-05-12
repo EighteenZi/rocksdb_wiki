@@ -1,7 +1,9 @@
-RocksJava is a project to build high performance but easy-to-use Java driver for RocksDB.  In this page you will learn the basics of RocksDB Java API.
+RocksJava is a project to build high performance but easy-to-use Java driver for RocksDB. We try hard to keep RocksJava API in sync with RocksDB's C++ API, but it often falls behind. We highly encourage community contributions ... so please feel free to send us a Pull Request if you find yourself needing a certain API which is in C++ but not yet in Java. 
+
+In this page you will learn the basics of RocksDB Java API.
 
 ## Getting Started
-To build RocksJava, the first thing is to specify the environment variable JAVA_HOME to where you install Java SDK. Once JAVA_HOME is properly set, simply running `make rocksdbjava` will build the Java bindings for RocksDB:
+To build RocksJava, you first need to set your JAVA_HOME environment variable to point to the location where Java SDK is installed. Once JAVA_HOME is properly set, simply running `make rocksdbjava` will build the Java bindings for RocksDB:
 
 ```bash
 $ make rocksdbjava
