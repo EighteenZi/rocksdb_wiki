@@ -33,6 +33,8 @@ With partitioning, the index/filter of a SST file is partitioned into smaller bl
   * The partitions are stored in the cache anyway. This to control the location of top-level indexes, which easily fit into memory. Having them stored in block cache is less experimented with.
 - `cache_index_and_filter_blocks_with_high_priority` = `true`
   * Recommended setting
+- `pin_l0_filter_and_index_blocks_in_cache` = `true`
+  * Recommended setting. This property is extended to the index/filter partitions as well.
 - block cache size: if you used to store the filter/index into heap, do not forget to increase the block cache size with the amount of memory that you are saving from the heap.
 
 ## Current limitations
