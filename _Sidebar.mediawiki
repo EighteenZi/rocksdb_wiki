@@ -74,6 +74,7 @@
 ** [[Memory-usage-in-RocksDB | Memory usage in RocksDB]]
 ** [[Implement-Queue-Service-Using-RocksDB | Implement Queue Service Using RocksDB]]
 * '''Misc'''
+** [[Building-on-Windows | Building on Windows]]
 ** [[Open-Projects | Open Projects]]
 ** [[ Talks | Talks ]]
 ** [[ Publication | Publication ]]
