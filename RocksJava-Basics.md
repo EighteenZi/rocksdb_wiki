@@ -1,4 +1,6 @@
-RocksJava is a project to build high performance but easy-to-use Java driver for RocksDB. We try hard to keep RocksJava API in sync with RocksDB's C++ API, but it often falls behind. We highly encourage community contributions ... so please feel free to send us a Pull Request if you find yourself needing a certain API which is in C++ but not yet in Java. 
+RocksJava is a project to build high performance but easy-to-use Java driver for RocksDB. 
+
+(We try hard to keep RocksJava API in sync with RocksDB's C++ API, but it often falls behind. We highly encourage community contributions ... so please feel free to send us a Pull Request if you find yourself needing a certain API which is in C++ but not yet in Java.)
 
 In this page you will learn the basics of RocksDB Java API.
 
@@ -19,6 +21,11 @@ To clean:
 ```bash
 $ make jclean
 ```
+
+We also publish the JNI jars to maven, in case you just want to depend on the jar instead of building it on your own. 
+
+## Samples
+We provided some samples [here](https://github.com/facebook/rocksdb/tree/master/java/samples/src/main/java), if you want to jump directly into code.
 
 ## Opening a Database
 A `rocksdb` database has a name which corresponds to a file system directory. All of the contents of database are stored in this directory. The following example shows how to open a database, creating it if necessary:
@@ -78,6 +85,3 @@ try {
 
 <!-- separator -->
 > **TIP**: To avoid creating a byte-array in `RocksDB.get()`, you can also use its parametric method `int RocksDB.get(byte[] key, byte[] value)` or `int RocksDB.get(ReadOptions opt, byte[] key, byte[] value)`, where the output value will be filled into the pre-allocated output buffer `value`, and its `int` returned value will indicate the actual length of the value associated with the input `key`.  When the returned value is greater than `value.length`, this indicates the size of the output buffer is insufficient.
-
-## Further Documentation
-TBD
