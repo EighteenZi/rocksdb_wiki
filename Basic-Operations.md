@@ -463,7 +463,7 @@ If a database is corrupted (perhaps it cannot be opened when paranoid checking i
 
 ## Compaction
 
-The information about compaction has been moved to [Compaction](https://github.com/facebook/rocksdb/wiki/Compaction). Users don't have to know internal of compactions before operationing RocksDB.
+The information about compaction has been moved to [Compaction](https://github.com/facebook/rocksdb/wiki/Compaction). Users don't have to know internal of compactions before operating RocksDB.
 
 ## Approximate Sizes
 
