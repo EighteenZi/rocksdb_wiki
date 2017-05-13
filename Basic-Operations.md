@@ -463,6 +463,8 @@ If a database is corrupted (perhaps it cannot be opened when paranoid checking i
 
 ## Compaction
 
+RocksDB keeps rewriting existing data files. This is to clean stale versions of keys, and to keep the data structure optimal for reads.
+
 The information about compaction has been moved to [Compaction](https://github.com/facebook/rocksdb/wiki/Compaction). Users don't have to know internal of compactions before operating RocksDB.
 
 ## Approximate Sizes
