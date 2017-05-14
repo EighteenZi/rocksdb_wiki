@@ -3,7 +3,7 @@
 This is a simple step-by-step explanation of how I was able to build RocksDB (or RocksJava) and all of the 3rd-party libraries on Microsoft Windows 10. The Windows build system was already in place, however it took some trial-and-error for me to be able to build the 3rd-party libraries and incorporate them into the build.
 
 ## Pre-requisites
-1. Microsoft Visual Studio 2015
+1. Microsoft Visual Studio 2015 (Community)
 2. [CMake](https://cmake.org/)
 3. [Git](https://git-scm.com/downloads) - I used the Windows Git Bash.
 4. [Mercurial](https://www.mercurial-scm.org/wiki/Download) - I used the 64bit MSI installer
