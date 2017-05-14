@@ -91,7 +91,7 @@ Edit the file `%CODE_HOME%\rocksdb\thirdparty.inc` to have these changes:
 
 ```
 set(GFLAGS_HOME $ENV{THIRDPARTY_HOME}/gflags-2.2.0)
-set(GFLAGS_INCLUDE ${GFLAGS_HOME}/target/include/gflags)
+set(GFLAGS_INCLUDE ${GFLAGS_HOME}/target/include)
 set(GFLAGS_LIB_DEBUG ${GFLAGS_HOME}/target/lib/Debug/gflags_static.lib)
 set(GFLAGS_LIB_RELEASE ${GFLAGS_HOME}/target/lib/Release/gflags_static.lib)
 
