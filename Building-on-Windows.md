@@ -24,6 +24,11 @@ cd gflags-2.2.0
 mkdir target
 cd target
 cmake -G "Visual Studio 14 Win64" ..
+```
+
+Open the project in Visual Studio, create a new x64 Platform by copying the Win32 platform and selecting x64 CPU. Close Visual Studio.
+
+```
 msbuild gflags.sln /p:Configuration=Debug /p:Platform=x64
 msbuild gflags.sln /p:Configuration=Release /p:Platform=x64
 ```
