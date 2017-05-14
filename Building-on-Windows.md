@@ -36,8 +36,10 @@ The resultant static library can be found in `%CODE_HOME%\gflags-2.2.0\target\li
 cd %CODE_HOME%
 hg clone https://bitbucket.org/robertvazan/snappy-visual-cpp
 cd snappy-visual-cpp
+hg diff --reverse -r 44:45 > exports.patch
+hg import exports.patch
 devenv snappy.sln /upgrade
-msbuild gflags.sln /p:Configuration=Debug /p:Platform=x64
+msbuild snappy.sln /p:Configuration=Debug /p:Platform=x64
 msbuild snappy.sln /p:Configuration=Release /p:Platform=x64
 ```
 
