@@ -499,4 +499,4 @@ If there are some times where it is okay to combine multiple operands into one (
 **Is my use-case Associative?:** If you are unsure of whether the "associativity" constraints apply to your use-case, you can ALWAYS use the generic MergeOperator. The AssociativeMergeOperator is a direct subclass of MergeOperator, so any use-case that can be solved with the AssociativeMergeOperator can be solved with the more generic MergeOperator. The AssociativeMergeOperator is mostly provided for convenience.
 
 ## Useful Links
-* [Merge+Compaction Implementation Details](Merge-Operator Implementation): For RocksDB engineers who want to know how MergeOperator affects their code.
+* [[Merge+Compaction Implementation Details|Merge-Operator-Implementation]]: For RocksDB engineers who want to know how MergeOperator affects their code.
