@@ -1,5 +1,5 @@
 ## Structure of the files
-Files on disk are organized in multiple levels. We call them level-1, level-2, etc, or L1, L2, etc, for short. A special level-0 (or L0 fors short) contains files just flushed from in-memory write buffer (memtable). Each level (except level 0) is one data sorted run:
+Files on disk are organized in multiple levels. We call them level-1, level-2, etc, or L1, L2, etc, for short. A special level-0 (or L0 for short) contains files just flushed from in-memory write buffer (memtable). Each level (except level 0) is one data sorted run:
 
 ![](https://github.com/facebook/rocksdb/blob/gh-pages-old/pictures/level_structure.png)
 
