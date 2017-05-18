@@ -10,4 +10,4 @@ Please use FIFO compaction style with caution. Unlike other compaction style, it
 
 ## Future work
 
-Currently, the idea of FIFO compaction is to provide size-bounded data storage with low overhead. However, there are some ideas how to also make it good for storage of ordered event logs with extremely high performance. For more discussion on that topic see: https://reviews.facebook.net/D18765
+Currently, the idea of FIFO compaction is to provide size-bounded data storage with low overhead. However, there are some ideas how to also make it good for storage of ordered event logs with extremely high performance.
