@@ -70,8 +70,9 @@ The resultant static library can be found in `%CODE_HOME%\lz4-1.7.5\visual\VS201
 ```
 cd %CODE_HOME%
 wget http://zlib.net/zlib1211.zip
-unzup zlib1211.zip
+unzip zlib1211.zip
 cd zlib-1.2.11\contrib\vstudio\vc14
+"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64_x86\vcvarsamd64_x86.bat"
 msbuild zlibvc.sln /p:Configuration=Debug /p:Platform=x64
 msbuild zlibvc.sln /p:Configuration=Release /p:Platform=x64
 x64\ZlibDllRelease\zlibwapi.lib
