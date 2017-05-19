@@ -4,7 +4,7 @@ There are two cache implementations in RocksDB, namely `LRUCache` and `ClockCach
 
 ### Usage
 
-Out of box, RocksDB will use LRU-based block cache implementation with 8MB capacity. To set a customized block cache, call `NewLRUCache()` or `NewClockCache()` to create a cache object, and set it to block based table options. Users can also has their own cache implementation by implementing the `Cache` interface.
+Out of box, RocksDB will use LRU-based block cache implementation with 8MB capacity. To set a customized block cache, call `NewLRUCache()` or `NewClockCache()` to create a cache object, and set it to block based table options. Users can also have their own cache implementation by implementing the `Cache` interface.
 
     std::shared_ptr<Cache> cache = NewLRUCache(capacity);
     BlockBasedTableOptions table_options;
@@ -22,7 +22,7 @@ RocksDB will create the default block cache if `block_cache` is set to `nullptr`
 
 ### LRU Cache
 
-Out of box, RocksDB will use LRU-based block cache implementation with 8MB capacity. Each shard of the cache maintain its own LRU list and its own hash table for lookup. Synchronization is done via a per-shard mutex. Both lookup and insert to the cache would require locking mutex of the shard. User can create a LRU cache by calling `NewLRUCache()`. The function provide several useful options to set to the cache:
+Out of box, RocksDB will use LRU-based block cache implementation with 8MB capacity. Each shard of the cache maintains its own LRU list and its own hash table for lookup. Synchronization is done via a per-shard mutex. Both lookup and insert to the cache would require a locking mutex of the shard. User can create a LRU cache by calling `NewLRUCache()`. The function provides several useful options to set to the cache:
 
 * `capacity`: Total size of the cache.
 * `num_shard_bits`: The number of bits from cache keys to be use as shard id. The cache will be sharded into `2^num_shard_bits` shards.
