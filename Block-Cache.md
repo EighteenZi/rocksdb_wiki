@@ -59,7 +59,7 @@ By default index and filter blocks are cached outside of block cache, and users 
     BlockBasedTableOptions table_options;
     table_options.cache_index_and_filter_blocks = true;
 
-By putting index and filter blocks in block cache, these blocks has to compete against data blocks for staying in cache. Although index and filter blocks are being accessed more frequently than data block, there are scenarios where these blocks can be thrashing. This is undesired because index and filter blocks tend to be much larger than data blocks, and they are usually of higher value to stay in cache. There are two options to tune to mitigate the problem:
+By putting index and filter blocks in block cache, these blocks have to compete against data blocks for staying in cache. Although index and filter blocks are being accessed more frequently than data block, there are scenarios where these blocks can be thrashing. This is undesired because index and filter blocks tend to be much larger than data blocks, and they are usually of higher value to stay in cache. There are two options to tune to mitigate the problem:
 
 * `cache_index_and_filter_blocks_with_high_priority`: Set priority to high for index and filter blocks in block cache. It only affect `LRUCache` so far, and need to use together with `high_pri_pool_ratio` when calling `NewLRUCache()`. If the feature is enabled, LRU-list in LRU cache will be split into two parts, one for high-pri blocks and one for low-pri blocks. Data blocks will be inserted to the head of low-pri pool. Index and filter blocks will be inserted to the head of high-pri pool. If the total usage in the high-pri pool exceed `capacity * high_pri_pool_ratio`, the block at the tail of high-pri pool will overflow to the head of low-pri pool, after which it will compete against data blocks to stay in cache. Eviction will start from the tail of low-pri pool.
 
@@ -67,7 +67,7 @@ By putting index and filter blocks in block cache, these blocks has to compete a
 
 ### Simulated Cache
 
-`SimCache` is a utility to predict cache hit rate if cache capacity or number of shards is changed. It wraps around the real `Cache` object that the DB is using, and runs a shadow LRU cache simulating the given capacity and number of shards, and measure cache hits and misses of the shadow cache. The utility is useful when user want to open a DB with, say, 4GB cache size, but would like to know what the cache hit rate will become if cache size enlarge to, say, 64GB. To create a simulated cache:
+`SimCache` is an utility to predict cache hit rate if cache capacity or number of shards is changed. It wraps around the real `Cache` object that the DB is using, and runs a shadow LRU cache simulating the given capacity and number of shards, and measure cache hits and misses of the shadow cache. The utility is useful when user wants to open a DB with, say, 4GB cache size, but would like to know what the cache hit rate will become if cache size enlarge to, say, 64GB. To create a simulated cache:
 
     // This cache is the actual cache use by the DB.
     std::shared_ptr<Cache> cache = NewLRUCache(capacity);
