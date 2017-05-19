@@ -48,6 +48,12 @@ msbuild snappy.sln /p:Configuration=Debug /p:Platform=x64
 msbuild snappy.sln /p:Configuration=Release /p:Platform=x64
 ```
 
+When running the msbuild step, if you get an error like:
+```
+error : This project references NuGet package(s) that are mis sing on this computer. Enable NuGet Package Restore to download them.
+```
+You will need to open the project in Visual Studio and build it from there. You can then exit Visual Studio and re-run the msbuild steps; Unfortunately I have been unable to resolve how to fix the NuGet enablement from the command line.
+
 The resultant static library can be found in `%CODE_HOME%\snappy-visual-cpp\x64\Debug\snappy64.lib` or `%CODE_HOME%\snappy-visual-cpp\x64\Release\snappy64.lib`.
 
 
