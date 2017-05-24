@@ -8,6 +8,12 @@ Since we never rewrite the key-value pair, we also don't ever apply the compacti
 
 Please use FIFO compaction style with caution. Unlike other compaction style, it can drop data without informing users.
 
-## Future work
+## Compaction
+FIFO compactions can end up with lots of L0 files. Queries can be show because we need to search all those files in the worst case in a query. Even bloom filters may not be able to offset all of them. With typical 1% false positive. 1000 L0 files will cause 10 false positive cases in average, and generate 10 I/Os per query in the worst case. Users can choose use more bloom bits to reduce the false positive, but they have to pay it using more memory. In some cases, even the CPU overheads by the bloom filter checking are too high to be acceptable.
 
-Currently, the idea of FIFO compaction is to provide size-bounded data storage with low overhead. However, there are some ideas how to also make it good for storage of ordered event logs with extremely high performance.
+To solve this case, users can choose to enable some lightweight compactions to happen. This will potentially double the write I/O, but can significantly reduce number of L0 files. This sometimes is the right trade-off for users.
+
+The feature is introduced in 5.5 release. Users can enable it using `CompactionOptionsFIFO.allow_compaction = true`. And it tries to pick up at least `level0_file_num_compaction_trigger` files flushed from memtable and compact them together.
+
+To be specific, we always start with the latest `level0_file_num_compaction_trigger` files and try to include more files in the compaction. We calculated compacted bytes per file deducted using `total_compaction_size / (number_files_in_compaction - 1)`. We always pick the files so that this number is minimized and is no more than `options.write_buffer_size`. In typical workloads, it will always compact `level0_file_num_compaction_trigger` freshly flushed files.
+
