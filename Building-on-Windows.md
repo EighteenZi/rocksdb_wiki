@@ -89,8 +89,7 @@ msbuild zlibvc.sln /p:Configuration=Release /p:Platform=x64
 x64\ZlibDllRelease\zlibwapi.lib
 ```
 
-The resultant static library can be found in `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibDllDebug\zlibwapi.lib` or `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibDllRelease\zlibwapi.lib`.
-
+The resultant static library can be found in `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatDebug\zlibwapi.lib` or `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatRelease\zlibwapi.lib`.
 
 ### Build RocksDB
 ```
