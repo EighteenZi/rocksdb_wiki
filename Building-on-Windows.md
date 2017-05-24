@@ -118,8 +118,8 @@ set(LZ4_LIB_RELEASE ${LZ4_HOME}/visual/VS2010/bin/x64_Release/liblz4_static.lib)
 
 set(ZLIB_HOME $ENV{THIRDPARTY_HOME}/zlib-1.2.11)
 set(ZLIB_INCLUDE ${ZLIB_HOME})
-set(ZLIB_LIB_DEBUG ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibDllDebug/zlibwapi.lib)
-set(ZLIB_LIB_RELEASE ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibDllRelease/zlibwapi.lib)
+set(ZLIB_LIB_DEBUG ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatDebug/zlibwapi.lib)
+set(ZLIB_LIB_RELEASE ${ZLIB_HOME}/contrib/vstudio/vc14/x64/ZlibStatRelease/zlibwapi.lib)
 ```
 
 And then finally to compile RocksDB:
