@@ -17,3 +17,7 @@ The feature is introduced in 5.5 release. Users can enable it using `CompactionO
 
 To be specific, we always start with the latest `level0_file_num_compaction_trigger` files and try to include more files in the compaction. We calculated compacted bytes per file deducted using `total_compaction_size / (number_files_in_compaction - 1)`. We always pick the files so that this number is minimized and is no more than `options.write_buffer_size`. In typical workloads, it will always compact `level0_file_num_compaction_trigger` freshly flushed files.
 
+For example, if `level0_file_num_compaction_trigger = 8` and every flushed file is 100MB. Then as soon as there is 8 files, they are compacted to one 800MB file. And after we have 8 new 100MB files, they are compacted in the second 800MB, and so on. Eventually we'll have a list of 800MB files and no more than 8 100MB files.
+
+Please note that, since the oldest files are compacted, the file to be deleted by FIFO is also larger, so potentially slightly less data is stored than without compaction.
+
