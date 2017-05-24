@@ -69,6 +69,10 @@ To compact an existing leveldb database:
 $ ./ldb --db=/tmp/test_db_new compact --compression_type=bzip2 --block_size=65536
 ```
 
+You can specify command line `--column_family=<string>` for which column family your query will be against.
+
+`--try_load_options` will use try to option file in the DB to open the DB. It is a good idea to always try to have this option on when you operate the DB. If you open the DB with default options, it may mess up LSM-tree structure which can't be recovered automatically.
+
 # SST dump tool
 sst_dump tool can be used to gain insights about a specific SST file. There are multiple operations that sst_dump can execute on a SST file.
 
