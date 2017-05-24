@@ -9,7 +9,7 @@ Since we never rewrite the key-value pair, we also don't ever apply the compacti
 Please use FIFO compaction style with caution. Unlike other compaction style, it can drop data without informing users.
 
 ## Compaction
-FIFO compactions can end up with lots of L0 files. Queries can be show because we need to search all those files in the worst case in a query. Even bloom filters may not be able to offset all of them. With typical 1% false positive. 1000 L0 files will cause 10 false positive cases in average, and generate 10 I/Os per query in the worst case. Users can choose use more bloom bits to reduce the false positive, but they have to pay it using more memory. In some cases, even the CPU overheads by the bloom filter checking are too high to be acceptable.
+FIFO compactions can end up with lots of L0 files. Queries can be slow because we need to search all those files in the worst case in a query. Even bloom filters may not be able to offset all of them. With typical 1% false positive, 1000 L0 files will cause 10 false positive cases in average, and generate 10 I/Os per query in the worst case. Users can choose to use more bloom bits to reduce the false positive, but they have to pay it using more memory. In some cases, even the CPU overheads by the bloom filter checking are too high to be acceptable.
 
 To solve this case, users can choose to enable some lightweight compactions to happen. This will potentially double the write I/O, but can significantly reduce number of L0 files. This sometimes is the right trade-off for users.
 
