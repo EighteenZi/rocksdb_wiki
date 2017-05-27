@@ -53,7 +53,7 @@ Every **stats_dump_period_sec**, you'll find something like this in your LOG fil
 ### Compaction stats
 Compaction stats for the compactions executed between levels N and N+1 are reported at level N+1 (compaction output). Here is the quick reference:
 * Level - for leveled compaction the level of the LSM. For universal compaction all files are in L0. **Sum** has the values aggregated over all levels. **Int** is like **Sum** but limited to the data from the last reporting interval.
-* Files - this has two values as (a/b). The first is the number of files in the level. The second is the number of threads currently doing compaction for that level.
+* Files - this has two values as (a/b). The first is the number of files in the level. The second is the number of files currently doing compaction for that level.
 * Score: for levels other than L0 the score is (current level size) / (max level size). Values of 0 or 1 are okay, but any value greater than 1 means that level needs to be compacted. For L0 the score is computed from the current number of files and number of files that trigger a compaction.
 * Read(GB): Total bytes read during compaction between levels N and N+1. This includes bytes read from level N and from level N+1
 * Rn(GB): Bytes read from level N during compaction between levels N and N+1
