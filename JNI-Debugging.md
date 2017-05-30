@@ -268,6 +268,18 @@ $ addr2line -e java/target/librocksjni-linux64.so 0x1c38a
     java -ea -Xcheck:jni -Djava.library.path=target -cp "target/classes:target/test-classes:test-libs/junit-4.12.jar:test-libs/hamcrest-core-1.3.jar:test-libs/mockito-all-1.10.19.jar:test-libs/cglib-2.2.2.jar:test-libs/assertj-core-1.7.1.jar:target/*" org.rocksdb.test.RocksJunitRunner org.rocksdb.ComparatorTest
     ```
 
+*NOTE*: if you see an error like:
+```
+==20705==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/8.1.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+"interceptors not installed" && 0
+```
+
+Then you need to fist execute:
+```
+$ export DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/8.1.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+```
+
 If ASAN detects an issue, you will see output similar to the following:
 ```bash
 Run: org.rocksdb.BackupableDBOptionsTest testing now -> destroyOldData 
