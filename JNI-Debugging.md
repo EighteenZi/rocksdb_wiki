@@ -280,6 +280,8 @@ Then you need to fist execute:
 $ export DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/8.1.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
 ```
 
+NOTE: Also: https://bugs.llvm.org/show_bug.cgi?id=31861
+
 If ASAN detects an issue, you will see output similar to the following:
 ```bash
 Run: org.rocksdb.BackupableDBOptionsTest testing now -> destroyOldData 
