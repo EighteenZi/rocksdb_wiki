@@ -487,3 +487,33 @@ We can translate it with the command:
 $ addr2line -e java/target/librocksdbjni-linux64.so 0x714fc2
 /home/aretter/rocksdb/./db/dbformat.h:126 
 ```
+
+## Linux (Ubuntu 16.04) (GCC 5.4.0)
+1. Set JDK 7 as required by RocksJava
+    ```bash
+    export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+    export PATH="${PATH}:${JAVA_HOME}/bin"
+    ```
+   You might also need to run `sudo alternatives --config java` and select OpenJDK 7.
+
+2. Ensure a clean start:
+    ```bash
+    make clean jclean
+    ```
+
+3. Compile the Java test suite with ASAN compiled in:
+    ```bash
+    DEBUG_LEVEL=2 COMPILE_WITH_ASAN=true make jtest_compile
+    ```
+
+4. Execute the entire Java Test Suite:
+    ```bash
+    LD_PRELOAD=/usr/lib/gcc/x86_64-linux-gnu/5.4.0/libasan.so make jtest_run
+    ```
+
+    or for a single test (e.g. `ComparatorTest`), execute:
+
+    ```bash
+    cd java
+    LD_PRELOAD=/usr/lib/gcc/x86_64-linux-gnu/5.4.0/libasan.so java -ea -Xcheck:jni -Djava.library.path=target -cp "target/classes:target/test-classes:test-libs/junit-4.12.jar:test-libs/hamcrest-core-1.3.jar:test-libs/mockito-all-1.10.19.jar:test-libs/cglib-2.2.2.jar:test-libs/assertj-core-1.7.1.jar:target/*" org.rocksdb.test.RocksJunitRunner org.rocksdb.ComparatorTest
+    ```
