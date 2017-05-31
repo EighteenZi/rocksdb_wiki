@@ -56,7 +56,7 @@ In this filter there is one filter block for the entire SST file.
 
 ##### Partitioned Filter
 
-The full filter is partitioned into multiple blocks. A top-level index block is added to map keys to corresponding filter partitions. Read more (here)[https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters]
+The full filter is partitioned into multiple blocks. A top-level index block is added to map keys to corresponding filter partitions. Read more [here](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters).
 
 ##### Block-based filter
 > Note: the below explains block based filter, which is deprecated.
