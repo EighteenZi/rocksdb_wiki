@@ -1,4 +1,4 @@
-This page is forked from LevelDB's document on [table format](http://leveldb.googlecode.com/svn/trunk/doc/table_format.txt), and reflects changes we have made during the development of RocksDB.
+This page is forked from LevelDB's document on [table format](https://github.com/google/leveldb/blob/master/doc/table_format.md), and reflects changes we have made during the development of RocksDB.
 
 BlockBasedTable is the default SST table format in RocksDB.
 
