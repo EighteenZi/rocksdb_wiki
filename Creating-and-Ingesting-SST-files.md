@@ -81,3 +81,10 @@ You can learn more by checking DB::IngestExternalFile() in [include/rocksdb/db.h
 **Global sequence number**
 
 Files created using SstFileWriter have a special field in their metablock called global sequence number, when this field is used, all the keys inside this file start acting as if they have such sequence number. When we ingest a file, we assign a sequence number to all the keys in this file by updating this global sequence number field in the metablock
+
+## Ingestion Behind
+Starting from 5.5, IngestExternalFile() will load a list of external SST files with ingestion behind supported, which means duplicate keys will be skipped if `ingest_behind==true`. In this mode we will always ingest in the bottom mode level. Duplicate keys in the file being ingested to be skipped rather than overwriting existing data under that key.
+
+** Use case **
+Back-fill of some historical data in the database without over-writing existing newer version of data. This option could only be used if the DB has been running with allow_ingest_behind=true since the dawn of time.
+All files will be ingested at the bottommost level with `seqno=0`.
