@@ -51,5 +51,5 @@ In a similar way, each `version` has a reference count. When a `version` is crea
 
 Sometimes a reader holds reference of a `version` directly, like the source `version` for a compaction. More often, a reader holds it indirectly through a data structure called `super version`, which holds reference counts for list of mem tables and a `version` -- a whole view of the DB. A reader only needs to increase and decrease one reference count, while it is the super version that holds the reference count of `version`. It also enables further optimization to avoid locking for the reference counting in most of the time. See the [blog post](http://rocksdb.org/blog/677/avoid-expensive-locks-in-get/).
 
-RocksDB maintains all `version`s in the data structure called `VersionSet`, which also remembers who is the “current” `version`. Since each `column family` is a separate LSM, it also has its own list of `version` with one is "current". But there is only one `VersionSet` per DB that maintains `version`s for all column families.
+RocksDB maintains all `version`s in the data structure called `VersionSet`, which also remembers who is the “current” `version`. Since each `column family` is a separate LSM, it also has its own list of `version`s with one that is "current". But there is only one `VersionSet` per DB that maintains `version`s for all column families.
 
