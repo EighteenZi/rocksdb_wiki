@@ -17,3 +17,7 @@ In version 5.6 or higher, the memory is counted as total memory allocated in are
 Since version 5.6, users can set up RocksDB to cost memory used by memtable to block cache. This can happen no matter whether enable memtable memory limit or not.
 
 In most cases, actually used blocks in block cache are just a small percentage than data cached in block cache, so when users enable this feature, the block cache capacity will cover the memory usage for both of block cache and memtable. If users also enable `cache_index_and_filter_blocks`, then the three major uses of memory of RocksDB will be capped by the single cap.
+
+Here is how it is implemented. For every 1MB memory allocated memtable, WriteBufferManager will put dummy 1MB entries to block cache so that the block cache can track the size correctly and evict blocks to make room if needed. In case the memory used by the memtable shrinks, WriteBufferManager will not immediately remove the dummy blocks, but slowly release them when the memory usage drop significantly. This is because memtable memory is naturally up and down and we try to be less intrusive to block cache.
+
+To enable this feature, pass the block cache you are using to the WriteBufferManager you are going to use.
