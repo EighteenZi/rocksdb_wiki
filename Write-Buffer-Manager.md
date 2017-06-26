@@ -14,4 +14,6 @@ In version 5.6 or higher, the memory is counted as total memory allocated in are
 
 ## Cost memory used in memtable to block cache
 
-Coming soon...
+Since version 5.6, users can set up RocksDB to cost memory used by memtable to block cache. This can happen no matter whether enable memtable memory limit or not.
+
+In most cases, actually used blocks in block cache are just a small percentage than data cached in block cache, so when users enable this feature, the block cache capacity will cover the memory usage for both of block cache and memtable. If users also enable `cache_index_and_filter_blocks`, then the three major uses of memory of RocksDB will be capped by the single cap.
