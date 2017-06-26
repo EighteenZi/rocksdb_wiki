@@ -37,6 +37,7 @@
 ** [[Perf-Context-and-IO-Stats-Context | Perf Context and IO Stats Context]]
 ** [[Logger | Logger]]
 ** [[Direct-IO | Direct I/O]]
+** [[Write-Buffer-Manager | Write Buffer Manager]]
 ** [[Dictionary-Compression | Dictionary Compression]]
 * '''Tools / Utilities'''
 ** [[Administration-and-Data-Access-Tool | Administration and Data Access Tool]]
