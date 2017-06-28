@@ -5,3 +5,5 @@ The best way to handle these cases is to [[Creating and Ingesting SST files|Crea
 Low Priority Write can help users manage use cases like this. Since version 5.6, users can set `WriteOptions.low_pri=true` for background writes. RocksDB will do more aggressively throttling to low priority writes to make sure high priority writes won't hit stalls.
 
 While DB is running, RocksDB will keep evaluating whether we have any compaction pressure by looking at outstanding L0 files and bytes pending compaction. If RocksDB thinks there is a compaction pressure, it will ingest artificial sleeping to low priority write so that the total rate of low priority write is small. By doing that, the total write rate will drop much earlier than the overall write throttling condition, so the qualify of service of high priority writes is more likely to be guaranteed.
+
+In [[Two Phase Commit]], the slowdown of low priority writes is done in the prepare phase, rather than the commit phase.
