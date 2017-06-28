@@ -39,6 +39,7 @@
 ** [[Direct-IO | Direct I/O]]
 ** [[Write-Buffer-Manager | Write Buffer Manager]]
 ** [[Dictionary-Compression | Dictionary Compression]]
+** [[Low Priority Write]]
 * '''Tools / Utilities'''
 ** [[Administration-and-Data-Access-Tool | Administration and Data Access Tool]]
 ** [[Benchmarking-Tools | Benchmarking Tools]]
