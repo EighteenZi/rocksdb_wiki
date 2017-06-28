@@ -32,7 +32,9 @@ Stalls may be triggered for the following reasons:
 
 Whenever stall conditions are triggered, RocksDB will reduce write rate to `delayed_write_rate`, and could possiblely reduce write rate to even lower than `delayed_write_rate` if estimated pending compaction bytes accumulates. One thing worth to note is that slowdown/stop triggers and pending compaction bytes limit are per-column family, and write stalls apply to the whole DB, which means if one column family triggers write stall, the whole DB will be stalled.
 
-There are multiple options you can tune to mitigate write stalls. If write stalls are triggered by pending flushes, you can try:
+There are multiple options you can tune to mitigate write stalls. If you have some workload which can tolerant write stalls and some don't, you can set some writes to [[Low Priority Write]] to avoid stalling in those latency-critical writes.
+
+If write stalls are triggered by pending flushes, you can try:
 
 * Increase `max_background_flushes` to have more flush threads.
 * Increase `max_write_buffer_number` to have smaller memtable to flush.
