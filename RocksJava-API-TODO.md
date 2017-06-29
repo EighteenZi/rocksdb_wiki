@@ -1,13 +1,21 @@
 This page sets out the known TODO items for the RocksJava API, it also shows who is thinking/working on a particular topic; Through this mechanism hopefully we can avoid duplicating effort.
 
+## Some recent user requests:
+1. Merge Operator API ([#2282](https://github.com/facebook/rocksdb/issues/2282))
+1. Compaction Filter API ([#2483](https://github.com/facebook/rocksdb/issues/2483))
+1. LoadLatestOptions API to dynamically reload the options without needing a restart.
+1. Stats/Counters in sync with C++ API
+1. Shared block cache across all column-families and instances.
+1. Ability to pass in native pointers/memory to reduce the JNI overhead
+
 ## Upcoming changes to the Java API
 
 1. Adjust RocksJava Comparator implementation - We analyzed the current implementation and noticed a significant loss of performance using the current implementation. So we decided to do the following steps in order
-  1. Analyze which one of the comparator implementations is performing better either `DirectComparator` or `Comparator`
-  2. Outline a proper way to use Custom-C++-Comparators with RocksJava.
-  3. Remove everything but one Comparator implementation. Depending on the analysis listed above.
-  4. Document the performance penalties in related JavaDoc.
-  5. `FindShortestSeparator`and `FindShortSuccessor` shall only do something if the Java method is implemented. What`s currently not the case.
+* Analyze which one of the comparator implementations is performing better either `DirectComparator` or `Comparator`
+* Outline a proper way to use Custom-C++-Comparators with RocksJava.
+*  Remove everything but one Comparator implementation. Depending on the analysis listed above.
+* Document the performance penalties in related JavaDoc.
+* `FindShortestSeparator`and `FindShortSuccessor` shall only do something if the Java method is implemented. What`s currently not the case.
 
 2. Rework `WBWIIterator` to use both `Slice` and `DirectSlice` (see above).
 
