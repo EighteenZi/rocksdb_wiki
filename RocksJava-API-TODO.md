@@ -1,13 +1,14 @@
 This page sets out the known TODO items for the RocksJava API, it also shows who is thinking/working on a particular topic; Through this mechanism hopefully we can avoid duplicating effort.
 
 ## Some recent user requests (as of June 2017):
+In order of priority:
+1. LoadLatestOptions API to dynamically reload the options without needing a restart.
 1. Merge Operator API ([#2282](https://github.com/facebook/rocksdb/issues/2282))
 1. Compaction Filter API ([#2483](https://github.com/facebook/rocksdb/issues/2483))
-1. LoadLatestOptions API to dynamically reload the options without needing a restart.
-1. Stats/Counters in sync with C++ API.
-1. Implement Statistics.getHistogramString ([#2374](https://github.com/facebook/rocksdb/issues/2374)).
-1. Shared block cache across all column-families and instances.
 1. Ability to pass in native pointers/memory to reduce the JNI overhead
+1. Shared block cache across all column-families and instances.
+1. Stats/Counters in sync with C++ API. (in-sync as of June 2017, due to [#2429](https://github.com/facebook/rocksdb/pull/2429) and [#2209](https://github.com/facebook/rocksdb/pull/2429))
+1. Implement Statistics.getHistogramString ([#2374](https://github.com/facebook/rocksdb/issues/2374)).
 
 ## Upcoming changes to the Java API (outdated -- last updated in July 2016)
 
