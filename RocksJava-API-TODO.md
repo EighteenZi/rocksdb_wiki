@@ -9,7 +9,7 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 1. Shared block cache across all column-families and instances.
 1. Ability to pass in native pointers/memory to reduce the JNI overhead
 
-## Upcoming changes to the Java API
+## Upcoming changes to the Java API (outdated -- last updated in July 2016)
 
 1. Adjust RocksJava Comparator implementation - We analyzed the current implementation and noticed a significant loss of performance using the current implementation. So we decided to do the following steps in order
 * Analyze which one of the comparator implementations is performing better either `DirectComparator` or `Comparator`
