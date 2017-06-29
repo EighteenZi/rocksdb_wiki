@@ -4,7 +4,8 @@ This page sets out the known TODO items for the RocksJava API, it also shows who
 1. Merge Operator API ([#2282](https://github.com/facebook/rocksdb/issues/2282))
 1. Compaction Filter API ([#2483](https://github.com/facebook/rocksdb/issues/2483))
 1. LoadLatestOptions API to dynamically reload the options without needing a restart.
-1. Stats/Counters in sync with C++ API
+1. Stats/Counters in sync with C++ API.
+1. Implement Statistics.getHistogramString ([#2374](https://github.com/facebook/rocksdb/issues/2374)).
 1. Shared block cache across all column-families and instances.
 1. Ability to pass in native pointers/memory to reduce the JNI overhead
 
