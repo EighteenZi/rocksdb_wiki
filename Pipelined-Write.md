@@ -2,4 +2,4 @@ The pipelined write feature added in RocksDB 5.5 is to improve concurrent write 
 
 One observation is that WAL writes and memtable writes are sequential and by making them run in parallel we can increase throughput. For one single writer WAL writes and memtable writes has to run sequentially. With concurrent writers, once the previous writer finish WAL write, the next writer waiting in the write queue can start to write WAL while the previous writer still have memtable write ongoing. This is what pipelined write do.
 
-To enable pipelined write, simply set `Options.enable_pipelined_write=true`. db_bench benchmark shows 20% write throughput improvement with concurrent writers and WAL enabled.
+To enable pipelined write, simply set `Options.enable_pipelined_write=true`. db_bench benchmark shows 20% write throughput improvement with concurrent writers and WAL enabled, when DB is stored in ramfs and compaction throughput is not the bottleneck.
