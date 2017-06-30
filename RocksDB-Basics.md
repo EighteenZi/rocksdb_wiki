@@ -14,8 +14,8 @@ The primary design point for RocksDB is that it should be performant for fast st
 ### Production Support:
 RocksDB should be designed in such a way that it has built-in support for tools and utilities that help deployment and debugging in production environments. Most major parameters should be fully tunable so that it can be used by different applications on different hardware.
 
-### Backward Compatibility:
-Newer versions of this software should be backward compatible, so that existing applications do not need to change when upgrading to newer releases of RocksDB. 
+### Compatibility:
+Newer versions of this software should be backward compatible, so that existing applications do not need to change when upgrading to newer releases of RocksDB. See [[RocksDB Compatibility Between Different Releases]].
 
 ## 3. High Level Architecture
 
