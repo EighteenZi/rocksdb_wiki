@@ -17,18 +17,18 @@ Here is a typical example of using using Perf Context and IO Stats Context:
 
 rocksdb::SetPerfLevel(rocksdb::PerfLevel::kEnableTimeExceptForMutex);
 
-rocksdb::perf_context.Reset();
-rocksdb::iostats_context.Reset();
+rocksdb:: get_perf_context()->Reset();
+rocksdb::get_iostats_context()->Reset();
 
 ... // run your query
 
 rocksdb::SetPerfLevel(rocksdb::PerfLevel::kDisable);
 
-... // evaluate or report variables of rocksdb::perf_context and/or rocksdb:iostats_context
+... // evaluate or report variables of rocksdb::get_perf_context() and/or rocksdb::get_iostats_context()
 ```
 Note that the same perf level is applied to both of Perf Context and IO Stats Context.
 
-You can also call rocksdb::perf_context.ToString() and rocksdb::iostat_context.ToString() for a human-readable report.
+You can also call rocksdb::get_perf_context->ToString() and rocksdb::get_iostats_context->ToString() for a human-readable report.
 
 ## Profile Levels And Costs
 As always, there are trade-offs between statistics quantity and overhead, so we have designed several profile levels to choose from:
