@@ -73,6 +73,7 @@
 ** [[Read-Modify-Write-Benchmarks | Read-Modify-Write Performance]]
 ** [[Delete-A-Range-Of-Keys | Delete A Range Of Keys]]
 ** [[Write-Stalls | Write Stalls]]
+** [[Pipelined-Write | Pipelined Write]]
 ** [[RocksDB-Tuning-Guide | Tuning Guide]]
 ** [[Memory-usage-in-RocksDB | Memory usage in RocksDB]]
 ** [[Implement-Queue-Service-Using-RocksDB | Implement Queue Service Using RocksDB]]
