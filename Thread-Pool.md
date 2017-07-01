@@ -1,6 +1,6 @@
 A thread pool is associated with Env environment object. The client has to create a thread pool by setting the number of background threads using method <code>Env::SetBackgroundThreads()</code> defined in <code>rocksdb/env.h</code>. We use the thread pool for compactions and memtable flushes. Since memtable flushes are in critical code path (stalling memtable flush can stall writes, increasing p99 latency), we suggest having two thread pools - with priorities HIGH and LOW. Memtable flushes are by default scheduled on HIGH thread pool, while compactions on LOW thread pool.
 
-The recommended way to configure background compaction and flush parallelism is with `Options::max_background_jobs`.
+The recommended way to configure background compaction and flush parallelism is with `Options::max_background_jobs`. For now, we still respect the options `Options::max_background_compactions` and `Options::max_background_flushes` in case users have workloads for which our automatic allocation is suboptimal.
 
 <ul>
 
