@@ -8,7 +8,7 @@ The recommended way to configure background compaction and flush parallelism is 
 
 <li> **DEPRECATED** <code>Options::max_background_compactions</code> - Maximum number of concurrent background compactions, submitted to the default LOW priority thread pool.
 
-<li> **DEPRECATED** <code>Options::max_background_flushes</code> - Maximum number of concurrent background memtable flush jobs, submitted to the HIGH priority thread pool. By default, memtable flush jobs will be submitted to the HIGH priority pool. To schedule flushes and backgrounds in the same thread pool (not recommended), users can configure the HIGH priority thread pool to have zero threads. Separate thread pools are particularly important when the same Env is shared by multiple db instances. Without a separate pool, long running major compaction jobs could potentially block memtable flush jobs of other db instances, leading to unnecessary Put stalls.
+<li> **DEPRECATED** <code>Options::max_background_flushes</code> - Maximum number of concurrent background memtable flush jobs, submitted to the HIGH priority thread pool. By default, memtable flush jobs will be submitted to the HIGH priority pool. To schedule flushes and backgrounds in the same thread pool (not recommended), users can configure the HIGH priority thread pool to have zero threads. Separate non-empty thread pools are particularly important when the same Env is shared by multiple db instances. Without a separate pool, long running major compaction jobs could potentially block memtable flush jobs of other db instances, leading to unnecessary Put stalls.
 </ul>
 
 ```cpp
