@@ -122,3 +122,54 @@ try {
 
 <!-- separator -->
 > **TIP**: To avoid creating a byte-array in `RocksDB.get()`, you can also use its parametric method `int RocksDB.get(byte[] key, byte[] value)` or `int RocksDB.get(ReadOptions opt, byte[] key, byte[] value)`, where the output value will be filled into the pre-allocated output buffer `value`, and its `int` returned value will indicate the actual length of the value associated with the input `key`.  When the returned value is greater than `value.length`, this indicates the size of the output buffer is insufficient.
+
+
+## Opening a Database with Column Families
+A rocksdb database may have multiple column families. Column Families allow you to group similar key/values together and perform operations on them independently of other Column Families.
+
+If you have worked with RocksDB before but not used Column Families explicitly, then you may be surprised to know, that in fact all of your operations were taking place on a Column Family, known as the `default` column family.
+
+It is important to note that when working with Column Families in RocksJava, there is a very specific order of destruction that must be obeyed for the database to correctly free all resources and shutdown. The ordering is illustrated in this code example:
+
+```java
+import org.rocksdb.RocksDB;
+import org.rocksdb.Options;
+...
+    // a static method that loads the RocksDB C++ library.
+    RocksDB.loadLibrary();
+
+    try (final ColumnFamilyOptions cfOpts = new ColumnFamilyOptions().optimizeUniversalStyleCompaction()) {
+
+      // list of column family descriptors, first entry must always be default column family
+      final List<ColumnFamilyDescriptor> cfDescriptors = Arrays.asList(
+          new ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY, cfOpts),
+          new ColumnFamilyDescriptor("my-first-columnfamily".getBytes(), cfOpts)
+      );
+
+      // a list which will hold the handles for the column families once the db is opened
+      final List<ColumnFamilyHandle> columnFamilyHandleList =
+          new ArrayList<>();
+
+      try (final DBOptions options = new DBOptions()
+          .setCreateIfMissing(true)
+          .setCreateMissingColumnFamilies(true);
+           final RocksDB db = RocksDB.open(options,
+               "path/to/do", cfDescriptors,
+               columnFamilyHandleList)) {
+
+        try {
+
+          // do something
+
+        } finally {
+
+          // NOTE frees the column family handles before freeing the db
+          for (final ColumnFamilyHandle columnFamilyHandle :
+              columnFamilyHandleList) {
+            columnFamilyHandle.close();
+          }
+        } // frees the db and the db options
+      }
+    } // frees the column family options
+...
+```
