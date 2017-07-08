@@ -61,15 +61,15 @@ Any Java object in RocksJava that manages a C++ object will inherit from `org.ro
 
 1. `AbstractNativeReference#close()`.
 
-  This method should be explicitly invoked by the user when they have finished with a RocksJava object. If C++ objects were allocated and have not yet been freed then they will be released on the first invocation of this method.
+    This method should be explicitly invoked by the user when they have finished with a RocksJava object. If C++ objects were allocated and have not yet been freed then they will be released on the first invocation of this method.
 
-  To ease the use of this, this method overrides `java.lang.AutoCloseable#close()`, which enables it to be used with ARM (Automatic Resource Management) like constructs such as Java SE 7's [`try-with-resources`](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html) statement.
+    To ease the use of this, this method overrides `java.lang.AutoCloseable#close()`, which enables it to be used with ARM (Automatic Resource Management) like constructs such as Java SE 7's [`try-with-resources`](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html) statement.
 
 2. `AbstractNativeReference#finalize()`.
 
-  This method is called by Java's Finalizer thread, when all strong references to the object have expired and just before the object is Garabage Collected. Ultimately it delegates to `AbstractNativeReference#close()`. The user should however not rely on this, and instead consider it more of a last-effort fail-safe.
+    This method is called by Java's Finalizer thread, when all strong references to the object have expired and just before the object is Garabage Collected. Ultimately it delegates to `AbstractNativeReference#close()`. The user should however not rely on this, and instead consider it more of a last-effort fail-safe.
 
-  It will certainly make sure that owned C++ objects will be cleaned up when the Java object is collected. It does not however help to manage the memory of RocksJava as a whole, as the memory allocated on the heap in C++ for the native C++ objects backing the Java objects is effectively invisible to the Java GC process and so the JVM cannot correctly calculate the memory pressure for the GC. **Users should always explicitly call `AbstractNativeReference#close()`** on their RocksJava objects when they are done with them.
+    It will certainly make sure that owned C++ objects will be cleaned up when the Java object is collected. It does not however help to manage the memory of RocksJava as a whole, as the memory allocated on the heap in C++ for the native C++ objects backing the Java objects is effectively invisible to the Java GC process and so the JVM cannot correctly calculate the memory pressure for the GC. **Users should always explicitly call `AbstractNativeReference#close()`** on their RocksJava objects when they are done with them.
 
 ## Opening a Database
 A `rocksdb` database has a name which corresponds to a file system directory. All of the contents of database are stored in this directory. The following example shows how to open a database, creating it if necessary:
