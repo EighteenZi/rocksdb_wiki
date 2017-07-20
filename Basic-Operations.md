@@ -151,7 +151,7 @@ More on the interface and implementation can be found on:
 
 ## Iteration
 
-The following example demonstrates how to print all key,value pairs in a database.
+The following example demonstrates how to print all (key, value) pairs in a database.
 
 ```cpp
   rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
@@ -162,7 +162,7 @@ The following example demonstrates how to print all key,value pairs in a databas
   delete it;
 ```
 The following variation shows how to process just the keys in the
-range <code>[start,limit)</code>:
+range <code>[start, limit)</code>:
 
 ```cpp
   for (it->Seek(start);
@@ -180,7 +180,7 @@ iteration may be somewhat slower than forward iteration.)
   }
 ```
 
-This is an example of processing entries in range (limit, start] in revers order from one specific key:
+This is an example of processing entries in range (limit, start] in reverse order from one specific key:
 
 ```cpp
   for (it->SeekForPrev(start);
