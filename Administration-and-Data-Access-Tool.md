@@ -76,6 +76,57 @@ You can specify command line `--column_family=<string>` for which column family 
 # SST dump tool
 sst_dump tool can be used to gain insights about a specific SST file. There are multiple operations that sst_dump can execute on a SST file.
 
+```
+$ ./sst_dump
+file or directory must be specified.
+
+sst_dump --file=<data_dir_OR_sst_file> [--command=check|scan|raw]
+    --file=<data_dir_OR_sst_file>
+      Path to SST file or directory containing SST files
+
+    --command=check|scan|raw
+        check: Iterate over entries in files but dont print anything except if an error is encounterd (default command)
+        scan: Iterate over entries in files and print them to screen
+        raw: Dump all the table contents to <file_name>_dump.txt
+
+    --output_hex
+      Can be combined with scan command to print the keys and values in Hex
+
+    --from=<user_key>
+      Key to start reading from when executing check|scan
+
+    --to=<user_key>
+      Key to stop reading at when executing check|scan
+
+    --prefix=<user_key>
+      Returns all keys with this prefix when executing check|scan
+      Cannot be used in conjunction with --from
+
+    --read_num=<num>
+      Maximum number of entries to read when executing check|scan
+
+    --verify_checksum
+      Verify file checksum when executing check|scan
+
+    --input_key_hex
+      Can be combined with --from and --to to indicate that these values are encoded in Hex
+
+    --show_properties
+      Print table properties after iterating over the file
+
+    --show_compression_sizes
+      Independent command that will recreate the SST file using 16K block size with different
+      compressions and report the size of the file using such compression
+
+    --set_block_size=<block_size>
+      Can be combined with --show_compression_sizes to set the block size that will be used
+      when trying different compression algorithms
+
+    --parse_internal_key=<0xKEY>
+      Convenience option to parse an internal key on the command line. Dumps the
+      internal key in hex format {'key' @ SN: type}
+```
+
 ##### Dumping SST file blocks
 ```bash
 ./sst_dump --file=/path/to/sst/000829.sst --command=raw
