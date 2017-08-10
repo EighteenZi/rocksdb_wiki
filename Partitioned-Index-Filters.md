@@ -47,7 +47,7 @@ In this example we have a DB of size 300G on SSD and emulate the small memory th
   * Recommended setting
 - `pin_l0_filter_and_index_blocks_in_cache` = `true`
   * Recommended setting as this property is extended to the index/filter partitions as well.
-  * Note: there is currently a performance issue (to be fixed soon) with this config. To work around it you need to set `pin_l0_filter_and_index_blocks_in_cache` to `false`.
+  * **Note**: there is currently a performance issue (to be fixed soon) with this config. To work around it you need to set `pin_l0_filter_and_index_blocks_in_cache` to `false`.
 - block cache size: if you used to store the filter/index into heap, do not forget to increase the block cache size with the amount of memory that you are saving from the heap.
 
 ## Current limitations
