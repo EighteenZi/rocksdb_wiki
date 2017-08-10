@@ -37,6 +37,8 @@ In this example we have a DB of size 300G on SSD and emulate the small memory th
 ## How to use it?
 - `index_type` = `IndexType::kTwoLevelIndexSearch`
   * This is to enable partitioned indexes
+- `NewBloomFilterPolicy(BITS, false)`
+  * Use full filters
 - `partition_filters` = `true`
   * This is to enable partitioned filters
 - `metadata_block_size` = 4096
