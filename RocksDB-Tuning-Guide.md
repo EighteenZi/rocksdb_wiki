@@ -203,7 +203,9 @@ There are two types of bloom filters: block-based and full filter.
 Set up block based filter by calling: `options.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10, true))`. Block-based bloom filter is built separately for each block. On a read we first consult an index, which returns the block of the key we're looking for. Now that we have a block, we consult the bloom filter for that block.
 
 ### Full filter
-Set up block based filter by calling: `options.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10, false))`. Full filters are built per-file. There is only one bloom filter for a file. This means we can first consult the bloom filter without going to the index. In situations when key is not in the bloom filter, we saved one index lookup compared to block-based filter.
+Set up fill filter by calling: `options.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10, false))`. Full filters are built per-file. There is only one bloom filter for a file. This means we can first consult the bloom filter without going to the index. In situations when key is not in the bloom filter, we saved one index lookup compared to block-based filter.
+
+Full filters could further be partitioned: [Partitioned Filters](https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters)
 
 ## Custom memtable and table format
 Advanced users may configure custom memtable and table format.
