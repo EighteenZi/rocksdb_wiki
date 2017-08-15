@@ -32,7 +32,7 @@ The simplest way to use RocksJava from a build system which supports Maven style
 </dependency>
 ```
 
-**NOTE Microsoft Windows Users:** If you are using the Maven Central compiled artifacts on Microsoft Windows, they were compiled using Microsoft Visual Studio 2015, if you don't have "*Microsoft Visual C++ 2015 Redistributable*" installed, then you will need to install it from https://www.microsoft.com/en-us/download/details.aspx?id=48145, or otherwise build your own binaries from source code.
+<a name="maven-windows">**NOTE Microsoft Windows Users:**</a> If you are using the Maven Central compiled artifacts on Microsoft Windows, they were compiled using Microsoft Visual Studio 2015, if you don't have "*Microsoft Visual C++ 2015 Redistributable*" installed, then you will need to install it from https://www.microsoft.com/en-us/download/details.aspx?id=48145, or otherwise build your own binaries from source code.
 
 ### Compiling from Source
 To build RocksJava, you first need to set your `JAVA_HOME` environment variable to point to the location where Java SDK is installed (must be Java 1.7+). You must also have the prerequisites for your platform to compile the native library of RocksDB, see [INSTALL.md](https://github.com/facebook/rocksdb/blob/master/INSTALL.md). Once `JAVA_HOME` is properly set and you have the prerequisites installed, simply running `make rocksdbjava` will build the Java bindings for RocksDB:
