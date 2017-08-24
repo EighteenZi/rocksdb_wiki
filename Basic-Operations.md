@@ -201,7 +201,7 @@ This is an example of processing entries in range (limit, start] in reverse orde
 ```
 See [[SeekForPrev]].
 
-For explanation of error handling and different iterating options, see [[Iterator]].
+For explanation of error handling, different iterating options and best practice, see [[Iterator]].
 
 To know about implementation details, see [Iterator's Implementation](https://github.com/facebook/rocksdb/wiki/Iterator-Implementation)
 
