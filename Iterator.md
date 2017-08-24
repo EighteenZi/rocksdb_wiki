@@ -1,5 +1,5 @@
 ## Consistent View
-If `ReadOptions.snapshot` is given, the iterator will return data as of the snapshot. If it is `nullptr`, the iterator will read from an implicit snapshot as of the time the iterator is created. The implicit snapshot is preserved by [[pinning resource|Iterator#Resource pinned by iterators and iterator refreshing]]. There is not way to convert this implicit snapshot to explicit snapshot.
+If `ReadOptions.snapshot` is given, the iterator will return data as of the snapshot. If it is `nullptr`, the iterator will read from an implicit snapshot as of the time the iterator is created. The implicit snapshot is preserved by [[pinning resource|Iterator#resource-pinned-by-iterators-and-iterator-refreshing]]. There is not way to convert this implicit snapshot to explicit snapshot.
 
 ## Error Handling
 `Iterator::status()` returns the error of the iterating. The errors include I/O errors, checksum mismatch, unsupported operations, internal errors, or other errors.
