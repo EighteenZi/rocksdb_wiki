@@ -177,6 +177,7 @@ range <code>[start, limit)</code>:
        it->Next()) {
     ...
   }
+  assert(it->status().ok()); // Check for any errors found during the scan
 ```
 You can also process entries in reverse order. (Caveat: reverse
 iteration may be somewhat slower than forward iteration.)
@@ -185,6 +186,7 @@ iteration may be somewhat slower than forward iteration.)
   for (it->SeekToLast(); it->Valid(); it->Prev()) {
     ...
   }
+  assert(it->status().ok()); // Check for any errors found during the scan
 ```
 
 This is an example of processing entries in range (limit, start] in reverse order from one specific key:
@@ -195,6 +197,7 @@ This is an example of processing entries in range (limit, start] in reverse orde
        it->Prev()) {
     ...
   }
+  assert(it->status().ok()); // Check for any errors found during the scan
 ```
 See [[SeekForPrev]].
 
