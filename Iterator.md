@@ -8,5 +8,11 @@ On the other hand, if `Iterator::Valid()` is false, there are two possibilities:
 ## Prefix Iterating
 Prefix iterator allows users to use bloom filter or hash index in iterator, in order to improve the performance. However, the feature has limitation and may return wrong results without reporting an error if misused. So we recommend you to use this feature carefully. For how to use the feature, see [[Prefix Seek|Prefix Seek API Changes]]
 
+## Iterating upper bound
+You can specify an upper bound of your range query by setting `ReadOptions.iterate_upper_bound` for the read option passed to `NewIterator()`. By setting this option, RocksDB doesn't have to find the next key after the upper bound. In some cases, some I/Os or computation can be avoided. In some specific workloads, the improvement can be significant. Note it applies to both of forward and backward iterating.
+
+See the comment of the option for more information.
+
+## 
 
 Coming soon...
