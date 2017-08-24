@@ -86,6 +86,13 @@ The database provides <code>Put</code>, <code>Delete</code>, and <code>Get</code
 ```
 RocksDB also allows [[Single Delete]] which is useful in some special cases.
 
+Each `Get` results into at least a memcpy from the source to the value string. If the source is in the block cache, you can avoid the extra copy by using a PinnableSlice.
+```cpp
+  PinnableSlice pinnable_val;
+  rocksdb::Status s = db->Get(rocksdb::ReadOptions(), key1, &pinnable_val);
+```
+The source will be released once pinnable_val is destructed or ::Reset is invoked on it.
+
 ## Atomic Updates
 
 Note that if the process dies after the Put of key2 but before the delete of key1, the same value may be left stored under multiple keys. Such problems can be avoided by using the <code>WriteBatch</code> class to atomically apply a set of updates:
