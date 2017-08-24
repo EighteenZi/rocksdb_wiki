@@ -130,10 +130,10 @@ Asynchronous writes can often be used safely. For example, when loading a large 
 <code>WriteBatch</code> provides an alternative to asynchronous writes. Multiple updates may be placed in the same <code>WriteBatch</code> and applied together using a synchronous write (i.e., <code>write_options.sync</code> is set to true). The extra cost of the synchronous write will be amortized across all of the writes in the batch.
 
 
-We also provide a way to completely disable Write Ahead Log for a particular write. If you set write_option.disableWAL to true, the write will not go to the log at all and may be lost in an event of process crash.
+We also provide a way to completely disable Write Ahead Log for a particular write. If you set <code>write_option.disableWAL</code> to true, the write will not go to the log at all and may be lost in an event of process crash.
 
 
-RocksDB by default uses faster fdatasync() to sync files. If you want to use fsync(), you can set Options::use_fsync to true. You should set this to true on filesystems like ext3 that can lose files after a reboot.
+RocksDB by default uses faster <code>fdatasync()</code> to sync files. If you want to use fsync(), you can set <code>Options::use_fsync</code> to true. You should set this to true on filesystems like ext3 that can lose files after a reboot.
 
 
 ## Concurrency
