@@ -52,6 +52,7 @@ size_t writable_file_max_buffer_size = 1024 * 1024; // 1MB by default
 // This option is deprecated and always be true
 bbto.skip_table_builder_flush = true;
 ```
+Recent releases have these options automatically set if direct I/O is enabled.
 
 ### Notes 
 1.  `allow_mmap_reads` cannot be used with `use_direct_reads` or `use_direct_io_for_flush_and_compaction`. `allow_mmap_writes` cannot be used with `use_direct_io_for_flush_and_compaction`, i.e., they cannot be set to true at the same time.
