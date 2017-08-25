@@ -91,7 +91,7 @@ Each `Get` results into at least a memcpy from the source to the value string. I
   PinnableSlice pinnable_val;
   rocksdb::Status s = db->Get(rocksdb::ReadOptions(), key1, &pinnable_val);
 ```
-The source will be released once pinnable_val is destructed or ::Reset is invoked on it.
+The source will be released once pinnable_val is destructed or ::Reset is invoked on it. Read more [here](http://rocksdb.org/blog/2017/08/24/pinnableslice.html).
 
 ## Atomic Updates
 
