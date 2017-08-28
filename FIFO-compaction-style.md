@@ -21,3 +21,9 @@ For example, if `level0_file_num_compaction_trigger = 8` and every flushed file 
 
 Please note that, since the oldest files are compacted, the file to be deleted by FIFO is also larger, so potentially slightly less data is stored than without compaction.
 
+## FIFO Compaction with TTL
+A new experimental feature called FIFO compaction with TTL has been introduced starting in RocksDB 5.7. 
+
+So far, FIFO compaction worked by just taking just the total file size into consideration, like, drop the oldest files if the db size exceeds `compaction_options_fifo.max_table_files_size`, one at a time until the total size drops below the set threshold. This sometimes makes it tricky to enable in production as use cases can have organic growth. 
+
+We introduced a new option `compaction_options_fifo.ttl` that kicks of FIFO compaction whenever the ttl for a file expires. This enables users to drop files based on time rather than always based on size, say, drop all SST files older than a week or a month.
