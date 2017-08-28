@@ -386,6 +386,10 @@ Conceptually, when the library decides to begin its stacking and applying proces
 
 As alluded to above, AssociativeMergeOperator inherits from MergeOperator and allows the client to specify a single merge function. It overrides PartialMerge() and FullMerge() to use this AssociativeMergeOperator::Merge(). It is then used for combining operands, and also when a base-value is encountered. That is why it only works under the "associativity" assumptions described above (and it also explains the name).
 
+### When to allow a single merge operand
+
+Typically a merge operator is invoked only if there are at least two merge operands to act on. Override `AllowSingleOperand()` to return true if you need the merge operator to be invoked even with a single operand. An example use case for this is if you are using merge operator to change the value based on a TTL so that it could be dropped during later compactions (may be using a compaction filter).
+
 ## JSON Example
 
 Using our generic MergeOperator interface, we now have the ability to implement the json example.
