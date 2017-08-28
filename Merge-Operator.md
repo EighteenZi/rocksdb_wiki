@@ -338,6 +338,11 @@ The MergeOperator interface is designed to support generality and also to exploi
                              std::string* new_value,
                              Logger* logger) const = 0;
 
+      struct MergeOperationInput { ... };
+      struct MergeOperationOutput { ... };
+      virtual bool FullMergeV2(const MergeOperationInput& merge_in,
+                               MergeOperationOutput* merge_out) const;
+
       // This function performs merge(left_op, right_op)
       // when both the operands are themselves merge operation types.
       // Save the result in *new_value and return true. If it is impossible
@@ -352,6 +357,13 @@ The MergeOperator interface is designed to support generality and also to exploi
       // mismatches (i.e., a DB created with one MergeOperator is
       // accessed using a different MergeOperator)
       virtual const char* Name() const = 0;
+
+      // Determines whether the MergeOperator can be called with just a single
+      // merge operand.
+      // Override and return true for allowing a single operand. FullMergeV2 and
+      // PartialMerge/PartialMergeMulti should be implemented accordingly to handle
+      // a single operand.
+      virtual bool AllowSingleOperand() const { return false; }
     };
 ```
 
