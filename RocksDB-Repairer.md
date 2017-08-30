@@ -4,7 +4,7 @@ Repairer does best effort recovery to recover as much data as possible after a d
 
 ## Usage
 
-Note the CLI command uses default options for repairing your DB. If you need to specify any options, e.g., custom comparator, or have multiple column families, you probably want to choose the programmatic way.
+Note the CLI command uses default options for repairing your DB and only adds the column families found in the SST files. If you need to specify any options, e.g., custom comparator, or have column family-specific options, you should choose the programmatic way.
 
 ### Programmatic
 
