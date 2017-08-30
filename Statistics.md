@@ -18,7 +18,10 @@ The overhead of statistics is usually small but non-negligible. We usually obser
 
 Stats are implemented using atomic integers (atomic increments). Furthermore, stats measuring time duration require to calls the get the current time. Both of the atomic increment and timing functions introduce overhead, which varies across different platforms. 
 
-We have two levels of statistics, `kExceptTimeForMutex` and `kAll`. The only difference is that with `kExceptTimeForMutex`, counter `rocksdb.db.mutex.wait.micros` is not measured. By measuring the counter, we call the timing function inside DB mutex. If the timing function is slow, it can reduce write throughput significantly.
+We have three levels of statistics, `kExceptDetailedTimers`, `kExceptTimeForMutex` and `kAll`.
+* `kAll`: Collects all stats, including measuring duration of mutex operations. If getting time is expensive on the platform to run, it can reduce scalability to more threads, especially for writes. 
+* `kExceptTimeForMutex`: Collects all stats except the counters requiring to get time inside the mutex lock. `rocksdb.db.mutex.wait.micros` counter is not measured. By measuring the counter, we call the timing function inside DB mutex. If the timing function is slow, it can reduce write throughput significantly.
+* `kExceptDetailedTimers`: Collects all stats except time inside mutex lock AND time spent on compression.
 
 ## Access The Stats
 #### Stats Types
