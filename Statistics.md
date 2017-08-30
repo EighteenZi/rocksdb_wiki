@@ -9,7 +9,7 @@ Here is an example to pass it to one DB:
 Options options;
 options.statistics = rocksdb::CreateDBStatistics();
 ```
-Technically, you can create a statistics object and pass to multiple DBs. Then the statistics object will contain aggregated values for all those DBs. Note that some stats are undefined and have no meaningful information across multiple DBs. On such statistic is "rocksdb.sequence.number".
+Technically, you can create a statistics object and pass to multiple DBs. Then the statistics object will contain aggregated values for all those DBs. Note that some stats are undefined and have no meaningful information across multiple DBs. One such statistic is "rocksdb.sequence.number".
 
 Advanced users can implement their own statistics class. See the last section for details.
 
