@@ -2,6 +2,41 @@
 
 Repairer does best effort recovery to recover as much data as possible after a disaster without compromising consistency. It does not guarantee bringing the database to a time consistent state.
 
+## Usage
+
+Note the CLI command uses default options for repairing your DB. If you need to specify any options, e.g., custom comparator, or have multiple column families, you probably want to choose the programmatic way.
+
+### Programmatic
+
+For programmatic usage, call one of the `RepairDB` functions declared in `include/rocksdb/db.h`.
+
+### CLI
+
+For CLI usage, first build `ldb`, our admin CLI tool:
+
+```
+$ make clean && make -j64 ldb
+```
+
+Now use the `ldb`'s `repair` subcommand, specifying your DB. Note it prints info logs to stderr so you may wish to redirect. Here I run it on a DB in `./tmp` where I've deleted the MANIFEST file:
+
+```
+$ ./ldb repair --db=./tmp 2>./repair-log.txt
+$ tail -2 ./repair-log.txt 
+[WARN] [db/repair.cc:208] **** Repaired rocksdb ./tmp; recovered 1 files; 926bytes. Some data may have been lost. ****
+```
+
+Looks successful. MANIFEST file is back and DB is readable:
+
+```
+$ ls tmp/
+000006.sst  CURRENT  IDENTITY  LOCK  LOG  LOG.old.1504116879407136  lost  MANIFEST-000001  MANIFEST-000003  OPTIONS-000005
+$ ldb get a --db=./tmp
+b
+```
+
+Notice the `lost/` directory. It holds files containing data that was potentially lost during recovery.
+
 ## Repair Process
 
 Repair process is broken into 4 phase:
