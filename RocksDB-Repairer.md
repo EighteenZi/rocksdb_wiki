@@ -15,7 +15,7 @@ For programmatic usage, call one of the `RepairDB` functions declared in `includ
 For CLI usage, first build `ldb`, our admin CLI tool:
 
 ```
-$ make clean && make -j64 ldb
+$ make clean && make ldb
 ```
 
 Now use the `ldb`'s `repair` subcommand, specifying your DB. Note it prints info logs to stderr so you may wish to redirect. Here I run it on a DB in `./tmp` where I've deleted the MANIFEST file:
