@@ -38,3 +38,7 @@ How to optimize RocksDB when it uses non-volatile memory (NVM) as the storage de
 ## RocksDB on hierarchical storage
 
 RocksDB is usually run on two-level storage setup: RAM + SSD or RAM + HDD, where RAM is volatile and SSD, and HDD are non-volatile storage. There are interesting design choices of how to split data between the two storage. For example, RAM could be used solely as a cache for blocks, or it could preload all the indexes and filters, or given partitioned index/filters only preload the top-level to the RAM. The design choice become much more interesting when we have a multi-layer hierarchy of storage devices: RAM + NVM + SSD + HDD (or any combination of them) each with different storage characteristics. What is the optimal way to split data among the hierarchy.
+
+## Time series DBs
+
+How we can optimize RocksDB based on the particular characteristics of time series databases? For example can we do better encoding of keys knowing that they are integers in ascending order? Can we do better encoding of values knowing that they are floating point numbers with high correlation between adjacent numbers? What is an optimal compaction strategy given the patterns of data distribution in a time series DB? Do such data show different characteristics in different levels of the LSM tree and we can we leverage such information for more efficient data layout for each level? etc.
