@@ -8,6 +8,7 @@
 ** [[Set-Up-Options | Set-Up Options]]
 ** [[Known-Issues | Known Issues]]
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
+** [[Iterator | Iterator]]
 ** [[Compaction | Compaction]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 ** [[MANIFEST | MANIFEST]]
