@@ -46,8 +46,13 @@ This will generate `rocksdbjni.jar` and `librocksdbjni.so` (or librocksdbjni.jni
 To run the unit tests:
 ```bash
 $ make jtest
-
 ```
+
+[Facebook internal only] On Facebook devservers:
+```bash
+$ ROCKSDB_NO_FBCODE=1 make jtest
+```
+
 To clean:
 ```bash
 $ make jclean
