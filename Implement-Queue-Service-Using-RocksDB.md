@@ -20,4 +20,4 @@ If a user finishes processing the last `sequence_id` of a `queue_id`, and keep p
 If you want to further optimize this use case, to avoid binary search of the whole LSM tree each time, consider to use `TailingIterator`(or `ForwardIterator` called in some parts of the codes) (https://github.com/facebook/rocksdb/blob/master/include/rocksdb/options.h#L1235-L1241).
 
 ### Reclaiming space of deleted items faster
-The queue service is a good use case of `CompactOnDeletionCollector`, which prioritize ranges with more deletes when scheduling compactions. See https://github.com/facebook/rocksdb/blob/master/include/rocksdb/utilities/table_properties_collectors.h#L23-L27 
+The queue service is a good use case of `CompactOnDeletionCollector`, which prioritize ranges with more deletes when scheduling compactions. Set ImmutableCFOptions::table_properties_collector_factories to the factory defined here: https://github.com/facebook/rocksdb/blob/master/include/rocksdb/utilities/table_properties_collectors.h#L23-L27 
