@@ -90,7 +90,7 @@ The offset array at the end of the filter block allows efficient mapping from a 
 
 #### `Properties` Meta Block
 
-This meta block contains a bunch of properties. The key is the name of the property. The value value the property.
+This meta block contains a bunch of properties. The key is the name of the property. The value is the property.
 
 The stats block is formatted as follows:
     
