@@ -1,3 +1,5 @@
+It deletes the most recent version of a key, and whether older version of the key will come back to life is undefined.
+
 ## Basic Usage
 SingleDelete is a new database operation. In contrast to the conventional Delete() operation, the deletion entry is removed along with the value when the two are lined up in a compaction. Therefore, similar to `Delete()` method, `SingleDelete()` removes the database entry for a _key_, but has the prerequisites that the _key_ exists and was not overwritten. Returns OK on success, and a non-OK status on error.  It is not an error if _key_ did not exist in the database. If a _key_ is overwritten (by calling `Put()` multiple times), then the result of calling `SingleDelete()` on this key is undefined.  `SingleDelete()` only behaves correctly if there has been only one `Put()` for this _key_ since the previous call to `SingleDelete()` for this _key_. This feature is currently an experimental performance optimization for a very specific workload. The following code shows how to use `SingleDelete`:
 ```cpp
