@@ -75,6 +75,8 @@ This code will restore the first backup back to "/tmp/rocksdb". The first parame
 
 Checksum is calculated for any restored file and compared against the one stored during the backup time. If a checksum mismatch is detected, the restore process is aborted and `Status::Corruption` is returned.
 
+You must reopen any live databases to see the restored data.
+
 ### Backup directory structure
 
 ```
