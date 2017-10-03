@@ -25,7 +25,7 @@ Block-based table is proven to be efficient when store data in hard disk or flas
 
 Plain table, as its name suggests, stores data in a sequence of key/value pairs. But several features make plain table have not-so-plain (read "excellent") performance when serving as the module of in-memory database:
 
-* No memory copy needed. As part of in-memory database, we can easily mmap a plain table and allows direct access to its data without copying. Also plain table bypasses the concept of "block" and therefore avoids the overhead inherent in block-based table, like extra block lookup, bock cache, etc.
+* No memory copy needed. As part of in-memory database, we can easily mmap a plain table and allows direct access to its data without copying. Also plain table bypasses the concept of "block" and therefore avoids the overhead inherent in block-based table, like extra block lookup, block cache, etc.
 * Faster Hash-based index. Compared with block-based table, which employs mostly binary search for entry lookup, the well designed hash-based index in plain table enables us to locate data magnitudes faster.
 
 Of course, currently there're some limitations for this plain table format (more details please see the link provide below):
