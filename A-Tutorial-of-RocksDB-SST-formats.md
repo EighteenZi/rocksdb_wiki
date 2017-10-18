@@ -37,7 +37,7 @@ Of course, currently there're some limitations for this plain table format (more
 *     Table loading is slower since indexes are built on the fly by 2-pass table scanning.
 *     Only support mmap mode.
 
-For more information about block-based table, please read this wiki: [PlainTable Format](https://github.com/facebook/rocksdb/wiki/PlainTable-Format).
+For more information about plain table, please read this wiki: [PlainTable Format](https://github.com/facebook/rocksdb/wiki/PlainTable-Format).
 
 ## Comparison of SSTs
 
