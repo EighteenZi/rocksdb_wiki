@@ -40,7 +40,7 @@
 
 **Version**: An internal concept of RocksDB. A version consists of all the live SST files in one point of the time. Once a flush or compaction finishes, a new “version” will be created because the list of live SST files has changed. An old “version” can continue being used by on-going read requests or compaction jobs. Old versions will eventually be garbage collected.
 
-**Super Version**: An internal concept of RocksDB. A super version consists the list SST files (a “version”) and the list of live mem tables in one point of the time. Either a compaction or flush, or a mem table switch will cause a new “super version” to be created. An old “super version” can continue being used by on-going read requests. Old super versions will eventually be garbage collected after it is not needed anymore.
+**Super Version**: An internal concept of RocksDB. A super version consists the list of SST files (a “version”) and the list of live mem tables in one point of the time. Either a compaction or flush, or a mem table switch will cause a new “super version” to be created. An old “super version” can continue being used by on-going read requests. Old super versions will eventually be garbage collected after it is not needed anymore.
 
 **block cache**: in-memory data structure that cache the hot data blocks from the SST files. See See https://github.com/facebook/rocksdb/wiki/Block-Cache
 
