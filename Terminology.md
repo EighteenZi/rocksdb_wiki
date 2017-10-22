@@ -4,7 +4,7 @@
 
 **Range lookup**: Range lookup means reading a range of keys using an Iterator.
 
-**SST File** (**Data file** / **SST table**): SST stands for Sorted Sequence Table. They are persistent files storing data. In the file keys are usually organized in sorted order so that a key or iterating position can be identifies through a binary search.
+**SST File** (**Data file** / **SST table**): SST stands for Sorted Sequence Table. They are persistent files storing data. In the file keys are usually organized in sorted order so that a key or iterating position can be identified through a binary search.
 
 **LSM-tree**: See the definition in https://en.wikipedia.org/wiki/Log-structured_merge-tree RocksDB is LSM-tree-based storage engine.
 
