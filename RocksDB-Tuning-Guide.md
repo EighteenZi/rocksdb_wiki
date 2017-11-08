@@ -74,8 +74,8 @@ Compaction stats for the compactions executed between levels N and N+1 are repor
 * Stall(sec): Total time writes were stalled because level N+1 was uncompacted (compaction score was high)
 * Stall(cnt): Total number of writes stalled because level N+1 was uncompacted
 * Avg(ms): Average time in milliseconds a write was stalled because level N+1 was uncompacted
-* RecordIn: number of records compared during compaction
-* RecordDrop: number of records dropped (not written out) during compaction
+* KeyIn: number of records compared during compaction
+* KeyDrop: number of records dropped (not written out) during compaction
 
 ### General stats
 After the per-level compaction stats, we also output some general stats. General stats are reported for both **cumulative** and **interval**. Cumulative stats report total values from RocksDB instance start. Interval stats report values since the last stats output.
