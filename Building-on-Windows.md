@@ -86,7 +86,6 @@ Edit the file ` zlibvc.vcxproj`, changing `<command>cd ..\..\contrib\masmx64 bld
 "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64_x86\vcvarsamd64_x86.bat"
 msbuild zlibvc.sln /p:Configuration=Debug /p:Platform=x64
 msbuild zlibvc.sln /p:Configuration=Release /p:Platform=x64
-x64\ZlibDllRelease\zlibwapi.lib
 ```
 
 The resultant static library can be found in `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatDebug\zlibwapi.lib` or `%CODE_HOME%\zlib-1.2.11\contrib\vstudio\vc14\x64\ZlibStatRelease\zlibwapi.lib`.
