@@ -34,7 +34,7 @@ As a result, a memtable can be flushed before it is full. This is one reason the
 
 ### Concurrent Insert
 
-Without support of concurrent insert to memtables, concurrent writes to RocksDB from multiple threads will apply to memtable sequentially. Concurrent memtable insert is defaults to on and can be turn off via `allow_concurrent_memtable_write` option, although only skiplist-based memtable supports the feature.
+Without support of concurrent insert to memtables, concurrent writes to RocksDB from multiple threads will apply to memtable sequentially. Concurrent memtable insert is enabled by default and can be turn off via `allow_concurrent_memtable_write` option, although only skiplist-based memtable supports the feature.
 
 ### Insert with Hint
 
