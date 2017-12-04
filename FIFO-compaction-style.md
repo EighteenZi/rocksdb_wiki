@@ -26,7 +26,7 @@ A new feature called FIFO compaction with TTL has been introduced starting in Ro
 
 So far, FIFO compaction worked by just taking the total file size into consideration, like: drop the oldest files if the db size exceeds `compaction_options_fifo.max_table_files_size`, one at a time until the total size drops below the set threshold. This sometimes makes it tricky to enable in production as use cases can have organic growth. 
 
-A new option, `compaction_options_fifo.ttl`, has been introduced for this to delete SST files for which the TTL has expireid. This feature enables users to drop files based on time rather than always based on size, say, drop all SST files older than a week or a month.
+A new option, `compaction_options_fifo.ttl`, has been introduced for this to delete SST files for which the TTL has expired. This feature enables users to drop files based on time rather than always based on size, say, drop all SST files older than a week or a month.
 
 Constraints:
 - This currently works only for Block based table format and when max_open_files is set to -1.
