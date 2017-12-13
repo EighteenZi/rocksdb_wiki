@@ -52,6 +52,7 @@
 ** [[Third-party-language-bindings | Third-party language bindings]]
 * '''Implementation Details'''
 ** [[Partitioned-Index-Filters | Partitioned Index/Filters]]
+** [[WritePrepared Transactions | WritePrepared-Transactions]]
 ** [[How-we-keep-track-of-live-SST-files | How we keep track of live SST files]]
 ** [[Indexing-SST-Files-for-Better-Lookup-Performance | How we index SST]]
 ** [[Merge-Operator-Implementation | Merge Operator Implementation]]
