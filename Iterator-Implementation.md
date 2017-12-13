@@ -33,7 +33,7 @@ Key="Key2"  | Value = "KEY2_VAL2"
 Key="Key4"  | Value = "KEY4_VAL1"
 ```
 ## MergingIterator
-> Implementation: [table/merger.h](https://github.com/facebook/rocksdb/blob/master/table/merger.h)
+> Implementation: [table/merging_iterator.cc](https://github.com/facebook/rocksdb/blob/master/table/merging_iterator.cc)
 
 > Interface: [InternalIterator](https://github.com/facebook/rocksdb/blob/master/table/internal_iterator.h)
 
