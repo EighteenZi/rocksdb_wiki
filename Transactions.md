@@ -19,6 +19,8 @@ Locking timeouts and limits can be tuned in the TransactionDBOptions.
 	s = txn->Commit();
 	delete txn;
 
+The default write policy is WriteCommitted. The alternatives are WritePrepared and WriteUnprepared. Read more about them [[here | WritePrepared-Transactions]].
+
 ### OptimisticTransactionDB
 Optimistic Transactions provide light-weight optimistic concurrency control for workloads that do not expect high contention/interference between multiple transactions.
 
