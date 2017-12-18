@@ -20,7 +20,7 @@ Some compression types support different compression level and window setting. Y
 
 ## Compression Library
 If you pick a compression type but the library for it is not available, RocksDB will fall back to no compression. RocksDB will print out availability of compression types in the header of log files like this:
-
+```
 2017/12/01-17:34:59.368239 7f768b5d0200 Compression algorithms supported:
 2017/12/01-17:34:59.368240 7f768b5d0200         Snappy supported: 1
 2017/12/01-17:34:59.368241 7f768b5d0200         Zlib supported: 1
@@ -28,5 +28,5 @@ If you pick a compression type but the library for it is not available, RocksDB 
 2017/12/01-17:34:59.368243 7f768b5d0200         LZ4 supported: 1
 2017/12/01-17:34:59.368244 7f768b5d0200         ZSTDNotFinal supported: 1
 2017/12/01-17:34:59.368282 7f768b5d0200         ZSTD supported: 1
-
+```
 Check the logging for potential compilation problems.
