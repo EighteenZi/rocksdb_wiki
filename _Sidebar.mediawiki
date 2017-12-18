@@ -10,6 +10,7 @@
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
 ** [[Iterator | Iterator]]
 ** [[Compaction | Compaction]]
+** [[Compression]]
 ** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 ** [[MANIFEST | MANIFEST]]
 ** [[Block-Cache | Block Cache]]
