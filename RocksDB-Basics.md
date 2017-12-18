@@ -36,6 +36,9 @@ A `Snapshot` API allows an application to create a point-in-time view of a datab
 
 Snapshots are not persisted across database restarts: a reload of the RocksDB library (via a server restart) releases all pre-existing snapshots.
 
+#### Transactions
+RocksDB supports multi-operational transactions. It supports both of optimistic and pessimistic mode. See [[Transactions]].
+
 #### Prefix Iterators
 Most LSM engines cannot support an efficient `RangeScan` API because it needs to look into every data file. But most applications do not do pure-random scans of key ranges in the database; instead applications typically scan within a key-prefix. RocksDB uses this to its advantage. Applications can configure a `prefix_extractor` to specify a key-prefix. RocksDB uses this to store blooms for every key-prefix. An iterator that specifies a prefix (via ReadOptions) will use these bloom bits to avoid looking into data files that do not contain keys with the specified key-prefix.
 
