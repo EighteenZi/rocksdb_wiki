@@ -17,6 +17,8 @@ Be aware that when you set different compression to different levels, compaction
 ## Compression level and window size setting
 Some compression types support different compression level and window setting. You can set them through `options.compression_opts`. If the compression type doesn't support these setting, it will be a no-op.
 
+## Dictionary Compression
+Users can choose to compress each SST file of their bottommost level with a dictionary stored in the file. In some use cases, this can save some space. See [[Dictionary Compression]].
 
 ## Compression Library
 If you pick a compression type but the library for it is not available, RocksDB will fall back to no compression. RocksDB will print out availability of compression types in the header of log files like this:
