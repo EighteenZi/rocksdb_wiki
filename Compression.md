@@ -14,6 +14,10 @@ The legacy setting `options.compression_per_level`, you can have an even finer c
 
 Be aware that when you set different compression to different levels, compaction "trivial moves" that violate the compression styles will not be executed, and the file will be rewrite using the expected compression.
 
+## Compression level and window size setting
+Some compression types support different compression level and window setting. You can set them through `options.compression_opts`. If the compression type doesn't support these setting, it will be a no-op.
+
+
 ## Compression Library
 If you pick a compression type but the library for it is not available, RocksDB will fall back to no compression. RocksDB will print out availability of compression types in the header of log files like this:
 
