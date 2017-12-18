@@ -112,6 +112,10 @@ Options.disable_auto_compaction, if set, disables the native compaction algorith
 #### Non-Blocking Database Access
 There are certain applications that are architected in such a way that they would like to retrieve data from the database only if that data retrieval call is non-blocking, i.e., the data retrieval call does not have to read in data from storage. RocksDB caches a portion of the database in the block cache and these applications would like to retrieve the data only if it is found in this block cache. If this call does not find the data in the block cache then RocksDB returns an appropriate error code to the application. The application can then schedule a normal Get/Next operation understanding that fact that this data retrieval call could potentially block for IO from the storage (maybe in a different thread context).
 
+#### I/O Control
+
+RocksDB has some options to allow users to hint about how I/O should be executed. They can suggest RocksDB to call fadvise in files to read, call periodic range sync in files being appended, or enable direct I/O. See [[IO]]
+
 #### Stackable DB
 RocksDB has a built-in wrapper mechanism to add functionality as a layer above the code database kernel. This functionality is encapsulated by the `StackableDB` API. For example, the time-to-live functionality is implemented by a `StackableDB` and is not part of the core RocksDB API. This approach keeps the code modularized and clean.
 
