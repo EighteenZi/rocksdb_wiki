@@ -102,9 +102,9 @@ RocksDB uses a LRU cache for blocks to serve reads. The block cache is partition
 The Table Cache is a construct that caches open file descriptors. These file descriptors are for __sstfiles__. An application can specify the maximum size of the Table Cache.
 
 #### External Compaction Algorithms
-The performance of an LSM database depends significantly on the compaction algorithm and its implementation. RocksDB has two supported compaction algorithms: LevelStyle and UniversalStyle. We would also like to enable the large community of developers to develop and experiment with other compaction policies. For this reason, RocksDB has appropriate hooks to switch off the inbuilt compaction algorithm and has other APIs to allow applications to operate their own compaction algorithms. 
+The performance of an LSM database depends significantly on the compaction algorithm and its implementation. RocksDB has two supported compaction algorithms: LevelStyle and UniversalStyle, as well as a special FIFOStyle for cache-like data. We would also like to enable the large community of developers to develop and experiment with other compaction policies. For this reason, RocksDB has appropriate hooks to switch off the inbuilt compaction algorithm and has other APIs to allow applications to operate their own compaction algorithms. 
 
-Options.disable_auto_compaction, if set, disables the native compaction algorithm. The `GetLiveFilesMetaData` API allows an external component to look at every data file in the database and decide which data files to merge and compact. The `DeleteFile` API allows applications to delete data files that are deemed obsolete.
+Options.disable_auto_compaction, if set, disables the native compaction algorithm. The `GetLiveFilesMetaData` API allows an external component to look at every data file in the database and decide which data files to merge and compact. Call `CompactFiles` to compact files you want. The `DeleteFile` API allows applications to delete data files that are deemed obsolete.
 
 #### Non-Blocking Database Access
 There are certain applications that are architected in such a way that they would like to retrieve data from the database only if that data retrieval call is non-blocking, i.e., the data retrieval call does not have to read in data from storage. RocksDB caches a portion of the database in the block cache and these applications would like to retrieve the data only if it is found in this block cache. If this call does not find the data in the block cache then RocksDB returns an appropriate error code to the application. The application can then schedule a normal Get/Next operation understanding that fact that this data retrieval call could potentially block for IO from the storage (maybe in a different thread context).
@@ -122,7 +122,7 @@ The default implementation of the memtable for RocksDB is a skiplist. The skipli
 ##### Memtable Pipelining
 RocksDB supports configuring an arbitrary number of memtables for a database. When a memtable is full, it becomes an immutable memtable and a background thread starts flushing its contents to storage. Meanwhile, new writes continue to accumulate to a newly allocated memtable. If the newly allocated memtable is filled up to its limit, it is also converted to an immutable memtable and is inserted into the flush pipeline. The background thread continues to flush all the pipelined immutable memtables to storage. This pipelining increases write throughput of RocksDB, especially when it is operating on slow storage devices.
 
-##### Memtable Compaction:
+##### Garbage Collection during Memtable Flush:
 When a memtable is being flushed to storage, an inline-compaction process removes duplicate records from the output steam. Similarly, if an earlier put is hidden by a later delete, then the put is not written to the output file at all. This feature reduces the size of data on storage and write amplification greatly. This is an essential feature when RocksDB is used as a producer-consumer-queue, especially when the lifetime of an element in the queue is very short-lived.
 
 ### Merge Operator
