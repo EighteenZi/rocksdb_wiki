@@ -49,6 +49,10 @@ Special care needs to be taken if there is a live snapshot after `prepare_seq` b
 
 During a commit, a commit marker is written to the WAL and also a commit entry is added to the _CommitCache_. These two needs to be done atomically otherwise a reading transaction at one point might miss the update into the _CommitCache_ but later sees that. We achieve that by updating the _CommitCache_ before publishing the sequence number of the commit entry. In this way, if a reading snapshot can see the commit sequence number it is guaranteed that the _CommitCache_ is already updated as well. This is done via a `PreReleaseCallback` that is added to `::WriteImpl` logic for this purpose.
 
+## Flush/Compaction
+
+We provide a `IsInSnapshot(prepare_seq, commit_seq)` interface on top of the _CommitCache_ and related data structures, which can be used by the reading transactions. Flush/Compaction threads are also considered a reader and use the same API to figure which versions can be safely garbage collected without affecting the live snapshots.
+
 # Optimizations
 
 Here we cover the additional details in the design that were critical in achieving good performance.
