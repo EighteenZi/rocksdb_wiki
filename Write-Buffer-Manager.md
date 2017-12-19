@@ -20,4 +20,7 @@ In most cases, actually used blocks in block cache are just a small percentage t
 
 Here is how it is implemented. For every 1MB memory allocated memtable, WriteBufferManager will put dummy 1MB entries to block cache so that the block cache can track the size correctly and evict blocks to make room if needed. In case the memory used by the memtable shrinks, WriteBufferManager will not immediately remove the dummy blocks, but slowly release them when the memory usage drop significantly. This is because memtable memory is naturally up and down and we try to be less intrusive to block cache.
 
-To enable this feature, pass the block cache you are using to the WriteBufferManager you are going to use.
+To enable this feature,
+* pass the block cache you are using to the WriteBufferManager you are going to use.
+* still pass the parameter of WriteBufferManager as the maximum memory you want RocksDB to use for memtables.
+* set the capacity of your block cache to be the sum of the memory used for cached data blocks and memtables.
