@@ -1,3 +1,5 @@
+RocksDB provides a list of options for users to hint how I/Os should be executed.
+
 ## Control Write I/O
 ### Range Sync
 RocksDB's data files are usually generated in an appending way. File system may choose buffer the write until the dirty pages hit a threshold and write out all of those pages all together. This can create a burst of write I/O and cause the online I/Os to wait too long and cause long query latency. Rather, you can ask RocksDB to periodically hint OS to write out outstanding dirty pages by setting `options.bytes_per_sync` for SST files and `options.wal_bytes_per_sync` for WAL files. Underlying it calls sync_file_range() on Linux every time a file is appended for such size. The most recent pages are not included in the range sync.
