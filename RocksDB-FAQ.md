@@ -343,3 +343,6 @@ A: Yes. Internally, RocksDB always makes a copy to those options, so you can fre
 **Q: Does RocksDB support group commit?**
 
 A: Yes. Multiple write requests issued by multiple threads may be grouped together. One of he threads write WAL log for those write requests in one single write request and fsync once if configured.
+
+**Q: Is it possible to scan/iterate over keys only? If so, is that more efficient than loading keys and values?**
+A: No it is usually not more efficient. RocksDB's values are normally stored inline with keys. When a user iterate over the keys, the values are already loaded in memory, so skipping the value won't save much. In BlobDB, keys and large values are stored separately so it maybe beneficial to only iterate keys, but it is not supported yet. We may add the support in the future.
