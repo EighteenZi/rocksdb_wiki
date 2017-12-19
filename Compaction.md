@@ -28,6 +28,7 @@ Other options impacting performance of compactions and when they get triggered a
 <li> <code>Options::compaction_readahead_size</code> - If non-zero, we perform bigger reads when doing compaction. If you're running RocksDB on spinning disks, you should set this to at least 2MB. We enforce it to be 2MB if you don't set it with direct I/O. 
 </ul>
 
+Compaction can also be manually triggered. See [[Manual Compaction]]
 
 You can learn more about all of those options in <code>rocksdb/options.h</code>
 
