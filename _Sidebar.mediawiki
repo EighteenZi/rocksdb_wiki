@@ -12,10 +12,10 @@
 *** [[Compaction-Filter | Compaction Filter]]
 *** [[Merge-Operator | Read-Modify-Write Operator]]
 *** [[Column-Families | Column Families]]
+*** [[Creating-and-Ingesting-SST-files | Creating and Ingesting SST files]]
 *** [[Single-Delete | Single Delete]]
 *** [[Time-to-Live | Time to Live (TTL) Support]]
 *** [[Transactions | Transactions]]
-*** [[Creating-and-Ingesting-SST-files | Creating and Ingesting SST files]]
 ** [[Known-Issues | Known Issues]]
 ** [[RocksDB Compatibility Between Different Releases|Compatibility Between Releases]]
 ** Options
