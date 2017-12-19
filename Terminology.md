@@ -6,6 +6,10 @@
 
 **SST File** (**Data file** / **SST table**): SST stands for Sorted Sequence Table. They are persistent files storing data. In the file keys are usually organized in sorted order so that a key or iterating position can be identified through a binary search.
 
+**Index** The index on the data blocks in a SST file. It is persisted as an index block in the SST file. The default index format is the binary search index.
+
+**Partitioned Index** The binary search index block partitioned to multiple smaller blocks. See https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters
+
 **LSM-tree**: See the definition in https://en.wikipedia.org/wiki/Log-structured_merge-tree RocksDB is LSM-tree-based storage engine.
 
 **Write-Ahead-Log (WAL)** or **log**: A log file used to recover data that is not yet flushed to SST files, during DB recovery. See https://github.com/facebook/rocksdb/wiki/Write-Ahead-Log-File-Format
@@ -61,6 +65,8 @@
 **prefix extractor**: a callback class that can extract prefix part of a key. This is most frequently used as the prefix used in prefix bloom filter. See https://github.com/facebook/rocksdb/blob/master/include/rocksdb/slice_transform.h
 
 **block-based bloom filter** or **full bloom filter**: Two different approaches of storing bloom filters in SST files. see https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter#new-bloom-filter-format
+
+**Partitioned Filters**: Partitioning a full bloom filter into multiple smaller blocks. See https://github.com/facebook/rocksdb/wiki/Partitioned-Index-Filters.
 
 **compaction filter**: a user plug-in that can modify or drop existing keys during a compaction. See https://github.com/facebook/rocksdb/blob/master/include/rocksdb/compaction_filter.h
 
