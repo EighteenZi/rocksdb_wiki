@@ -30,3 +30,6 @@ It is critical to set the option if [[Direct IO]] is on or the file system doesn
 
 ## Direct I/O
 Rather than control the I/O through file system hints shown above, you can enable direct I/O in RocksDB to allow RocksDB to directly control I/O, using option `use_direct_reads` and/or `use_direct_io_for_flush_and_compaction`. If direct I/O is enabled, some or all of the options introduced above will not be applicable. See more details in [[Direct IO]].
+
+## Memory Mapping
+`options.allow_mmap_reads` and `options.allow_mmap_writes` ask RocksDB to mmap the whole data file while doing read or write, respectively. The benefit of the approach is to reduce the file system calls doing pread() and write(), and in many cases, reduce the memory copying too. `options.allow_mmap_reads` can usually significantly improve performance if the DB is run on ramfs. They can be used on file systems backed by block device too. However, based on our previous experience, file systems aren't usually doing a perfect job maintaining this kind of memory mapping, and some times cause slow queries. In this case, we advise you try out this option only when necessary and with cautious. 
