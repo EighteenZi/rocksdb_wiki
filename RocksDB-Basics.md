@@ -27,12 +27,20 @@ The format of a default _sstfile_ is described in more details [here](https://gi
 
 ## 4. Features
 
+#### Column Families
+RocksDB supports partitioning a database instance into multiple column families. All databases are created with a column family named "default", which is used for operations where column family is unspecified.
+
+RocksDB guarantees users a consistent view across column families, including after crash recovery when WAL is enabled. It also supports atomic cross-column family operations via the `WriteBatch` API.
+
+#### Updates
+A `Put` API inserts a single key-value to the database. If the key already exists in the database, the previous value will be overwritten. A `Write` API allows multiple keys-values to be atomically inserted into the database. The database guarantees that either all of the keys-values in a single `Write` call will be inserted into the database or none of them will be inserted into the database. If any of those keys already exist in the database, previous values will be overwritten.
+
 #### Gets, Iterators and Snapshots
 Keys and values are treated as pure byte streams. There is no limit to the size of a key or a value. The `Get` API allows an application to fetch a single key-value from the database. The `MultiGet` API allows an application to retrieve a bunch of keys from the database. All the keys-values returned via a `MultiGet` call are consistent with one-another.
 
 All data in the database is logically arranged in sorted order. An application can specify a key comparison method that specifies a total ordering of keys. An `Iterator` API allows an application to do a `RangeScan` on the database. The `Iterator` can seek to a specified key and then the application can start scanning one key at a time from that point. The `Iterator` API can also be used to do a reverse iteration of the keys in the database. A consistent-point-in-time view of the database is created when the Iterator is created. Thus, all keys returned via the Iterator are from a consistent view of the database.
 
-A `Snapshot` API allows an application to create a point-in-time view of a database. The `Get` and `Iterator` APIs can be used to read data from a specified snapshot. In a sense, a `Snapshot` and an `Iterator` both provide a point-in-time view of the database, but their implementations are different. Short lived scans are best done via an iterator while long-running scans are better done via a snapshot. An iterator keeps a reference count on all underlying files that correspond to that point-in-time-view of the database - these files are not deleted until the Iterator is released. A snapshot, on the other hand, does not prevent file deletions; instead the compaction process understands the existence of snapshots and promises never to delete a key that is visible in any existing snapshot.
+A `Snapshot` API allows an application to create a point-in-time view of a database. The `Get` and `Iterator` APIs can be used to read data from a specified snapshot. In a sense, a `Snapshot` and an `Iterator` both provide a point-in-time view of the database, but their implementations are different. Short-lived/foreground scans are best done via an iterator while long-running/background scans are better done via a snapshot. An iterator keeps a reference count on all underlying files that correspond to that point-in-time-view of the database - these files are not deleted until the Iterator is released. A snapshot, on the other hand, does not prevent file deletions; instead the compaction process understands the existence of snapshots and promises never to delete a key that is visible in any existing snapshot.
 
 Snapshots are not persisted across database restarts: a reload of the RocksDB library (via a server restart) releases all pre-existing snapshots.
 
@@ -42,27 +50,36 @@ RocksDB supports multi-operational transactions. It supports both of optimistic 
 #### Prefix Iterators
 Most LSM engines cannot support an efficient `RangeScan` API because it needs to look into every data file. But most applications do not do pure-random scans of key ranges in the database; instead applications typically scan within a key-prefix. RocksDB uses this to its advantage. Applications can configure a `prefix_extractor` to specify a key-prefix. RocksDB uses this to store blooms for every key-prefix. An iterator that specifies a prefix (via ReadOptions) will use these bloom bits to avoid looking into data files that do not contain keys with the specified key-prefix.
 
-#### Updates
-A `Put` API inserts a single key-value to the database. If the key already exists in the database, the previous value will be overwritten. A `Write` API allows multiple keys-values to be atomically inserted into the database. The database guarantees that either all of the keys-values in a single `Write` call will be inserted into the database or none of them will be inserted into the database. If any of those keys already exist in the database, previous values will be overwritten.
+#### Persistence
+RocksDB has a transaction log. All Puts are stored in an in-memory buffer called the memtable as well as optionally inserted into the transaction log. On restart, it re-processes all the transactions that were recorded in the transaction log.
 
-#### Persistency
-RocksDB has a transaction log. All Puts are stored in an in-memory buffer called the memtable as well as optionally inserted into the transaction log. Each `Put` has a set of flags, set via `WriteOptions`, which specify whether or not the `Put` should be inserted into the transaction log. The `WriteOptions` may also specify whether or not a sync call is issued to the transaction log before a `Put` is declared to be committed. 
+The transaction log can be configured to be stored in a directory different from the directory where the SST files are stored. This is necessary for those cases in which you might want to store all data files in non-persistent fast storage. At the same time, you can ensure no data loss by putting all transaction logs on slower but persistent storage.
+
+Each `Put` has a flag, set via `WriteOptions`, which specifies whether or not the `Put` should be inserted into the transaction log. The `WriteOptions` may also specify whether or not a sync call is issued to the transaction log before a `Put` is declared to be committed.
 
 Internally, RocksDB uses a batch-commit mechanism to batch transactions into the transaction log so that it can potentially commit multiple transactions using a single sync call.
 
 #### Fault Tolerance
-RocksDB uses a checksum to detect corruptions in storage. These checksums are for each block (typically between `4K` to `128K` in size). A block, once written to storage, is never modified. RocksDB dynamically detects hardware support for checksum computations and avails itself of that support when available. 
+RocksDB uses a checksum to detect corruptions in storage. These checksums are for each SST file block (typically between `4K` to `128K` in size). A block, once written to storage, is never modified. RocksDB dynamically detects hardware support for checksum computations and avails itself of that support when available. 
 
 #### Multi-Threaded Compactions
 Compactions are needed to remove multiple copies of the same key that may occur if an application overwrites an existing key. Compactions also process deletions of keys. Compactions may occur in multiple threads if configured appropriately. 
 
-The overall write throughput of an LSM database directly depends on the speed at which compactions can occur, especially when the data is stored in fast storage like SSD or RAM. RocksDB may be configured to issue concurrent compaction requests from multiple threads. It is observed that sustained write rates may increase by as much as a factor of 10 with multi-threaded compaction when the database is on SSDs, as compared to single-threaded compactions. 
-
 The entire database is stored in a set of _sstfiles_. When a _memtable_ is full, its content is written out to a file in Level-0 (L0). RocksDB removes duplicate and overwritten keys in the memtable when it is flushed to a file in L0. Some files are periodically read in and merged to form larger files - this is called `compaction`. 
 
-RocksDB supports two different styles of compaction. The Universal Style Compaction stores all files in L0 and all files are arranged in time order. A compaction picks up a few files that are chronologically adjacent to one another and merges them back into a new file L0. All files can have overlapping keys.
+The overall write throughput of an LSM database directly depends on the speed at which compactions can occur, especially when the data is stored in fast storage like SSD or RAM. RocksDB may be configured to issue concurrent compaction requests from multiple threads. It is observed that sustained write rates may increase by as much as a factor of 10 with multi-threaded compaction when the database is on SSDs, as compared to single-threaded compactions. 
 
-The Level Style Compaction stores data in multiple levels in the database. The more recent data is stored in L0 and the oldest data is in Lmax. Files in L0 may have overlapping keys, but files in other layers do not. A compaction process picks one file in Ln and all its overlapping files in Ln+1 and replaces them with new files in Ln+1. The Universal Style Compaction typically results in lower write amplification but higher space amplification than Level Style Compaction.
+#### Compaction Styles
+
+The Universal Style Compaction operates on full sorted runs, which are either an L0 file or an entire level at L1+. A compaction picks up a few sorted runs that are chronologically adjacent to one another and merges them back into a new sorted run.
+
+The Level Style Compaction stores data in multiple levels in the database. The more recent data is stored in L0 and the oldest data is in Lmax. Files in L0 may have overlapping keys, but files in other layers do not. A compaction process picks one file in Ln and all its overlapping files in Ln+1 and replaces them with new files in Ln+1. The Universal Style Compaction typically results in lower write-amplification but higher space- and read-amplification than Level Style Compaction.
+
+The FIFOStyle Compaction drops oldest file when obsolete and can be used for cache-like data.
+
+We also enable developers to develop and experiment with custom compaction policies. For this reason, RocksDB has appropriate hooks to switch off the inbuilt compaction algorithm and has other APIs to allow applications to operate their own compaction algorithms.  `Options.disable_auto_compaction`, if set, disables the native compaction algorithm. The `GetLiveFilesMetaData` API allows an external component to look at every data file in the database and decide which data files to merge and compact. Call `CompactFiles` to compact files you want. The `DeleteFile` API allows applications to delete data files that are deemed obsolete.
+
+#### Metadata storage
 
 A `MANIFEST` file in the database records the database state. The compaction process adds new files and deletes existing files from the database, and it makes these operations persistent by recording them in the `MANIFEST` file. Transactions to be recorded in the `MANIFEST` file use a batch-commit algorithm to amortize the cost of repeated syncs to the `MANIFEST` file.
 
@@ -79,15 +96,12 @@ A database may be opened in ReadOnly mode, in which the database guarantees that
 RocksDB writes detailed logs to a file named LOG*. These are mostly used for debugging and analyzing a running system. This LOG may be configured to roll at a specified periodicity.
 
 #### Data Compression
-RocksDB supports snappy, zlib, bzip2, lz4 and lz4_hc compression. RocksDB may be configured to support different compression algorithms at different levels of data. Typically, `90%` of data in the Lmax level. A typical installation might configure ZSTD (or Zlib if not available) for the bottom-most level and LZ4 (or Snappy if it is not available) for other levels. See [[Compression]].
-
-#### Transaction Logs 
-RocksDB stores transactions into _logfile_ to protect against system crashes. On restart, it re-processes all the transactions that were recorded in the _logfile_. The _logfile_ can be configured to be stored in a directory different from the directory where the _sstfile_s are stored. This is necessary for those cases in which you might want to store all data files in non-persistent fast storage. At the same time, you can ensure no data loss by putting all transaction logs on slower but persistent storage.
+RocksDB supports snappy, zlib, bzip2, lz4, lz4_hc, and zstd compression. RocksDB may be configured to support different compression algorithms at different levels of data. Typically, `90%` of data in the Lmax level. A typical installation might configure ZSTD (or Zlib if not available) for the bottom-most level and LZ4 (or Snappy if it is not available) for other levels. See [[Compression]].
 
 #### Full Backups, Incremental Backups and Replication
-RocksDB has support for full backups and incremental backups. RocksDB is an LSM database engine, so, once created, data files are never overwritten, and this makes it easy to extract a list of file-names that correspond to a point-in-time snapshot of the database contents. The API `DisableFileDeletions` instructs RocksDB not to delete data files. Compactions will continue to occur, but files that are not needed by the database will not be deleted. A backup application may then invoke the API `GetLiveFiles`/`GetSortedWalFiles` to retrieve the list of live files in the database and copy them to a backup location. Once the backup is complete, the application can invoke `EnableFileDeletions`; the database is now free to reclaim all the files that are not needed any more. 
+RocksDB has support for incremental backups. `BackupableDB` makes backing up RocksDB simple. You can read more about it here: [How to backup RocksDB?](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F)
 
-Incremental Backups and Replication need to be able to find and _tail_ all the recent changes to the database. The API `GetUpdatesSince` allows an application to _tail_ the RocksDB transaction log. It can continuously fetch transactions from the RocksDB transaction log and apply them to a remote replica or a remote backup. 
+Incremental replication needs to be able to find and _tail_ all the recent changes to the database. The API `GetUpdatesSince` allows an application to _tail_ the RocksDB transaction log. It can continuously fetch transactions from the RocksDB transaction log and apply them to a remote replica or a remote backup. 
 
 A replication system typically wants to annotate each Put with some arbitrary metadata. This metadata may be used to detect loops in the replication pipeline. It can also be used to timestamp and sequence transactions. For this purpose, RocksDB supports an API called `PutLogData` that an application may use to annotate each Put with metadata. This metadata is stored only in the transaction log and is not stored in the data files. The metadata inserted via `PutLogData` can be retrieved via the `GetUpdatesSince` API.
 
@@ -99,18 +113,10 @@ A common use-case for RocksDB is that applications inherently partition their da
 Similarly, multiple database instances may share the same block cache.
 
 #### Block Cache -- Compressed and Uncompressed Data
-RocksDB uses a LRU cache for blocks to serve reads. The block cache is partitioned into two individual caches: the first caches uncompressed blocks and the second caches compressed blocks in RAM. If a compressed block cache is configured, then the database intelligently avoids caching data in the OS buffers.
+RocksDB uses a LRU cache for blocks to serve reads. The block cache is partitioned into two individual caches: the first caches uncompressed blocks and the second caches compressed blocks in RAM. If a compressed block cache is configured, users may wish to enable direct I/O to prevent the OS page cache from doubly-caching the same compressed data.
 
 #### Table Cache
 The Table Cache is a construct that caches open file descriptors. These file descriptors are for __sstfiles__. An application can specify the maximum size of the Table Cache.
-
-#### External Compaction Algorithms
-The performance of an LSM database depends significantly on the compaction algorithm and its implementation. RocksDB has two supported compaction algorithms: LevelStyle and UniversalStyle, as well as a special FIFOStyle for cache-like data. We would also like to enable the large community of developers to develop and experiment with other compaction policies. For this reason, RocksDB has appropriate hooks to switch off the inbuilt compaction algorithm and has other APIs to allow applications to operate their own compaction algorithms. 
-
-Options.disable_auto_compaction, if set, disables the native compaction algorithm. The `GetLiveFilesMetaData` API allows an external component to look at every data file in the database and decide which data files to merge and compact. Call `CompactFiles` to compact files you want. The `DeleteFile` API allows applications to delete data files that are deemed obsolete.
-
-#### Non-Blocking Database Access
-There are certain applications that are architected in such a way that they would like to retrieve data from the database only if that data retrieval call is non-blocking, i.e., the data retrieval call does not have to read in data from storage. RocksDB caches a portion of the database in the block cache and these applications would like to retrieve the data only if it is found in this block cache. If this call does not find the data in the block cache then RocksDB returns an appropriate error code to the application. The application can then schedule a normal Get/Next operation understanding that fact that this data retrieval call could potentially block for IO from the storage (maybe in a different thread context).
 
 #### I/O Control
 
@@ -118,9 +124,6 @@ RocksDB has some options to allow users to hint about how I/O should be executed
 
 #### Stackable DB
 RocksDB has a built-in wrapper mechanism to add functionality as a layer above the code database kernel. This functionality is encapsulated by the `StackableDB` API. For example, the time-to-live functionality is implemented by a `StackableDB` and is not part of the core RocksDB API. This approach keeps the code modularized and clean.
-
-#### Backupable DB
-One feature implemented using the `StackableDB` interface is `BackupableDB`, which makes backing up RocksDB simple. You can read more about it here: [How to backup RocksDB?](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F)
 
 #### Memtables:
 ##### Pluggable Memtables:
@@ -132,7 +135,7 @@ RocksDB supports configuring an arbitrary number of memtables for a database. Wh
 ##### Garbage Collection during Memtable Flush:
 When a memtable is being flushed to storage, an inline-compaction process removes duplicate records from the output steam. Similarly, if an earlier put is hidden by a later delete, then the put is not written to the output file at all. This feature reduces the size of data on storage and write amplification greatly. This is an essential feature when RocksDB is used as a producer-consumer-queue, especially when the lifetime of an element in the queue is very short-lived.
 
-### Merge Operator
+#### Merge Operator
 RocksDB natively supports three types of records, a `Put` record, a `Delete` record and a `Merge` record. When a compaction process encounters a Merge record, it invokes an application-specified method called the Merge Operator. The Merge can combine multiple Put and Merge records into a single one. This powerful feature allows applications that typically do read-modify-writes to avoid the reads altogether. It allows an application to record the intent-of-the-operation as a Merge Record, and the RocksDB compaction process lazily applies that intent to the original value. This feature is described in detail in [Merge Operator](https://github.com/facebook/rocksdb/wiki/Merge-Operator)
 
 ## 5. Tools
@@ -144,4 +147,4 @@ There are a bunch of unit tests that test specific features of the database. A `
 ## 7. Performance
 RocksDB performance is benchmarked via a utility called `db_bench`. `db_bench` is part of the RocksDB source code. Performance results of a few typical workloads using Flash storage are described [here](https://github.com/facebook/rocksdb/wiki/Performance-Benchmarks). You can also find RocksDB performance results for in-memory workload [here](https://github.com/facebook/rocksdb/wiki/RocksDB-In-Memory-Workload-Performance-Benchmarks).
 
-##### Author: Dhruba Borthakur
+##### Author: Dhruba Borthakur et al.
