@@ -319,6 +319,8 @@ By default, RocksDB's I/O go through operating system's page cache. Setting [[Ra
 
 Users can also choose to by pass by page cache, using [Direct I/O](https://github.com/facebook/rocksdb/wiki/Direct-IO).
 
+See [[IO]] for more details.
+
 ## Backwards compatibility
 
 The result of the comparator's <code>Name</code> method is attached to the database when it is created, and is checked on every subsequent database open. If the name changes, the <code>rocksdb::DB::Open</code> call will fail. Therefore, change the name if and only if the new key format and comparison function are incompatible with existing databases, and it is ok to discard the contents of all existing databases.
