@@ -345,9 +345,11 @@ A: Yes. Internally, RocksDB always makes a copy to those options, so you can fre
 A: Yes. Multiple write requests issued by multiple threads may be grouped together. One of he threads write WAL log for those write requests in one single write request and fsync once if configured.
 
 **Q: Is it possible to scan/iterate over keys only? If so, is that more efficient than loading keys and values?**
+
 A: No it is usually not more efficient. RocksDB's values are normally stored inline with keys. When a user iterate over the keys, the values are already loaded in memory, so skipping the value won't save much. In BlobDB, keys and large values are stored separately so it maybe beneficial to only iterate keys, but it is not supported yet. We may add the support in the future.
 
 **Q: Is the transaction object thread-safe?**
+
 A: No it's not. You can't issue multiple operations to the same transaction concurrently. (Of course, you can execute multiple transactions in parallel, which is the point of the feature.)
 
 **Q: After iterator moves away from a key/value, is the memory pointed by those key/value still kept?**
@@ -355,4 +357,5 @@ A: No it's not. You can't issue multiple operations to the same transaction conc
 A: No, they can be freed, unless you set `ReadOptions.pin_data = true` and your setting supports this feature.
 
 **Q: How to estimate total size of index and filter blocks in a DB?**
+
 A: For an offline DB, "sst_dump --show_properties --command=none" will show you the index and filter size for a specific sst file. You can sum them up for all DB. For a running DB, you can fetch from DB property "kAggregatedTableProperties". Or calling DB::GetPropertiesOfAllTables() and sum up the index and filter block size of individual files.
