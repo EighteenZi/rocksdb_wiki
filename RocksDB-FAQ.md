@@ -359,3 +359,7 @@ A: No, they can be freed, unless you set `ReadOptions.pin_data = true` and your 
 **Q: How to estimate total size of index and filter blocks in a DB?**
 
 A: For an offline DB, "sst_dump --show_properties --command=none" will show you the index and filter size for a specific sst file. You can sum them up for all DB. For a running DB, you can fetch from DB property "kAggregatedTableProperties". Or calling DB::GetPropertiesOfAllTables() and sum up the index and filter block size of individual files.
+
+**Q: Can I programmatically read data from an SST file?**
+
+A: We don't support it right now. But you can dump the data using sst_dump.
