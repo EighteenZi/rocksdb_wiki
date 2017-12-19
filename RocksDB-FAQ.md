@@ -349,3 +349,6 @@ A: No it is usually not more efficient. RocksDB's values are normally stored inl
 
 **Q: Is the transaction object thread-safe?**
 A: No it's not. You can't issue multiple operations to the same transaction concurrently. (Of course, you can execute multiple transactions in parallel, which is the point of the feature.)
+
+**Q: After iterator moves away from a key/value, is the memory pointed by those key/value still kept?**
+A: No, they can be freed, unless you set `ReadOptions.pin_data = true` and your setting supports this feature.
