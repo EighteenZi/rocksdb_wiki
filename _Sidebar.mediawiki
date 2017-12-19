@@ -40,6 +40,7 @@
 *** [[Leveled Compaction]]
 *** [[Universal-Compaction | Universal compaction style]]
 *** [[FIFO-compaction-style | FIFO compaction style]]
+*** [[Manual Compaction]]
 ** SST File Formats
 *** [[Rocksdb-BlockBasedTable-Format | Block-based Table Format]]
 *** [[PlainTable-Format | PlainTable Format]]
