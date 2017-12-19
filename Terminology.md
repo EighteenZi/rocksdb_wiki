@@ -83,3 +83,13 @@
 **single delete**: a special delete operation which only works when users never update an existing key: https://github.com/facebook/rocksdb/wiki/Single-Delete
 
 **rate limiter**: it is used to limit the rate of bytes written to the file system by flush and compaction. See https://github.com/facebook/rocksdb/wiki/Rate-Limiter
+
+**Pessimistic Transactions** Using locks to provide isolation between multiple concurrent transactions. The default write policy is WriteCommitted.
+
+**2PC (Two-phase commit)** The pessimistic transactions could commit in two phases: first Prepare and then the actual Commit. See https://github.com/facebook/rocksdb/wiki/Two-Phase-Commit-Implementation
+
+**WriteCommitted** The default write policy in pessimistic transactions, which buffers the writes in memory and write them into the DB upon commit of the transaction.
+
+**WritePrepared** A write policy in pessimistic transactions that buffers the writes in memory and write them into the DB upon prepare if it is a 2PC transaction or commit otherwise. See https://github.com/facebook/rocksdb/wiki/WritePrepared-Transactions
+
+**WriteUnprepared** A write policy in pessimistic transactions that avoid the need for larger memory buffers by writing data to the DB as they are sent by the transaction. See https://github.com/facebook/rocksdb/wiki/WritePrepared-Transactions
