@@ -346,3 +346,6 @@ A: Yes. Multiple write requests issued by multiple threads may be grouped togeth
 
 **Q: Is it possible to scan/iterate over keys only? If so, is that more efficient than loading keys and values?**
 A: No it is usually not more efficient. RocksDB's values are normally stored inline with keys. When a user iterate over the keys, the values are already loaded in memory, so skipping the value won't save much. In BlobDB, keys and large values are stored separately so it maybe beneficial to only iterate keys, but it is not supported yet. We may add the support in the future.
+
+**Q: Is the transaction object thread-safe?**
+A: No it's not. You can't issue multiple operations to the same transaction concurrently. (Of course, you can execute multiple transactions in parallel, which is the point of the feature.)
