@@ -353,3 +353,6 @@ A: No it's not. You can't issue multiple operations to the same transaction conc
 **Q: After iterator moves away from a key/value, is the memory pointed by those key/value still kept?**
 
 A: No, they can be freed, unless you set `ReadOptions.pin_data = true` and your setting supports this feature.
+
+**Q: How to estimate total size of index and filter blocks in a DB?**
+A: For an offline DB, "sst_dump --show_properties --command=none" will show you the index and filter size for a specific sst file. You can sum them up for all DB. For a running DB, you can fetch from DB property "kAggregatedTableProperties". Or calling DB::GetPropertiesOfAllTables() and sum up the index and filter block size of individual files.
