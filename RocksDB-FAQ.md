@@ -339,3 +339,7 @@ A: As long as they are const, you are free to reuse them.
 **Q: Can I reuse DBOptions or ColumnFamilyOptions to open multiple DBs or column families?**
 
 A: Yes. Internally, RocksDB always makes a copy to those options, so you can freely change them and reuse these objects.
+
+**Q: Does RocksDB support group commit?**
+
+A: Yes. Multiple write requests issued by multiple threads may be grouped together. One of he threads write WAL log for those write requests in one single write request and fsync once if configured.
