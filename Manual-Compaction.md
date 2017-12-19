@@ -1,4 +1,4 @@
-Compaction can be triggered manually by calling <code>CompactRange</code>. The <code>begin</code> and <code>end</code> arguments define the key range to be compacted. The example code below shows how to use it.
+Compaction can be triggered manually by calling <code>CompactRange</code>. The example code below shows how to use it.
 
 ```cpp
 Options options;
@@ -14,7 +14,7 @@ CompactRangeOptions crOptions;
 
 s = db->CompactRange(crOptions, &begin, &end);
 ```
-The behavior varies depending on the compaction style being used by the db. In case of universal and FIFO compaction styles, the <code>begin</code> and <code>end</code> arguments are ignored and all files are compacted. Also, files in each level are compacted and left in the same level. For leveled compaction style, all files containing keys in the given range are compacted to the last level containing files. If either <code>begin</code> or <code>end</code> are NULL, it is taken to mean the key before all keys in the db or the key after all keys respectively.
+The <code>begin</code> and <code>end</code> arguments define the key range to be compacted. The behavior varies depending on the compaction style being used by the db. In case of universal and FIFO compaction styles, the <code>begin</code> and <code>end</code> arguments are ignored and all files are compacted. Also, files in each level are compacted and left in the same level. For leveled compaction style, all files containing keys in the given range are compacted to the last level containing files. If either <code>begin</code> or <code>end</code> are NULL, it is taken to mean the key before all keys in the db or the key after all keys respectively.
 
 If more than one thread calls manual compaction, only one will actually schedule it while the other threads will simply wait for the scheduled manual compaction to complete. If <code>CompactRangeOptions::exclusive_manual_compaction</code> is set to true, the call will 
  
