@@ -49,6 +49,6 @@ The <code>CompactRangeOptions</code> supports the following options -
 
 ##  CompactFiles
 
-This API compacts all the input files into a set of output files in the <code>output_level</code>. The number of output files is determined by the size of the data and the setting of <code>CompactionOptions::output_file_size_limit</code>.
+This API compacts all the input files into a set of output files in the <code>output_level</code>. The number of output files is determined by the size of the data and the setting of <code>CompactionOptions::output_file_size_limit</code>. This API is not supported in ROCKSDB_LITE.
 
 
