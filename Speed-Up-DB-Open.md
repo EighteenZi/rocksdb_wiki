@@ -14,5 +14,10 @@ If your memtable size is large, the replay can be long. So try to shrink the mem
 Another common reason that WAL files to replay is too large is that, one of the column families gets too slow writes, which holds logs from being deleted. When DB reopens, all those log files are read, just to replay updates from this column family. In this case, set a proper `options.max_total_wal_size` value. The low-traffic column families will be flushed to limit the total WAL files to replay to under this threshold. see [[Write Ahead Log]].
 
 ## Reading footer and meta blocks of all the SST files
+When `options.max_open_files` is set to `-1`, during DB open, all the SST files will be opened, with their footer and metadata blocks to be read. This is random reads from disk. If you have a lot of files and a relatively high latency device, especially spinning disks, those random reads can take a long time. Two options can help mitigate the problem:
+* `options.max_file_opening_threads` allows reading those files in parallel. Making this number higher usually works well on high bandwidth devices, like SSD.
+* Set `options.skip_stats_update_on_db_open=false`. This allows RocksDB to do one fewer read per file.
+* Tune the LSM-tree to reduce the number of SST file is also helpful.
 
 ## Opening too many DBs one by one
+Some users manage multiple DBs per service and open DBs one-by-one. If they have multi-core server, they can use a thread pool and open those DBs in parallel.
