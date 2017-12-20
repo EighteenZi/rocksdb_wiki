@@ -27,7 +27,7 @@ db->Put(WriteOptions(), handles[0], Slice("key4"), Slice("value4"));
 
 At this point the WAL should have recorded all writes. The WAL will stay open and keep recording future writes until its size reaches `DBOptions::max_total_wal_size`.
 
-If user deciedes to flush the column family "new_cf", several things happens: 1) new_cf's data (key1 and key3) is flushed to a new SST file 2) a new WAL is created and all future writes to all column families now go to the new WAL 3) the older WAL stays open but there won't be new writes.
+If user deciedes to flush the column family "new_cf", several things happens: 1) new_cf's data (key1 and key3) is flushed to a new SST file 2) a new WAL is created and all future writes to all column families now go to the new WAL 3) the older WAL will not accept new writes but the deletion may be delayed.
 
 ```
 db->Flush(FlushOptions(), handles[1]);
@@ -43,7 +43,7 @@ db->Flush(FlushOptions(), handles[0]);
 // The older WAL will be archived and purged separetely
 ```
 
-To summarize, a WAL is created when 1) a new DB is opened, 2) a column family is flushed. A WAL is archived when all column families have flushed beyond the largest sequence number contained in the WAL, or in other words, all data in the WAL have been persisted to SST files. Archived WALs will be moved to a separete location and purged from disk later on. The actual deletion might be delayed due to replication purposes, see Transcational Log Iterator section below.
+To summarize, a WAL is created when 1) a new DB is opened, 2) a column family is flushed. A WAL is deleted (or archived if archival is enabled) when all column families have flushed beyond the largest sequence number contained in the WAL, or in other words, all data in the WAL have been persisted to SST files. Archived WALs will be moved to a separete location and purged from disk later on. The actual deletion might be delayed due to replication purposes, see Transcational Log Iterator section below.
 
 ## WAL Configurations
 
