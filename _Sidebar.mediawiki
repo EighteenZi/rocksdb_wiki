@@ -86,6 +86,7 @@
 ** [[Pipelined-Write | Pipelined Write]]
 ** [[RocksDB-Tuning-Guide | Tuning Guide]]
 ** [[Memory-usage-in-RocksDB | Memory usage in RocksDB]]
+** [[Speed-Up DB Open]]
 ** [[Implement-Queue-Service-Using-RocksDB | Implement Queue Service Using RocksDB]]
 * '''Misc'''
 ** [[Building-on-Windows | Building on Windows]]
