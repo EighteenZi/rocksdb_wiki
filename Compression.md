@@ -10,7 +10,7 @@ If you want to further reduce the in-memory and have some free CPU to use, you c
 
 If you want have a lot of free CPU and want to reduce not just space but write amplification too, try to set `options.compression` to heavy weight compression type. We recommend ZSTD. Use Zlib if it is not available.
 
-The legacy setting `options.compression_per_level`, you can have an even finer control of compression style of each level using. But we believe there are very few use cases where this tuning will help.
+The legacy setting `options.compression_per_level`, you can have an even finer control of compression style of each level using. When this option is used, `options.compression` will not take effective anymore, while `options.bottommost_compression` still applies. But we believe there are very few use cases where this tuning will help.
 
 Be aware that when you set different compression to different levels, compaction "trivial moves" that violate the compression styles will not be executed, and the file will be rewrite using the expected compression.
 
