@@ -47,7 +47,7 @@ A: Yes, by using the Env returned by NewHdfsEnv(), RocksDB will store data on HD
 
 **Q: Can I preserve a “snapshot” of RocksDB and later roll back the DB state to it?**
 
-A: Yes, via the [https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F BackupEngine] or [[Checkpoints]].
+A: Yes, via the [BackupEngine](https://github.com/facebook/rocksdb/wiki/How-to-backup-RocksDB%3F) or [[Checkpoints]].
 
 **Q: What's the fastest way to load data into RocksDB?**
 
