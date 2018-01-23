@@ -2,7 +2,7 @@
 If `ReadOptions.snapshot` is given, the iterator will return data as of the snapshot. If it is `nullptr`, the iterator will read from an implicit snapshot as of the time the iterator is created. The implicit snapshot is preserved by [[pinning resource|Iterator#resource-pinned-by-iterators-and-iterator-refreshing]]. There is no way to convert this implicit snapshot to an explicit snapshot.
 
 ## Error Handling
-`Iterator::status()` returns the error of the iterating. The iterator may pass the blocks or files it had difficulties in reading (because of IO error, data corruption or other issues) and continue with the next available keys. If you don't want to skip keys in your query, please check `status()` after every iterator operation: `Seek()`, `Next()`, `SeekToFirst()`, `SeekToLast()`, `SeekForPrev()`, and `Prev()`, even if `Valid()=true`.
+`Iterator::status()` returns the error of the iterating. The iterator may pass the blocks or files it had difficulties in reading (because of IO error, data corruption or other issues) and continue with the next available keys. `status()` may not OK after every iterator operation: `Seek()`, `Next()`, `SeekToFirst()`, `SeekToLast()`, `SeekForPrev()`, and `Prev()`, even if `Valid()=true`.
 
 Note that previously, we state following in this wiki, which is incorrect:
 
