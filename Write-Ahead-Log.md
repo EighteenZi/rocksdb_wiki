@@ -27,7 +27,7 @@ db->Put(WriteOptions(), handles[0], Slice("key4"), Slice("value4"));
 
 At this point the WAL should have recorded all writes. The WAL will stay open and keep recording future writes until its size reaches `DBOptions::max_total_wal_size`.
 
-If user deciedes to flush the column family "new_cf", several things happens: 1) new_cf's data (key1 and key3) is flushed to a new SST file 2) a new WAL is created and all future writes to all column families now go to the new WAL 3) the older WAL will not accept new writes but the deletion may be delayed.
+If user decides to flush the column family "new_cf", several things happens: 1) new_cf's data (key1 and key3) is flushed to a new SST file 2) a new WAL is created and all future writes to all column families now go to the new WAL 3) the older WAL will not accept new writes but the deletion may be delayed.
 
 ```
 db->Flush(FlushOptions(), handles[1]);
